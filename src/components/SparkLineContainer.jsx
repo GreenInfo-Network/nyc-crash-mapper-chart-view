@@ -9,12 +9,27 @@ class SparkLineContainer extends Component {
     entities: PropTypes.arrayOf(PropTypes.object),
   };
 
+  constructor() {
+    super();
+    this.state = {
+      inputValue: '',
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({
+      inputValue: event.target.value,
+    });
+  }
+
   render() {
     const { entities } = this.props;
+    const { inputValue } = this.state;
 
     return (
       <div className="SparkLineContainer">
-        <input type="search" />
+        <input value={inputValue} onChange={this.handleChange} type="text" />
         <div
           style={{
             height: '100%',
@@ -22,7 +37,7 @@ class SparkLineContainer extends Component {
           }}
           className="SparkLineList scroll"
         >
-          <SparkLineList {...{ entities }} />
+          <SparkLineList filterTerm={inputValue} {...{ entities }} />
         </div>
       </div>
     );

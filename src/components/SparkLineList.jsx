@@ -10,6 +10,11 @@ class SparkLineList extends Component {
   static propTypes = {
     // eslint-disable-next-line
     entities: PropTypes.arrayOf(PropTypes.object),
+    filterTerm: PropTypes.string,
+  };
+
+  static defaultProps = {
+    filterTerm: '',
   };
 
   constructor() {
@@ -68,13 +73,13 @@ class SparkLineList extends Component {
       return (
         <li
           key={key}
-          className="sparkline"
+          className={`city council ${key}`}
           style={{
             display: 'inline-block',
             margin: '5px',
           }}
         >
-          <h6 style={{ padding: 0 }}>{`City Council ${key}`}</h6>
+          <h6 style={{ padding: 0 }}>{`${key < 10 ? `0${key}` : key}`}</h6>
           <svg
             width={width}
             height={height}
@@ -95,6 +100,18 @@ class SparkLineList extends Component {
   }
 
   render() {
+    const { filterTerm } = this.props;
+    let listItems = this.renderSparkLines();
+
+    if (listItems && filterTerm !== '') {
+      listItems = listItems.filter(li => {
+        const { props } = li;
+        return (
+          props.className.toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1
+        );
+      });
+    }
+
     return (
       <ul
         style={{
@@ -104,7 +121,7 @@ class SparkLineList extends Component {
         }}
         className="SparkLineList scroll"
       >
-        {this.renderSparkLines()}
+        {listItems}
       </ul>
     );
   }
