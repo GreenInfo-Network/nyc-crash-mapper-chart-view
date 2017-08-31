@@ -1,0 +1,153 @@
+body {
+  font-family: $roboto;
+}
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.app {
+  position: relative;
+}
+
+// UI elements
+.ui {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  background-color: $ui-grey;
+  color: $off-white;
+  padding: $padding-10 0 $padding-5 $padding-10;
+}
+
+// positioning for UI elements
+.bottom { bottom: 0; }
+.left { left: 0; }
+.right { right: 0; }
+
+// remove margins on h1 - h6
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding-bottom: 1rem;
+}
+
+h6 {
+  font-size: 1.4rem;
+}
+
+p {
+  margin: 0;
+}
+
+// map options ul .filter-lists
+.filter-list {
+  display: inline-block;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  padding-left: $padding-10;
+
+  li {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// ruled lines
+hr {
+  border-top-color: $hr-border;
+  margin: 0;
+  padding: 0;
+}
+
+// Skeleton Grid Overrides
+.container {
+  @media screen and (#{$bp-larger-than-phablet}) {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.row {
+  &.stats-header {
+    height: $stats-header-height;
+    overflow-y: hidden;
+  }
+
+  &.stats-content {
+    height: $stats-content-height;
+  }
+}
+
+.column,
+.columns {
+  height: 100%;
+  // border: 1px solid $medium-grey;
+
+  @media screen and (#{$bp-larger-than-phablet}) {
+    margin-left: 0;
+  }
+}
+
+.two.columns {
+  @media screen and (#{$bp-larger-than-phablet}) {
+    width: 16.666666666666667%;
+  }
+
+  @media screen and (#{$bp-narrow-width}) {
+    display: none;
+  }
+}
+
+.three.columns {
+  @media screen and (#{$bp-larger-than-phablet}) {
+    width: 25%;
+  }
+
+  @media screen and (#{$bp-narrow-width}) {
+    display: none;
+  }
+}
+
+.four.columns {
+  @media screen and (#{$bp-larger-than-phablet}) {
+    width: 33.333333333333%;
+  }
+
+  @media screen and (#{$bp-narrow-width}) {
+    display: none;
+  }
+}
+
+.six.columns {
+  @media screen and (#{$bp-larger-than-phablet}) {
+    width: 50%;
+  }
+
+  @media screen and (#{$bp-narrow-width}) {
+    display: none;
+  }
+}
+
+.seven.columns {
+  @media screen and (#{$bp-larger-than-phablet}) {
+    width: 58.3333333333%;
+  }
+
+  @media screen and (#{$bp-narrow-width}) {
+    width: 100%;
+  }
+}

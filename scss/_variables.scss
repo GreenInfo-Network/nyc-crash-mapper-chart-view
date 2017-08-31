@@ -1,0 +1,87 @@
+// Colors (in addition to colors in skeleton/base/variables)
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// color values for crash point data
+$yellow-orange: #fecc5c !default;
+$orange: #fd8d3c !default;
+$orange-red: #f03b20 !default;
+$red: #bd0026 !default;
+
+// possible UI color values
+$marine: #105b63 !default;
+$marine-light: lighten($marine, 10) !default;
+
+$off-white: #fffad5 !default;
+$grey: #4d4d4d !default;
+$medium-grey: lighten($dark-grey, 50) !default;
+$ui-grey: rgba($grey, 0.8) !default;
+$transparent: rgba(0, 0, 0, 0) !default;
+
+$btn-hover: lighten($yellow-orange, 10) !default;
+$btn-active: $yellow-orange !default;
+$btn-bg: $off-white !default;
+
+$hr-border: $off-white !default;
+$border-radius: 4px !default;
+
+// Additional Breakpoints
+$bp-narrow-width: "max-width: 1000px" !default;
+
+// Typography
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+$roboto: "Roboto", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+
+%roboto-regular {
+  font-family: $roboto;
+  font-weight: 400;
+}
+
+%roboto-medium {
+  font-family: $roboto;
+  font-weight: 500;
+}
+
+%roboto-bold {
+  font-family: $roboto;
+  font-weight: 700;
+}
+
+// Main Component Dimensions
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+$app-header-height: 100px !default;
+$app-header-width: auto !default;
+
+$zoom-controls-height: 70px !default;
+$zoom-controls-width: 30px !default;
+
+$app-stats-legend-height: 120px !default;
+$app-stats-legend-width: calc(100% - 300px) !default;
+
+$app-options-filters-height: 100% !default;
+$app-options-filters-width: 300px !default;
+
+$button-height: 25px !default;
+
+$options-footer-height: 27px !default;
+
+// react select overrides
+$select-height: 25px !default;
+$select-width: 125px !default;
+
+$stats-header-height: 30px !default;
+$stats-content-height: calc(100% - 30px) !default;
+
+$infowindowWidth: 105px !default;
+$infowindowWidthOuter: 155px !default;
+$infowindowWidthInner: 155px !default;
+
+// margins
+$margin-25: 25px !default;
+$margin-10: 10px !default;
+$margin-5: 5px !default;
+
+// padding
+$padding-25: 25px !default;
+$padding-15: 15px !default;
+$padding-10: 10px !default;
+$padding-5: 5px !default;
