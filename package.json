@@ -6,25 +6,26 @@
   "main": "src/index.js",
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.config.js",
-    "build": "npm run clean && webpack -p --progress --colors --config webpack.dist.config.js",
+    "build":
+      "npm run clean && webpack -p --progress --colors --config webpack.dist.config.js",
     "clean": "rimraf dist",
     "deploy:gh-pages": "npm run build && . ./deploy_gh_pages.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GreenInfo-Network/nyc-crash-mapper-chart-view.git"
+    "url":
+      "git+https://github.com/GreenInfo-Network/nyc-crash-mapper-chart-view.git"
   },
   "author": "Chris Henrick <chrishenrick@gmail.com>",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/GreenInfo-Network/nyc-crash-mapper-chart-viewissues"
+    "url":
+      "https://github.com/GreenInfo-Network/nyc-crash-mapper-chart-viewissues"
   },
-  "homepage": "https://github.com/GreenInfo-Network/nyc-crash-mapper-chart-view#readme",
-  "browserslist": [
-    "defaults",
-    "not ie < 11"
-  ],
+  "homepage":
+    "https://github.com/GreenInfo-Network/nyc-crash-mapper-chart-view#readme",
+  "browserslist": ["defaults", "not ie < 11"],
   "dependencies": {
     "axios": "^0.16.2",
     "babel-polyfill": "^6.23.0",
@@ -53,7 +54,7 @@
     "compression-webpack-plugin": "^0.4.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
-    "eslint": "^3.19.0",
+    "eslint": "^4.4.1",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.3.0",
     "eslint-loader": "^1.7.1",
