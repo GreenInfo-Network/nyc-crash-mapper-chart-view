@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-import {
-  ENTITY_DATA_REQUEST,
-  ENTITY_DATA_SUCCESS,
-  ENTITY_DATA_ERROR,
-} from '../common/actionTypes';
+import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
 const requestEntityData = () => ({
   type: ENTITY_DATA_REQUEST,

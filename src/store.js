@@ -1,8 +1,5 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import {
-  createResponsiveStoreEnhancer,
-  calculateResponsiveState,
-} from 'redux-responsive';
+import { createResponsiveStoreEnhancer, calculateResponsiveState } from 'redux-responsive';
 import debounce from 'lodash/debounce';
 
 import rootReducer from './reducers/';
