@@ -5,7 +5,7 @@ import { AppContainer } from 'react-hot-loader';
 
 // tell webpack to use our scss
 import '../scss/main.scss';
-import App from './components/App';
+import ReduxEntry from './ReduxEntry';
 
 const renderApp = Component => {
   render(
@@ -16,8 +16,8 @@ const renderApp = Component => {
   );
 };
 
-renderApp(App);
+renderApp(ReduxEntry);
 
 if (module.hot) {
-  module.hot.accept('./components/App', () => renderApp(App));
+  module.hot.accept('./ReduxEntry', () => renderApp(ReduxEntry));
 }
