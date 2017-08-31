@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 
+// used by both SparkLines and Detail Line Charts
 export const margin = { top: 8, right: 10, bottom: 2, left: 10 };
 export const width = 240 - margin.left - margin.right;
 export const height = 69 - margin.top - margin.bottom;
