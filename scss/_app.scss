@@ -5,15 +5,16 @@ body {
 html,
 body,
 #root,
-.app {
+.App {
   height: 100%;
   width: 100%;
   overflow: hidden;
   background-color: #fff;
 }
 
-.app {
+.App {
   position: relative;
+  padding: 20px;
 }
 
 // UI elements
@@ -27,9 +28,17 @@ body,
 }
 
 // positioning for UI elements
-.bottom { bottom: 0; }
-.left { left: 0; }
-.right { right: 0; }
+.bottom {
+  bottom: 0;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
 
 // remove margins on h1 - h6
 h1,

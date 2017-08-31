@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import App from '../components/App';
 
-const mapStateToProps = state => ({
-  width: state.browser.width,
-  height: state.browser.height,
+const mapStateToProps = ({ browser, data }) => ({
+  width: browser.width,
+  height: browser.height,
+  entityData: data.response,
 });
 
 export default connect(mapStateToProps, {
