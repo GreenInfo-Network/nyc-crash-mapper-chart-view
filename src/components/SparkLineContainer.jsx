@@ -94,7 +94,16 @@ class SparkLineContainer extends Component {
     return (
       <div className="SparkLineContainer">
         <input type="search" />
-        <div className="SparkLineList">{this.renderSparkLines()}</div>
+        <div
+          style={{
+            width: width + 30,
+            height: '100%',
+            maxHeight: '600px',
+          }}
+          className="SparkLineList scroll"
+        >
+          {this.renderSparkLines()}
+        </div>
       </div>
     );
   }
