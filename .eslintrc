@@ -40,6 +40,7 @@
     "prettier/prettier": ["error", {
       "singleQuote": true,
       "trailingComma": "es5",
+      "printWidth": 100,
     }],
     "no-param-reassign": 0,
     "no-underscore-dangle": 0,
