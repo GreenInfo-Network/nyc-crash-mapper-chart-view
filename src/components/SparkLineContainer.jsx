@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SparkLineList from './SparkLineList';
+import SparkLineListConnected from '../containers/SparkLineListConnected';
 
 /** Class that houses the SparkLineList and provides a UI & Controller for filtering & sorting it
 */
@@ -62,7 +62,10 @@ class SparkLineContainer extends Component {
           }}
           className="SparkLineList scroll"
         >
-          <SparkLineList filterTerm={inputValue} {...{ entities, sortName, sortRank, sortAsc }} />
+          <SparkLineListConnected
+            filterTerm={inputValue}
+            {...{ entities, sortName, sortRank, sortAsc }}
+          />
         </div>
       </div>
     );

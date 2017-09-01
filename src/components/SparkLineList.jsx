@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import classNames from 'classnames';
 
 import { width, height, xScale, yScale, area, line } from '../common/d3Utils';
 
@@ -21,15 +22,27 @@ function sort(arr, prop, asc) {
 */
 class SparkLineList extends Component {
   static propTypes = {
-    entities: PropTypes.arrayOf(PropTypes.object),
+    primary: PropTypes.shape({
+      key: PropTypes.string,
+      values: PropTypes.array,
+    }).isRequired,
+    secondary: PropTypes.shape({
+      key: PropTypes.string,
+      values: PropTypes.array,
+    }).isRequired,
+    nested: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
     sortName: PropTypes.bool.isRequired,
     sortRank: PropTypes.bool.isRequired,
     sortAsc: PropTypes.bool.isRequired,
+    selectPrimaryEntity: PropTypes.func.isRequired,
+    deselectPrimaryEntity: PropTypes.func.isRequired,
+    selectSecondaryEntity: PropTypes.func.isRequired,
+    deselectSecondaryEntity: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    entities: [],
+    nested: [],
     filterTerm: '',
   };
 
@@ -43,17 +56,17 @@ class SparkLineList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.entities.length !== this.props.entities.length) {
-      // if the entities array updated, compute max & sum, reset the scales
-      this.setScales(nextProps.entities);
+    if (nextProps.nested.length !== this.props.nested.length) {
+      // if the nested array updated, compute max & sum, reset the scales
+      this.setScales(nextProps.nested);
     }
   }
 
-  setScales(entities) {
+  setScales(nested) {
     // compute max number of category, necessary for yScale.domain()
     // compute sum of category, so that councils may be sorted from max to min
     // category currently hardcoded to pedestrian_injured, this should be variable
-    const newEntities = entities.map(entity => {
+    const newEntities = nested.map(entity => {
       const x = { ...entity };
       x.maxPedInj = d3.max(x.values, d => d.pedestrian_injured);
       x.totalPedInj = d3.sum(x.values, d => d.pedestrian_injured);
@@ -139,7 +152,21 @@ class SparkLineList extends Component {
     }
   }
 
+  handleSparkLineClick(key, values) {
+    const { secondary, primary, selectPrimaryEntity, selectSecondaryEntity } = this.props;
+
+    if (!primary.key && key !== primary.key) {
+      selectPrimaryEntity(key, values);
+      return;
+    }
+
+    if (primary.key && !secondary.key && key !== secondary.key) {
+      selectSecondaryEntity(key, values);
+    }
+  }
+
   renderSparkLines() {
+    const { primary, secondary } = this.props;
     const { entitiesSorted } = this.state;
 
     if (!entitiesSorted.length) return null;
@@ -148,18 +175,23 @@ class SparkLineList extends Component {
       const { key, values, rank } = entity;
       const label = +key < 10 ? `0${key}` : key;
 
+      // class names for list items
+      const listItemClass = classNames({
+        'sparkline-list-item': true,
+        'primary-active': key === primary.key,
+        'secondary-active': key === secondary.key,
+      });
+
       // store some data- properties so we can filter on them later
       return (
+        // eslint-disable-next-line
         <li
           key={key}
           data-rank-sort={rank}
           data-name-sort={+key}
           data-search={`city council ${label}`}
-          className="sparkline-list-item"
-          style={{
-            display: 'inline-block',
-            margin: '5px',
-          }}
+          className={listItemClass}
+          onClick={() => this.handleSparkLineClick(key, values)}
         >
           <h6 style={{ padding: 0 }}>{`City Council ${label} – Rank: ${rank + 1}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
@@ -182,18 +214,7 @@ class SparkLineList extends Component {
     listItems = this.filterListItems(listItems);
     this.sortListItems(listItems);
 
-    return (
-      <ul
-        style={{
-          width: width + 30,
-          height: '100%',
-          maxHeight: '600px',
-        }}
-        className="SparkLineList scroll"
-      >
-        {listItems}
-      </ul>
-    );
+    return <ul className="SparkLineList scroll">{listItems}</ul>;
   }
 }
 
