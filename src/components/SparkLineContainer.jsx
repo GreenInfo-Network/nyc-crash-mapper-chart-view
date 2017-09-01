@@ -52,21 +52,15 @@ class SparkLineContainer extends Component {
 
     return (
       <div className="SparkLineContainer">
-        <input value={inputValue} onChange={this.handleChange} type="text" />
-        <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
-        <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
-        <div
-          style={{
-            height: '100%',
-            maxHeight: '600px',
-          }}
-          className="SparkLineList scroll"
-        >
-          <SparkLineListConnected
-            filterTerm={inputValue}
-            {...{ entities, sortName, sortRank, sortAsc }}
-          />
+        <div className="sparkline-controls">
+          <input value={inputValue} onChange={this.handleChange} type="text" />
+          <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
+          <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>
+        <SparkLineListConnected
+          filterTerm={inputValue}
+          {...{ entities, sortName, sortRank, sortAsc }}
+        />
       </div>
     );
   }
