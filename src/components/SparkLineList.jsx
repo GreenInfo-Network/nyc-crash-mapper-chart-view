@@ -21,7 +21,6 @@ function sort(arr, prop, asc) {
 */
 class SparkLineList extends Component {
   static propTypes = {
-    // eslint-disable-next-line
     entities: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
     sortName: PropTypes.bool.isRequired,
@@ -30,6 +29,7 @@ class SparkLineList extends Component {
   };
 
   static defaultProps = {
+    entities: [],
     filterTerm: '',
   };
 
@@ -49,10 +49,10 @@ class SparkLineList extends Component {
     }
   }
 
-  // eslint-disable-next-line
   setScales(entities) {
-    // compute max number of ped injuries, necessary for yScale.domain()
-    // compute sum of ped injuries, so that councils may be sorted from max to min
+    // compute max number of category, necessary for yScale.domain()
+    // compute sum of category, so that councils may be sorted from max to min
+    // category currently hardcoded to pedestrian_injured, this should be variable
     const newEntities = entities.map(entity => {
       const x = { ...entity };
       x.maxPedInj = d3.max(x.values, d => d.pedestrian_injured);

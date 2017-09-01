@@ -18,7 +18,8 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         isFetching: false,
-        response: action.json,
+        response: action.response,
+        nested: action.nested,
       };
 
     case ENTITY_DATA_ERROR:
