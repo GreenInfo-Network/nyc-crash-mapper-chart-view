@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: $roboto;
 }
@@ -12,9 +16,49 @@ body,
   background-color: #fff;
 }
 
+// main App / container
+// NOTE: Makes use of CSS Grid
 .App {
   position: relative;
-  padding: 20px;
+  display: grid;
+  grid-template-columns: 300px calc(50% - 150px) calc(50% - 150px);
+  // 10 + 33 + 15 + 42
+  grid-template-rows: 65px 10% 33% 15% calc(42% - 65px);
+  grid-template-areas:
+    'header header header'
+    'sparklines entityselector entityselector'
+    'sparklines detailchart detailchart'
+    'sparklines timeline timeline'
+    'sparklines barchart barchart';
+
+  .grid-area {
+    padding: 10px;
+    border: 1px solid $light-grey;
+  }
+
+  .grid-area.header {
+    grid-area: header;
+  }
+
+  .grid-area.sparklines {
+    grid-area: sparklines;
+  }
+
+  .grid-area.entity-selector {
+    grid-area: entityselector;
+  }
+
+  .grid-area.detailchart {
+    grid-area: detailchart;
+  }
+
+  .grid-area.timeline {
+    grid-area: timeline;
+  }
+
+  .grid-area.barchart {
+    grid-area: barchart;
+  }
 }
 
 // UI elements
@@ -79,84 +123,4 @@ hr {
   border-top-color: $hr-border;
   margin: 0;
   padding: 0;
-}
-
-// Skeleton Grid Overrides
-.container {
-  @media screen and (#{$bp-larger-than-phablet}) {
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-.row {
-  &.stats-header {
-    height: $stats-header-height;
-    overflow-y: hidden;
-  }
-
-  &.stats-content {
-    height: $stats-content-height;
-  }
-}
-
-.column,
-.columns {
-  height: 100%;
-  // border: 1px solid $medium-grey;
-
-  @media screen and (#{$bp-larger-than-phablet}) {
-    margin-left: 0;
-  }
-}
-
-.two.columns {
-  @media screen and (#{$bp-larger-than-phablet}) {
-    width: 16.666666666666667%;
-  }
-
-  @media screen and (#{$bp-narrow-width}) {
-    display: none;
-  }
-}
-
-.three.columns {
-  @media screen and (#{$bp-larger-than-phablet}) {
-    width: 25%;
-  }
-
-  @media screen and (#{$bp-narrow-width}) {
-    display: none;
-  }
-}
-
-.four.columns {
-  @media screen and (#{$bp-larger-than-phablet}) {
-    width: 33.333333333333%;
-  }
-
-  @media screen and (#{$bp-narrow-width}) {
-    display: none;
-  }
-}
-
-.six.columns {
-  @media screen and (#{$bp-larger-than-phablet}) {
-    width: 50%;
-  }
-
-  @media screen and (#{$bp-narrow-width}) {
-    display: none;
-  }
-}
-
-.seven.columns {
-  @media screen and (#{$bp-larger-than-phablet}) {
-    width: 58.3333333333%;
-  }
-
-  @media screen and (#{$bp-narrow-width}) {
-    width: 100%;
-  }
 }
