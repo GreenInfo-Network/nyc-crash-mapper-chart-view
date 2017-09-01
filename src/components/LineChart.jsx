@@ -9,17 +9,25 @@ const margin = { top: 20, right: 20, bottom: 20, left: 20 };
 const width = 600 - margin.left - margin.right;
 const height = 275 - margin.top - margin.bottom;
 
+/** Class that renders the line chart for selected geographic entities
+*/
 class DetailChart extends Component {
   static propTypes = {
-    entityPrimary: PropTypes.arrayOf(PropTypes.object),
-    entitySecondary: PropTypes.arrayOf(PropTypes.object),
-    data: PropTypes.arrayOf(PropTypes.object),
+    primary: PropTypes.shape({
+      key: PropTypes.string,
+      values: PropTypes.array,
+    }).isRequired,
+    secondary: PropTypes.shape({
+      key: PropTypes.string,
+      values: PropTypes.array,
+    }).isRequired,
+    nested: PropTypes.arrayOf(PropTypes.object),
   };
 
   static defaultProps = {
-    entityPrimary: [],
-    entitySecondary: [],
-    data: [],
+    primary: {},
+    secondary: {},
+    nested: [],
   };
 
   constructor() {
@@ -29,26 +37,26 @@ class DetailChart extends Component {
     this.xAxis = d3.axisBottom();
   }
 
-  componentDidMount() {
-    this.initChart();
-  }
-
   componentWillReceiveProps(nextProps) {
-    const { entityPrimary, entitySecondary } = nextProps;
+    const { primary, secondary, nested } = nextProps;
 
-    if (!isEqual(entityPrimary, this.props.entityPrimary)) {
-      this.updateChart(entityPrimary);
+    if (nested.length !== this.props.nested.length) {
+      this.initChart();
     }
 
-    if (!isEqual(entitySecondary, this.props.entitySecondary)) {
-      this.updateChart(entitySecondary);
+    if (!isEqual(primary, this.props.primary)) {
+      this.updateChart(primary);
+    }
+
+    if (!isEqual(secondary, this.props.secondary)) {
+      this.updateChart(secondary);
     }
   }
 
   updateChart() {
     // add or remove some data to / from the chart
-    const { byKey } = this.props.data; // byKey is nested data
-    const entities = Object.values(byKey);
+    const { primary, secondary } = this.props;
+    const nested = { ...primary, ...secondary };
     const svg = d3.select(this.svg);
     const yAxis = this.yAxis;
     const xAxis = this.xAxis;
@@ -56,12 +64,12 @@ class DetailChart extends Component {
 
     // update xScale domain
     xScale.domain([
-      d3.min(entities, d => d.values[0].year_month),
-      d3.max(entities, d => d.values[d.values.length - 1].year_month),
+      d3.min(nested, d => d.values[0].year_month),
+      d3.max(nested, d => d.values[d.values.length - 1].year_month),
     ]);
 
     // update yScale domain
-    yScale.domain([0, d3.max(entities, d => d.maxPedInj)]);
+    yScale.domain([0, d3.max(nested, d => d.maxPedInj)]);
 
     // update scales in line drawing function
     line.x(d => xScale(d.year_month)).y(d => yScale(d.pedestrian_injured));
@@ -73,7 +81,7 @@ class DetailChart extends Component {
     t.select('g.x.axis').call(xAxis);
 
     // update the svg main group element's data binding
-    svg.datum(entities, d => d.key);
+    svg.datum(nested, d => d.key);
 
     // select existing lines, making sure to get their data
     const lines = svg.selectAll('.chart-main').data(d => d);
@@ -101,21 +109,21 @@ class DetailChart extends Component {
   }
 
   initChart() {
-    // initially set up the chart with, scales, axises, & grid lines
-    const { data } = this.props;
+    // initially render / set up the chart with, scales, axises, & grid lines; but no lines
+    const { nested } = this.props;
     const yAxis = this.yAxis;
     const xAxis = this.xAxis;
     const svg = d3.select(this.svg);
 
-    if (!data.length) return;
+    if (!nested.length) return;
 
     // set scale domains and ranges
-    yScale.range([height, 0]).domain([0, d3.max(data, d => d.maxPedInj)]);
+    yScale.range([height, 0]).domain([0, d3.max(nested, d => d.maxPedInj)]);
     xScale
       .range([0, width])
       .domain([
-        d3.min(data, c => c.values[0].year_month),
-        d3.max(data, c => c.values[c.values.length - 1].year_month),
+        d3.min(nested, c => c.values[0].year_month),
+        d3.max(nested, c => c.values[c.values.length - 1].year_month),
       ]);
 
     // set scales for axises
