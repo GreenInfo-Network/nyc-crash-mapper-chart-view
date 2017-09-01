@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createResponsiveStateReducer } from 'redux-responsive';
 
-import entities from './reducer';
+import entities from './entitiesReducer';
 import data from './asyncReducer';
 
 // breakpoints to match Skeleton CSS's
