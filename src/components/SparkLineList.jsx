@@ -49,51 +49,6 @@ class SparkLineList extends Component {
   constructor() {
     super();
     this.renderSparkLines = this.renderSparkLines.bind(this);
-    // to store a sorted copy of the data (rather than mutating the original data)
-    this.state = {
-      entitiesSorted: [],
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.nested.length !== this.props.nested.length) {
-      // if the nested array updated, compute max & sum, reset the scales
-      this.setScales(nextProps.nested);
-    }
-  }
-
-  setScales(nested) {
-    // compute max number of category, necessary for yScale.domain()
-    // compute sum of category, so that councils may be sorted from max to min
-    // category currently hardcoded to pedestrian_injured, this should be variable
-    const newEntities = nested.map(entity => {
-      const x = { ...entity };
-      x.maxPedInj = d3.max(x.values, d => d.pedestrian_injured);
-      x.totalPedInj = d3.sum(x.values, d => d.pedestrian_injured);
-      return x;
-    });
-
-    // sort descending by total ped injuries (rank)
-    sort(newEntities, 'totalPedInj', true);
-
-    // store the ranking as a data value
-    newEntities.forEach((d, i) => {
-      d.rank = i;
-    });
-
-    // compute min and max date across councils, assumes data is sorted by date
-    xScale.domain([
-      d3.min(newEntities, c => c.values[0].year_month),
-      d3.max(newEntities, c => c.values[c.values.length - 1].year_month),
-    ]);
-
-    // use same yScale domain
-    yScale.domain([0, d3.max(newEntities, d => d.maxPedInj)]);
-
-    // store the sorted data in state, which will cause a re-render
-    this.setState({
-      entitiesSorted: newEntities,
-    });
   }
 
   filterListItems(listItems) {

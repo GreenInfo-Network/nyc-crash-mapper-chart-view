@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { nest } from 'd3';
+import { nest, sum, max } from 'd3';
 
 import { parseDate } from '../common/d3Utils';
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
@@ -18,6 +18,19 @@ const handleEntityDataError = error => ({
   type: ENTITY_DATA_ERROR,
   error,
 });
+
+// this is the start of an abstracted Array.prototype.sort function, might be more trouble than it's
+// worth though...
+function sort(arr, prop, asc) {
+  const sortVal = asc ? -1 : 1;
+  const sortVal2 = asc ? 1 : -1;
+
+  arr.sort((a, b) => {
+    if (a[prop] > b[prop]) return sortVal;
+    if (a[prop] < b[prop]) return sortVal2;
+    return 0;
+  });
+}
 
 export default function fetchEntityData() {
   const url = '/data/inj_fat_city_councils_all_years.json';
@@ -42,6 +55,22 @@ export default function fetchEntityData() {
         const nested = nest()
           .key(d => d.council) // need to know identifier field here, can't hard code
           .entries(response);
+
+        // compute max number of category, necessary for yScale.domain()
+        // compute sum of category, so that councils may be sorted from max to min
+        // category currently hardcoded to pedestrian_injured, this should be variable
+        nested.forEach(entity => {
+          entity.maxPedInj = max(entity.values, d => d.pedestrian_injured);
+          entity.totalPedInj = sum(entity.values, d => d.pedestrian_injured);
+        });
+
+        // sort descending by total ped injuries (rank)
+        sort(nested, 'totalPedInj', true);
+
+        // store the ranking as a data value
+        nested.forEach((d, i) => {
+          d.rank = i;
+        });
 
         // update redux state with response & nested data
         dispatch(receiveEntityData(response, nested));

@@ -7,20 +7,18 @@ import {
 
 // action creators for selecting and deselecting a primary and secondary geographic entity
 // TO DO: abstract these into just two action creators?
-export const selectPrimaryEntity = (key, values) => ({
+export const selectPrimaryEntity = entity => ({
   type: SELECT_PRIMARY_ENTITY,
-  key,
-  values,
+  entity,
 });
 
 export const deselectPrimaryEntity = () => ({
   type: DESELECT_PRIMARY_ENTITY,
 });
 
-export const selectSecondaryEntity = (key, values) => ({
+export const selectSecondaryEntity = entity => ({
   type: SELECT_SECONDARY_ENTITY,
-  key,
-  values,
+  entity,
 });
 
 export const deselectSecondaryEntity = () => ({
