@@ -22,8 +22,7 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         primary: {
-          key: action.key,
-          values: action.values,
+          ...action.entity,
         },
       };
 
@@ -40,8 +39,7 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         secondary: {
-          key: action.key,
-          values: action.values,
+          ...action.entity,
         },
       };
 
