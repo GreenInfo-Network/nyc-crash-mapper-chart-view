@@ -1,0 +1,10 @@
+.LineChart {
+  display: inline-block;
+  width: 500px;
+  height: auto;
+
+  .line {
+    fill: none;
+    stroke-width: 1.5px;
+  }
+}
