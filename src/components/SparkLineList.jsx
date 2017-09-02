@@ -3,20 +3,26 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import classNames from 'classnames';
 
-import { width, height, xScale, yScale, area, line } from '../common/d3Utils';
+// TO DO: move these into the SparkLineList class?
+const margin = { top: 8, right: 10, bottom: 2, left: 10 };
+const width = 240 - margin.left - margin.right;
+const height = 69 - margin.top - margin.bottom;
 
-// this is the start of an abstracted Array.prototype.sort function, might be more trouble than it's
-// worth though...
-function sort(arr, prop, asc) {
-  const sortVal = asc ? -1 : 1;
-  const sortVal2 = asc ? 1 : -1;
+const xScale = d3.scaleTime().range([0, width]);
+const yScale = d3.scaleLinear().range([height, 0]);
 
-  arr.sort((a, b) => {
-    if (a[prop] > b[prop]) return sortVal;
-    if (a[prop] < b[prop]) return sortVal2;
-    return 0;
-  });
-}
+const area = d3
+  .area()
+  .x(d => xScale(d.year_month))
+  .y0(height)
+  .y1(d => yScale(d.pedestrian_injured))
+  .curve(d3.curveMonotoneX);
+
+const line = d3
+  .line()
+  .x(d => xScale(d.year_month))
+  .y(d => yScale(d.pedestrian_injured))
+  .curve(d3.curveMonotoneX);
 
 /** Class that renders a list of SVG sparkLines
 */
@@ -107,26 +113,35 @@ class SparkLineList extends Component {
     }
   }
 
-  handleSparkLineClick(key, values) {
+  handleSparkLineClick(entity) {
+    const { key } = entity;
     const { secondary, primary, selectPrimaryEntity, selectSecondaryEntity } = this.props;
 
     if (!primary.key && key !== primary.key) {
-      selectPrimaryEntity(key, values);
+      selectPrimaryEntity(entity);
       return;
     }
 
     if (primary.key && !secondary.key && key !== secondary.key) {
-      selectSecondaryEntity(key, values);
+      selectSecondaryEntity(entity);
     }
   }
 
   renderSparkLines() {
-    const { primary, secondary } = this.props;
-    const { entitiesSorted } = this.state;
+    const { primary, secondary, nested } = this.props;
 
-    if (!entitiesSorted.length) return null;
+    if (!nested.length) return null;
 
-    return entitiesSorted.map(entity => {
+    // set x-scale domain, assumes data is sorted by date
+    xScale.domain([
+      d3.min(nested, c => c.values[0].year_month),
+      d3.max(nested, c => c.values[c.values.length - 1].year_month),
+    ]);
+
+    // set y-scale domain
+    yScale.domain([0, d3.max(nested, d => d.maxPedInj)]);
+
+    return nested.map(entity => {
       const { key, values, rank } = entity;
       const label = +key < 10 ? `0${key}` : key;
 
@@ -137,8 +152,8 @@ class SparkLineList extends Component {
         'secondary-active': key === secondary.key,
       });
 
-      // store some data- properties so we can filter on them later
       return (
+        // store some data-xxx properties so we can filter on them later
         // eslint-disable-next-line
         <li
           key={key}
@@ -146,7 +161,7 @@ class SparkLineList extends Component {
           data-name-sort={+key}
           data-search={`city council ${label}`}
           className={listItemClass}
-          onClick={() => this.handleSparkLineClick(key, values)}
+          onClick={() => this.handleSparkLineClick({ ...entity })}
         >
           <h6 style={{ padding: 0 }}>{`City Council ${label} – Rank: ${rank + 1}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>

@@ -3,15 +3,22 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import isEqual from 'lodash/isEqual';
 
-import { xScale, yScale, colorScale, line } from '../common/d3Utils';
-
+// TO DO: move these to LineChart class?
 const margin = { top: 20, right: 20, bottom: 20, left: 20 };
-const width = 600 - margin.left - margin.right;
+const width = 500 - margin.left - margin.right;
 const height = 275 - margin.top - margin.bottom;
+const xScale = d3.scaleTime().range([0, width]);
+const colorScale = d3.scaleOrdinal(d3.schemeCategory20);
+const yScale = d3.scaleLinear().range([height, 0]);
+const lineGenerator = d3
+  .line()
+  .x(d => xScale(d.year_month))
+  .y(d => yScale(d.pedestrian_injured))
+  .curve(d3.curveMonotoneX);
 
 /** Class that renders the line chart for selected geographic entities
 */
-class DetailChart extends Component {
+class LineChart extends Component {
   static propTypes = {
     primary: PropTypes.shape({
       key: PropTypes.string,
@@ -37,42 +44,44 @@ class DetailChart extends Component {
     this.xAxis = d3.axisBottom();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { primary, secondary, nested } = nextProps;
+  componentDidUpdate(prevProps) {
+    const { primary, secondary, nested } = this.props;
 
-    if (nested.length !== this.props.nested.length) {
+    if (nested.length && nested.length !== prevProps.nested.length) {
       this.initChart();
     }
 
-    if (!isEqual(primary, this.props.primary)) {
-      this.updateChart(primary);
+    if (!isEqual(primary, prevProps.primary)) {
+      this.updateChart([{ ...primary }]);
     }
 
-    if (!isEqual(secondary, this.props.secondary)) {
-      this.updateChart(secondary);
+    if (!isEqual(secondary, prevProps.secondary)) {
+      this.updateChart([{ ...primary }, { ...secondary }]);
     }
   }
 
-  updateChart() {
+  updateChart(entities) {
     // add or remove some data to / from the chart
-    const { primary, secondary } = this.props;
-    const nested = { ...primary, ...secondary };
     const svg = d3.select(this.svg);
+    const g = svg.select('g.g-parent');
     const yAxis = this.yAxis;
     const xAxis = this.xAxis;
     const t = svg.transition().duration(750); // transition for updates
 
+    // eslint-disable-next-line
+    // debugger;
+
     // update xScale domain
     xScale.domain([
-      d3.min(nested, d => d.values[0].year_month),
-      d3.max(nested, d => d.values[d.values.length - 1].year_month),
+      d3.min(entities, d => (d.values.length ? d.values[0].year_month : 0)),
+      d3.max(entities, d => (d.values.length ? d.values[d.values.length - 1].year_month : null)),
     ]);
 
     // update yScale domain
-    yScale.domain([0, d3.max(nested, d => d.maxPedInj)]);
+    yScale.domain([0, d3.max(entities, d => (d.maxPedInj ? d.maxPedInj : null))]);
 
     // update scales in line drawing function
-    line.x(d => xScale(d.year_month)).y(d => yScale(d.pedestrian_injured));
+    lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.pedestrian_injured));
 
     // transition & update the yAxis
     t.select('g.y.axis').call(yAxis);
@@ -81,30 +90,30 @@ class DetailChart extends Component {
     t.select('g.x.axis').call(xAxis);
 
     // update the svg main group element's data binding
-    svg.datum(nested, d => d.key);
+    g.datum(entities, d => d.key);
 
     // select existing lines, making sure to get their data
-    const lines = svg.selectAll('.chart-main').data(d => d);
+    const lines = g.selectAll('.line').data(d => d);
 
     // gently transition out lines that should no longer be here
     lines
       .exit()
       .transition(t)
-      .style('stroke', 'rgba(255,255,255,0)')
+      .style('stroke', 'rgba(255, 255, 255, 0)')
       .remove();
 
     // update existing lines
     lines
       .transition(t)
-      .attr('d', d => line(d.values))
+      .attr('d', d => lineGenerator(d.values))
       .attr('stroke', d => colorScale(d.key));
 
     // create new lines
     lines
       .enter()
       .append('path')
-      .attr('class', 'line chart-main')
-      .attr('d', d => line(d.values))
+      .attr('class', 'line')
+      .attr('d', d => lineGenerator(d.values))
       .attr('stroke', d => colorScale(d.key));
   }
 
@@ -149,7 +158,7 @@ class DetailChart extends Component {
 
   render() {
     return (
-      <div className="DetailChart">
+      <div className="LineChart">
         <svg
           ref={_ => {
             this.svg = _;
@@ -162,4 +171,4 @@ class DetailChart extends Component {
   }
 }
 
-export default DetailChart;
+export default LineChart;

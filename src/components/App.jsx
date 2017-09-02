@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import SparkLineContainer from './SparkLineContainer';
+import LineChartsContainerConnected from '../containers/LineChartsContainerConnected';
 
 class App extends Component {
   static propTypes = {
@@ -31,7 +32,9 @@ class App extends Component {
           <SparkLineContainer entities={entitiesNested} />
         </div>
         <div className="grid-area entity-selector" />
-        <div className="grid-area detailchart" />
+        <div className="grid-area detailchart">
+          <LineChartsContainerConnected />
+        </div>
         <div className="grid-area timeline" />
         <div className="grid-area barchart" />
       </div>
