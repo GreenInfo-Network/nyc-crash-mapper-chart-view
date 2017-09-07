@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { nest, sum, max } from 'd3';
 
+// import baseURL from '../common/config';
 import { parseDate } from '../common/d3Utils';
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
@@ -33,7 +34,7 @@ function sort(arr, prop, asc) {
 }
 
 export default function fetchEntityData() {
-  const url = '/data/inj_fat_city_councils_all_years.json';
+  const url = 'data/inj_fat_city_councils_all_years.json';
 
   return dispatch => {
     dispatch(requestEntityData());
