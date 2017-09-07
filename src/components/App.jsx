@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as d3 from 'd3';
 
 import SparkLineContainer from './SparkLineContainer';
 import LineChartsContainerConnected from '../containers/LineChartsContainerConnected';
 import EntitySelections from '../containers/EntitySelections';
+import TimeLine from './TimeLine';
+
+// for debugging & messing around
+window.d3 = d3;
 
 class App extends Component {
   static propTypes = {
@@ -42,7 +47,9 @@ class App extends Component {
         <div className="grid-area detailchart">
           <LineChartsContainerConnected />
         </div>
-        <div className="grid-area timeline" />
+        <div className="grid-area timeline">
+          <TimeLine />
+        </div>
         <div className="grid-area barchart" />
       </div>
     );
