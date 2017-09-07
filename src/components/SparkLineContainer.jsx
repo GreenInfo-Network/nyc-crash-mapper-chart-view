@@ -9,6 +9,11 @@ class SparkLineContainer extends Component {
   static propTypes = {
     // eslint-disable-next-line
     entities: PropTypes.arrayOf(PropTypes.object),
+    entityType: PropTypes.string,
+  };
+
+  static defaultProps = {
+    entityType: '',
   };
 
   constructor() {
@@ -47,13 +52,18 @@ class SparkLineContainer extends Component {
   }
 
   render() {
-    const { entities } = this.props;
+    const { entities, entityType } = this.props;
     const { inputValue, sortName, sortRank, sortAsc } = this.state;
 
     return (
       <div className="SparkLineContainer">
         <div className="sparkline-controls">
-          <input value={inputValue} onChange={this.handleChange} type="text" />
+          <input
+            placeholder={`Search a ${entityType}`}
+            value={inputValue}
+            onChange={this.handleChange}
+            type="text"
+          />
           <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
           <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>

@@ -11,11 +11,13 @@ class App extends Component {
     entitiesNested: PropTypes.arrayOf(PropTypes.object),
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
+    entityType: PropTypes.string,
   };
 
   static defaultProps = {
     entityData: [],
     entitiesNested: [],
+    entityType: '',
   };
 
   componentDidMount() {
@@ -24,7 +26,7 @@ class App extends Component {
   }
 
   render() {
-    const { entitiesNested } = this.props;
+    const { entitiesNested, entityType } = this.props;
 
     return (
       <div className="App grid-container">
@@ -32,7 +34,7 @@ class App extends Component {
           <h3 style={{ textTransform: 'uppercase' }}>nyc crash mapper</h3>
         </div>
         <div className="grid-area sparklines">
-          <SparkLineContainer entities={entitiesNested} />
+          <SparkLineContainer entities={entitiesNested} entityType={entityType} />
         </div>
         <div className="grid-area entity-selectors">
           <EntitySelections />
