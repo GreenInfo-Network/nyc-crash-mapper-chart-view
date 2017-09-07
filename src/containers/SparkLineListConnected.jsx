@@ -10,6 +10,7 @@ import {
 import SparkLineList from '../components/SparkLineList';
 
 const mapStateToProps = ({ entities, data }) => ({
+  entityType: entities.entityType,
   nested: data.nested,
   primary: entities.primary,
   secondary: entities.secondary,

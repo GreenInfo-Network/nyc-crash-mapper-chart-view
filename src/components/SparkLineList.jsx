@@ -28,6 +28,7 @@ const line = d3
 */
 class SparkLineList extends Component {
   static propTypes = {
+    entityType: PropTypes.string,
     primary: PropTypes.shape({
       key: PropTypes.string,
       values: PropTypes.array,
@@ -48,6 +49,7 @@ class SparkLineList extends Component {
   };
 
   static defaultProps = {
+    entityType: '',
     nested: [],
     filterTerm: '',
   };
@@ -128,7 +130,7 @@ class SparkLineList extends Component {
   }
 
   renderSparkLines() {
-    const { primary, secondary, nested } = this.props;
+    const { entityType, primary, secondary, nested } = this.props;
 
     if (!nested.length) return null;
 
@@ -163,7 +165,7 @@ class SparkLineList extends Component {
           className={listItemClass}
           onClick={() => this.handleSparkLineClick({ ...entity })}
         >
-          <h6 style={{ padding: 0 }}>{`City Council ${label} – Rank: ${rank + 1}`}</h6>
+          <h6 style={{ padding: 0 }}>{`${entityType} ${label} – Rank: ${rank + 1}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
             <path fill="#e7e7e7" className="area spark" d={area(values)} />
             <path
