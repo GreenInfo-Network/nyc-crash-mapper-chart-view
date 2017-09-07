@@ -8,10 +8,12 @@ import {
 
 const defaultState = {
   primary: {
+    color: '#393B79',
     key: '',
     values: [],
   },
   secondary: {
+    color: '#843C39',
     key: '',
     values: [],
   },
@@ -30,6 +32,7 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         primary: {
+          color: state.primary.color,
           ...action.entity,
         },
       };
@@ -38,6 +41,7 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         primary: {
+          color: state.primary.color,
           key: '',
           values: [],
         },
@@ -47,6 +51,7 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         secondary: {
+          color: state.secondary.color,
           ...action.entity,
         },
       };
@@ -55,6 +60,7 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         secondary: {
+          color: state.secondary.color,
           key: action.key,
           values: [],
         },

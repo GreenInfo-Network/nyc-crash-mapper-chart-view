@@ -7,7 +7,6 @@ const margin = { top: 20, right: 20, bottom: 20, left: 20 };
 const width = 500 - margin.left - margin.right;
 const height = 275 - margin.top - margin.bottom;
 const xScale = d3.scaleTime().range([0, width]);
-const colorScale = d3.scaleOrdinal(d3.schemeCategory20);
 const yScale = d3.scaleLinear().range([height, 0]);
 const lineGenerator = d3
   .line()
@@ -98,7 +97,7 @@ class LineChart extends Component {
     lines
       .transition(t)
       .attr('d', d => lineGenerator(d.values))
-      .attr('stroke', d => colorScale(d.key));
+      .attr('stroke', d => d.color);
 
     // create new lines
     lines
@@ -106,7 +105,7 @@ class LineChart extends Component {
       .append('path')
       .attr('class', 'line')
       .attr('d', d => lineGenerator(d.values))
-      .attr('stroke', d => colorScale(d.key));
+      .attr('stroke', d => d.color);
   }
 
   initChart() {

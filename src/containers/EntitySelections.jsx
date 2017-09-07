@@ -43,12 +43,14 @@ class EntitySelections extends Component {
     return (
       <div className="EntitySelections">
         <EntitySelector
+          color={primary.color}
           entityType={entityType}
           entity={primary.key}
           deselectEntity={boundActionCreators.deselectPrimaryEntity}
         />
         <p>Compared to</p>
         <EntitySelector
+          color={secondary.color}
           entityType={entityType}
           entity={secondary.key}
           deselectEntity={boundActionCreators.deselectSecondaryEntity}
