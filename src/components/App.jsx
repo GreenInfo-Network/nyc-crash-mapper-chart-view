@@ -33,7 +33,7 @@ class App extends Component {
           <SparkLineContainer entities={entitiesNested} />
         </div>
         <div className="grid-area entity-selectors">
-          <EntitySelectionsConnected />
+          <EntitySelections />
         </div>
         <div className="grid-area detailchart">
           <LineChartsContainerConnected />
