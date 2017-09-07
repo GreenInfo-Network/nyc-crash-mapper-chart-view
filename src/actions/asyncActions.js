@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { nest, sum, max } from 'd3';
 
+<<<<<<< HEAD
 // import baseURL from '../common/config';
+=======
+import baseURL from '../common/config';
+>>>>>>> fix data url for gh-pages #1
 import { parseDate } from '../common/d3Utils';
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
