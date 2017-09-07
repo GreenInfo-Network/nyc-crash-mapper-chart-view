@@ -133,6 +133,6 @@ module.exports = {
       template: 'src/index.html',
     }),
     // tell Webpack to copy static assets (images, icons, etc.) to dist/
-    new CopyWebpackPlugin([{ from: 'assets/', to: 'assets/' }]),
+    new CopyWebpackPlugin([{ from: 'assets/', to: 'assets/' }, { from: 'data/', to: 'data/' }]),
   ],
 };
