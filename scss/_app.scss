@@ -26,7 +26,7 @@ body,
   grid-template-rows: 65px 10% 33% 15% calc(42% - 65px);
   grid-template-areas:
     'header header header'
-    'sparklines entityselector entityselector'
+    'sparklines entityselectors entityselectors'
     'sparklines detailchart detailchart'
     'sparklines timeline timeline'
     'sparklines barchart barchart';
@@ -44,8 +44,8 @@ body,
     grid-area: sparklines;
   }
 
-  .grid-area.entity-selector {
-    grid-area: entityselector;
+  .grid-area.entity-selectors {
+    grid-area: entityselectors;
   }
 
   .grid-area.detailchart {

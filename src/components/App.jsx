@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import SparkLineContainer from './SparkLineContainer';
 import LineChartsContainerConnected from '../containers/LineChartsContainerConnected';
+import EntitySelectionsConnected from '../containers/EntitySelectionsConnected';
 
 class App extends Component {
   static propTypes = {
@@ -31,7 +32,9 @@ class App extends Component {
         <div className="grid-area sparklines">
           <SparkLineContainer entities={entitiesNested} />
         </div>
-        <div className="grid-area entity-selector" />
+        <div className="grid-area entity-selectors">
+          <EntitySelectionsConnected />
+        </div>
         <div className="grid-area detailchart">
           <LineChartsContainerConnected />
         </div>
