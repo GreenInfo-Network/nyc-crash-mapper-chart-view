@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import isEqual from 'lodash/isEqual';
 
 // TO DO: move these to LineChart class?
 const margin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -51,11 +50,7 @@ class LineChart extends Component {
       this.initChart();
     }
 
-    if (!isEqual(primary, prevProps.primary)) {
-      this.updateChart([{ ...primary }]);
-    }
-
-    if (!isEqual(secondary, prevProps.secondary)) {
+    if (primary.key !== prevProps.primary.key || secondary.key !== prevProps.secondary.key) {
       this.updateChart([{ ...primary }, { ...secondary }]);
     }
   }
@@ -68,12 +63,9 @@ class LineChart extends Component {
     const xAxis = this.xAxis;
     const t = svg.transition().duration(750); // transition for updates
 
-    // eslint-disable-next-line
-    // debugger;
-
     // update xScale domain
     xScale.domain([
-      d3.min(entities, d => (d.values.length ? d.values[0].year_month : 0)),
+      d3.min(entities, d => (d.values.length ? d.values[0].year_month : null)),
       d3.max(entities, d => (d.values.length ? d.values[d.values.length - 1].year_month : null)),
     ]);
 
