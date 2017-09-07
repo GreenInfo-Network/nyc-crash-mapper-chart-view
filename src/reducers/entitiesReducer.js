@@ -1,4 +1,5 @@
 import {
+  SET_ENTITY_TYPE,
   SELECT_PRIMARY_ENTITY,
   DESELECT_PRIMARY_ENTITY,
   SELECT_SECONDARY_ENTITY,
@@ -14,10 +15,17 @@ const defaultState = {
     key: '',
     values: [],
   },
+  entityType: '',
 };
 
 export default function(state = defaultState, action) {
   switch (action.type) {
+    case SET_ENTITY_TYPE:
+      return {
+        ...state,
+        entityType: action.entityType,
+      };
+
     case SELECT_PRIMARY_ENTITY:
       return {
         ...state,

@@ -1,4 +1,5 @@
 export {
+  setEntityType,
   selectPrimaryEntity,
   deselectPrimaryEntity,
   selectSecondaryEntity,
