@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 import SparkLineContainer from './SparkLineContainer';
 import LineChartsContainerConnected from '../containers/LineChartsContainerConnected';
-import EntitySelectionsConnected from '../containers/EntitySelectionsConnected';
+import EntitySelections from '../containers/EntitySelections';
 
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
     entitiesNested: PropTypes.arrayOf(PropTypes.object),
     fetchEntityData: PropTypes.func.isRequired,
+    setEntityType: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -18,6 +19,7 @@ class App extends Component {
   };
 
   componentDidMount() {
+    this.props.setEntityType('City Council District');
     this.props.fetchEntityData();
   }
 
