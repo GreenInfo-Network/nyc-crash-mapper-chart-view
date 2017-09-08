@@ -17,6 +17,8 @@ class App extends Component {
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
+    setDateRangeGroupOne: PropTypes.func.isRequired,
+    setDateRangeGroupTwo: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -31,7 +33,7 @@ class App extends Component {
   }
 
   render() {
-    const { entitiesNested, entityType } = this.props;
+    const { entitiesNested, entityType, setDateRangeGroupOne, setDateRangeGroupTwo } = this.props;
 
     return (
       <div className="App grid-container">
@@ -48,7 +50,7 @@ class App extends Component {
           <LineChartsContainerConnected />
         </div>
         <div className="grid-area timeline">
-          <TimeLine />
+          <TimeLine {...{ setDateRangeGroupOne, setDateRangeGroupTwo }} />
         </div>
         <div className="grid-area barchart" />
       </div>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
 const margin = {
@@ -19,6 +20,11 @@ const xScale = d3
  * Two brushes control the date range filtering for two different time periods
  */
 class TimeLine extends Component {
+  static propTypes = {
+    setDateRangeGroupOne: PropTypes.func.isRequired,
+    setDateRangeGroupTwo: PropTypes.func.isRequired,
+  };
+
   constructor() {
     super();
     this.svg = null; // ref to SVG element
@@ -30,7 +36,7 @@ class TimeLine extends Component {
     this.initTimeline();
   }
 
-  brushended() {
+  brushended(callback) {
     if (!d3.event.sourceEvent) return; // Only transition after input.
     if (!d3.event.selection) return; // Ignore empty selections.
     const d0 = d3.event.selection.map(xScale.invert);
@@ -46,9 +52,13 @@ class TimeLine extends Component {
       .select(this)
       .transition()
       .call(d3.event.target.move, d1.map(xScale));
+
+    callback(d1);
   }
 
   initTimeline() {
+    const { setDateRangeGroupOne } = this.props;
+    const brushended = this.brushended;
     const svg = d3.select(this.svg);
     const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -96,7 +106,10 @@ class TimeLine extends Component {
         d3
           .brushX()
           .extent([[0, 0], [width, height]])
-          .on('end', this.brushended)
+          .on('end', () => {
+            // pass in the action creator so it can be passed the new dates
+            brushended(setDateRangeGroupOne);
+          })
       );
   }
 
