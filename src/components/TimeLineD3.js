@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-
+/** Function that sets up the D3 brushes for selecting two separate date ranges */
 export default function() {
   const margin = {
     top: 10,
@@ -12,69 +12,43 @@ export default function() {
 
   const xScale = d3
     .scaleTime()
-    .domain([new Date(2011, 8, 1), new Date()])
+    .domain([new Date(2011, 7, 1), new Date()])
     .range([0, width]);
 
   let svg = null;
   let gBrushes = null; // brushes container
   const brushes = []; // keep track of existing brushes
 
-  function drawBrushes() {
-    const brushSelection = gBrushes.selectAll('.brush').data(brushes, d => d.id);
-
-    // setup new brushes
-    brushSelection
-      .enter()
-      .insert('g', '.brush')
-      .attr('class', 'brush')
-      .attr('id', brush => `brush-${brush.id}`)
-      // eslint-disable-next-line
-      .each(function(brushObject) {
-        brushObject.brush(d3.select(this));
-      });
-
-    // remove pointer events on brush overlays
-    // eslint-disable-next-line
-    brushSelection.each(function(brushObject) {
-      d3
-        .select(this)
-        .attr('class', 'brush')
-        .selectAll('.overlay')
-        .style('pointer-events', () => {
-          const brush = brushObject.brush;
-          if (brushObject.id === brushes.length - 1 && brush !== undefined) {
-            return 'all';
-          }
-          return 'none';
-        });
-    });
-
-    brushSelection.exit().remove();
-  }
-
-  function newBrush() {
+  function makeBrush() {
     const brush = d3
       .brushX()
       .extent([[0, 0], [width, height]])
       // eslint-disable-next-line
-      .on('end', brushended);
+      .on('end', function() {
+        if (!d3.event.sourceEvent) return; // Only transition after input.
+        if (!d3.event.selection) return; // Ignore empty selections.
+        const d0 = d3.event.selection.map(xScale.invert);
+        const d1 = d0.map(d3.timeMonth.round);
+
+        // If empty when rounded, use floor & ceil instead.
+        if (d1[0] >= d1[1]) {
+          d1[0] = d3.timeMonth.floor(d0[0]);
+          d1[1] = d3.timeMonth.offset(d1[0]);
+        }
+
+        d3
+          .select(this)
+          .transition()
+          .call(d3.event.target.move, d1.map(xScale));
+      });
 
     brushes.push({ id: brushes.length, brush });
 
-    function brushended() {
-      const lastBrushID = brushes[brushes.length - 1].id;
-      const lastBrush = document.getElementById(`brush-${lastBrushID}`);
-      const selection = d3.brushSelection(lastBrush);
-
-      if (selection && selection[0] !== selection[1]) {
-        newBrush();
-      }
-
-      drawBrushes();
-    }
+    return brush;
   }
 
   // set's up the timeline, adds a new brush
+  // @param {node} el: element representing the SVG node for d3 to hook into
   function init(el) {
     svg = d3
       .select(el)
@@ -118,11 +92,43 @@ export default function() {
       .attr('y', 10)
       .style('text-anchor', null);
 
+    // svg group that houses the indvidual brush groups
     gBrushes = svg.append('g').attr('class', 'brushes');
 
-    newBrush();
-    newBrush();
-    drawBrushes();
+    // make a couple brushes
+    makeBrush();
+    makeBrush();
+
+    // bind each brush object from the brushes array, creating an empty selection
+    const brushSelection = gBrushes.selectAll('.brush').data(brushes, d => d.id);
+
+    // create the brushes individual svg groups, instantiate them, and set their initial date values
+    brushSelection
+      .enter()
+      .insert('g', '.brush')
+      .attr('class', 'brush')
+      .attr('id', d => `brush-${d.id}`)
+      // eslint-disable-next-line
+      .each(function(brushObj) {
+        // this init's the brush
+        brushObj.brush(d3.select(this));
+
+        // set some default values of the brushes
+        if (brushObj.id === 0) {
+          brushObj.brush.move(d3.select(this), [
+            xScale(new Date(2016, 7, 1)),
+            xScale(new Date(2017, 7, 1)),
+          ]);
+        } else {
+          brushObj.brush.move(d3.select(this), [
+            xScale(new Date(2012, 7, 1)),
+            xScale(new Date(2013, 7, 1)),
+          ]);
+        }
+      });
+
+    // remove pointer events on each brushes overlay, this prevents new brushes from being made
+    d3.selectAll('.overlay').style('pointer-events', 'none');
   }
 
   return init;
