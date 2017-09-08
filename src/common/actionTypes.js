@@ -9,6 +9,12 @@ export const DESELECT_PRIMARY_ENTITY = 'DESELECT_PRIMARY_ENTITY';
 export const SELECT_SECONDARY_ENTITY = 'SELECT_SECONDARY_ENTITY';
 export const DESELECT_SECONDARY_ENTITY = 'DESELECT_SECONDARY_ENTITY';
 
+// set / update first group's date range
+export const SET_DATE_RANGE_GROUP_ONE = 'SET_DATE_RANGE_GROUP_ONE';
+
+// set / update second group's date range
+export const SET_DATE_RANGE_GROUP_TWO = 'SET_DATE_RANGE_GROUP_TWO';
+
 // asynchronous actions, e.g. XHR
 export const ENTITY_DATA_REQUEST = 'ENTITY_DATA_REQUEST';
 export const ENTITY_DATA_SUCCESS = 'ENTITY_DATA_SUCCESS';

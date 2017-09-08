@@ -6,4 +6,6 @@ export {
   deselectSecondaryEntity,
 } from './entityActions';
 
+export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
+
 export fetchEntityData from './asyncActions';

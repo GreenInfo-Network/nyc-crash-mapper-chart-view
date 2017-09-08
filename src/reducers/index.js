@@ -2,7 +2,8 @@ import { combineReducers } from 'redux';
 import { createResponsiveStateReducer } from 'redux-responsive';
 
 import entities from './entitiesReducer';
-import data from './asyncReducer';
+import data from './dataReducer';
+import dateRanges from './dateRangeReducer';
 
 // breakpoints to match Skeleton CSS's
 const browser = createResponsiveStateReducer(
@@ -24,6 +25,7 @@ const browser = createResponsiveStateReducer(
 const rootReducer = combineReducers({
   browser,
   data,
+  dateRanges,
   entities,
 });
 
