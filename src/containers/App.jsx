@@ -9,6 +9,7 @@ import SparkLineContainer from '../components/SparkLineContainer';
 import LineChartsContainer from './LineChartsContainer';
 import EntitySelections from './EntitySelections';
 import TimeLine from './TimeLine';
+import PieChartsContainer from './PieChartsContainer';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -55,7 +56,9 @@ class App extends Component {
         <div className="grid-area detailchart">
           <LineChartsContainer />
         </div>
-        <div className="grid-area piecharts" />
+        <div className="grid-area piecharts">
+          <PieChartsContainer />
+        </div>
       </div>
     );
   }
