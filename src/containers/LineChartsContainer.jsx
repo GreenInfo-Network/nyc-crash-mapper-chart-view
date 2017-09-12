@@ -32,11 +32,12 @@ class LineChartsContainer extends Component {
   };
 
   render() {
-    const { nested, primary, secondary, dateRangeOne } = this.props;
+    const { nested, primary, secondary, dateRangeOne, dateRangeTwo } = this.props;
 
     return (
       <div className="LineChartsContainer">
         <LineChart {...{ nested, primary, secondary }} {...dateRangeOne} />
+        <LineChart {...{ nested, primary, secondary }} {...dateRangeTwo} />
       </div>
     );
   }
