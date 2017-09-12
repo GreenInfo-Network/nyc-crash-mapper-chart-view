@@ -1,6 +1,13 @@
 import * as d3 from 'd3';
-/** Function that sets up the D3 brushes for selecting two separate date ranges */
-export default function() {
+
+/**
+ * Function that sets up the D3 brushes for selecting two separate date ranges
+ * @param {object} callbacks: callback functions for brush 1 and brush 2 that are
+ * invoked on brushend
+ */
+export default function(callbacks) {
+  const { onBrushOneEnd, onBrushTwoEnd } = callbacks;
+
   const margin = {
     top: 10,
     right: 0,
@@ -19,29 +26,41 @@ export default function() {
   let gBrushes = null; // brushes container
   const brushes = []; // keep track of existing brushes
 
-  function makeBrush() {
+  // invoked on the "end" event of a d3-brush
+  // @param {function} callback: function that is invoked on the brush's "end" event
+  function brushend(callback) {
+    if (!d3.event.sourceEvent) return; // Only transition after input.
+    if (!d3.event.selection) return; // Ignore empty selections.
+    const d0 = d3.event.selection.map(xScale.invert);
+    const d1 = d0.map(d3.timeMonth.round);
+
+    // If empty when rounded, use floor & ceil instead.
+    if (d1[0] >= d1[1]) {
+      d1[0] = d3.timeMonth.floor(d0[0]);
+      d1[1] = d3.timeMonth.offset(d1[0]);
+    }
+
+    d3
+      .select(this)
+      .transition()
+      .call(d3.event.target.move, d1.map(xScale));
+
+    if (callback && typeof callback === 'function') {
+      // invoke the date range action creators with the array of start and end dates
+      callback(d1);
+    }
+  }
+
+  // creates a new d3-brush, the object responsible for creating the rectangles on top of
+  // the timeline that respond to dragging and resizing
+  // @param {function} onEndCallback: callback function that is invoked on the brush's "end" event
+  function makeBrush(onEndCallback) {
     const brush = d3
       .brushX()
       .extent([[0, 0], [width, height]])
-      // eslint-disable-next-line
-      .on('end', function() {
-        if (!d3.event.sourceEvent) return; // Only transition after input.
-        if (!d3.event.selection) return; // Ignore empty selections.
-        const d0 = d3.event.selection.map(xScale.invert);
-        const d1 = d0.map(d3.timeMonth.round);
+      .on('end', () => brushend(onEndCallback));
 
-        // If empty when rounded, use floor & ceil instead.
-        if (d1[0] >= d1[1]) {
-          d1[0] = d3.timeMonth.floor(d0[0]);
-          d1[1] = d3.timeMonth.offset(d1[0]);
-        }
-
-        d3
-          .select(this)
-          .transition()
-          .call(d3.event.target.move, d1.map(xScale));
-      });
-
+    // add the brush to the brushes array so it can be altered programmatically
     brushes.push({ id: brushes.length, brush });
 
     return brush;
@@ -96,8 +115,8 @@ export default function() {
     gBrushes = svg.append('g').attr('class', 'brushes');
 
     // make a couple brushes
-    makeBrush();
-    makeBrush();
+    makeBrush(onBrushOneEnd);
+    makeBrush(onBrushTwoEnd);
 
     // bind each brush object from the brushes array, creating an empty selection
     const brushSelection = gBrushes.selectAll('.brush').data(brushes, d => d.id);

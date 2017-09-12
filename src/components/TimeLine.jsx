@@ -32,7 +32,12 @@ class TimeLine extends Component {
   }
 
   componentDidMount() {
-    this.timeline = d3TimeLine()(this.svg);
+    const { setDateRangeGroupOne, setDateRangeGroupTwo } = this.props;
+    const brushCallbacks = {
+      onBrushOneEnd: setDateRangeGroupOne,
+      onBrushTwoEnd: setDateRangeGroupTwo,
+    };
+    this.timeline = d3TimeLine(brushCallbacks)(this.svg);
   }
 
   render() {
