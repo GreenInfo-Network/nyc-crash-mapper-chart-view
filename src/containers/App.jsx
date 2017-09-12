@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import * as actions from '../actions';
 
 import SparkLineContainer from '../components/SparkLineContainer';
-import LineChartsContainerConnected from './LineChartsContainerConnected';
+import LineChartsContainer from './LineChartsContainer';
 import EntitySelections from './EntitySelections';
 import TimeLine from '../components/TimeLine';
 
@@ -50,7 +50,7 @@ class App extends Component {
           <EntitySelections />
         </div>
         <div className="grid-area detailchart">
-          <LineChartsContainerConnected />
+          <LineChartsContainer />
         </div>
         <div className="grid-area timeline">
           <TimeLine {...{ setDateRangeGroupOne, setDateRangeGroupTwo }} />

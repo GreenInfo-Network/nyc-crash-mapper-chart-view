@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import LineChart from './LineChart';
+import LineChart from '../components/LineChart';
 
 class LineChartsContainer extends Component {
   static propTypes = {
@@ -31,4 +32,10 @@ class LineChartsContainer extends Component {
   }
 }
 
-export default LineChartsContainer;
+const mapStateToProps = ({ data, entities }) => ({
+  nested: data.nested,
+  primary: entities.primary,
+  secondary: entities.secondary,
+});
+
+export default connect(mapStateToProps, null)(LineChartsContainer);
