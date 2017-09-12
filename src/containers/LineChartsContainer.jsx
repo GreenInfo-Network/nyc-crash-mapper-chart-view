@@ -15,27 +15,39 @@ class LineChartsContainer extends Component {
       values: PropTypes.array,
     }).isRequired,
     nested: PropTypes.arrayOf(PropTypes.object),
+    dateRangeTwo: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
+    dateRangeOne: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
   };
 
   static defaultProps = {
     nested: [],
+    dateRangeOne: {},
+    dateRangeTwo: {},
   };
 
   render() {
-    const { nested, primary, secondary } = this.props;
+    const { nested, primary, secondary, dateRangeOne } = this.props;
 
     return (
       <div className="LineChartsContainer">
-        <LineChart {...{ nested, primary, secondary }} />
+        <LineChart {...{ nested, primary, secondary }} {...dateRangeOne} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ data, entities }) => ({
+const mapStateToProps = ({ data, entities, dateRanges }) => ({
   nested: data.nested,
   primary: entities.primary,
   secondary: entities.secondary,
+  dateRangeOne: dateRanges.group1,
+  dateRangeTwo: dateRanges.group2,
 });
 
 export default connect(mapStateToProps, null)(LineChartsContainer);
