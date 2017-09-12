@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-import SparkLineContainer from './SparkLineContainer';
-import LineChartsContainerConnected from '../containers/LineChartsContainerConnected';
-import EntitySelections from '../containers/EntitySelections';
-import TimeLine from './TimeLine';
+import * as actions from '../actions';
+
+import SparkLineContainer from '../components/SparkLineContainer';
+import LineChartsContainerConnected from './LineChartsContainerConnected';
+import EntitySelections from './EntitySelections';
+import TimeLine from '../components/TimeLine';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -58,4 +61,14 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = ({ browser, data, entities }) => ({
+  width: browser.width,
+  height: browser.height,
+  entityData: data.response,
+  entitiesNested: data.nested,
+  entityType: entities.entityType,
+});
+
+export default connect(mapStateToProps, {
+  ...actions,
+})(App);
