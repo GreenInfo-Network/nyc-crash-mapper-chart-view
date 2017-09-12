@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import * as d3 from 'd3';
 import classNames from 'classnames';
+
+import {
+  selectPrimaryEntity,
+  deselectPrimaryEntity,
+  selectSecondaryEntity,
+  deselectSecondaryEntity,
+} from '../actions';
 
 // TO DO: move these into the SparkLineList class?
 const margin = { top: 8, right: 10, bottom: 2, left: 10 };
@@ -23,6 +31,13 @@ const line = d3
   .x(d => xScale(d.year_month))
   .y(d => yScale(d.pedestrian_injured))
   .curve(d3.curveMonotoneX);
+
+const mapStateToProps = ({ entities, data }) => ({
+  entityType: entities.entityType,
+  nested: data.nested,
+  primary: entities.primary,
+  secondary: entities.secondary,
+});
 
 /** Class that renders a list of SVG sparkLines
 */
@@ -117,15 +132,15 @@ class SparkLineList extends Component {
 
   handleSparkLineClick(entity) {
     const { key } = entity;
-    const { secondary, primary, selectPrimaryEntity, selectSecondaryEntity } = this.props;
+    const { secondary, primary } = this.props;
 
     if (!primary.key && key !== primary.key) {
-      selectPrimaryEntity(entity);
+      this.props.selectPrimaryEntity(entity);
       return;
     }
 
     if (primary.key && !secondary.key && key !== secondary.key) {
-      selectSecondaryEntity(entity);
+      this.props.selectSecondaryEntity(entity);
     }
   }
 
@@ -190,4 +205,9 @@ class SparkLineList extends Component {
   }
 }
 
-export default SparkLineList;
+export default connect(mapStateToProps, {
+  selectPrimaryEntity,
+  deselectPrimaryEntity,
+  selectSecondaryEntity,
+  deselectSecondaryEntity,
+})(SparkLineList);

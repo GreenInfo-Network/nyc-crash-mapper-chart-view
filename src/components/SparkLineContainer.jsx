@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SparkLineListConnected from '../containers/SparkLineListConnected';
+import SparkLineList from '../containers/SparkLineList';
 
 /** Class that houses the SparkLineList and provides a UI & Controller for filtering & sorting it
 */
@@ -67,10 +67,7 @@ class SparkLineContainer extends Component {
           <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
           <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>
-        <SparkLineListConnected
-          filterTerm={inputValue}
-          {...{ entities, sortName, sortRank, sortAsc }}
-        />
+        <SparkLineList filterTerm={inputValue} {...{ entities, sortName, sortRank, sortAsc }} />
       </div>
     );
   }
