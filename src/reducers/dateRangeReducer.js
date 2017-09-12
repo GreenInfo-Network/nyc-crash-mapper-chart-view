@@ -4,12 +4,12 @@ import { parseDate } from '../common/d3Utils';
 // TO DO: should these be date strings or date objects?
 const defaultState = {
   group1: {
-    startDate: parseDate('2017-03'),
-    endDate: parseDate('2017-08'),
+    startDate: parseDate('2016-01'),
+    endDate: parseDate('2017-01'),
   },
   group2: {
-    startDate: parseDate('2016-03'),
-    endDate: parseDate('2016-08'),
+    startDate: parseDate('2013-01'),
+    endDate: parseDate('2014-01'),
   },
 };
 
