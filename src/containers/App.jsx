@@ -49,13 +49,13 @@ class App extends Component {
         <div className="grid-area entity-selectors">
           <EntitySelections />
         </div>
-        <div className="grid-area detailchart">
-          <LineChartsContainer />
-        </div>
         <div className="grid-area timeline">
           <TimeLine />
         </div>
-        <div className="grid-area barchart" />
+        <div className="grid-area detailchart">
+          <LineChartsContainer />
+        </div>
+        <div className="grid-area piecharts" />
       </div>
     );
   }

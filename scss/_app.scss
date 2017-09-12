@@ -23,13 +23,13 @@ body,
   display: grid;
   grid-template-columns: 300px calc(50% - 150px) calc(50% - 150px);
   // 10 + 33 + 15 + 42
-  grid-template-rows: 65px 10% 33% 15% calc(42% - 65px);
+  grid-template-rows: 65px 10% 15% 33% calc(42% - 65px);
   grid-template-areas:
     'header header header'
     'sparklines entityselectors entityselectors'
-    'sparklines detailchart detailchart'
     'sparklines timeline timeline'
-    'sparklines barchart barchart';
+    'sparklines detailchart detailchart'
+    'sparklines piecharts piecharts';
 
   .grid-area {
     padding: 10px;
@@ -56,8 +56,8 @@ body,
     grid-area: timeline;
   }
 
-  .grid-area.barchart {
-    grid-area: barchart;
+  .grid-area.piecharts {
+    grid-area: piecharts;
   }
 }
 
