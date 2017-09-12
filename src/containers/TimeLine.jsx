@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import d3TimeLine from './TimeLineD3';
+import { setDateRangeGroupOne, setDateRangeGroupTwo } from '../actions';
+import d3TimeLine from '../components/TimeLineD3';
 
 // TO DO share same set of margin, width, & height values
 // ideally width & height will be set by the component's parent size
@@ -23,6 +25,19 @@ class TimeLine extends Component {
   static propTypes = {
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
+    dateRangeTwo: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
+    dateRangeOne: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
+  };
+
+  static defaultProps = {
+    dateRangeOne: {},
+    dateRangeTwo: {},
   };
 
   constructor() {
@@ -32,12 +47,16 @@ class TimeLine extends Component {
   }
 
   componentDidMount() {
-    const { setDateRangeGroupOne, setDateRangeGroupTwo } = this.props;
+    const { dateRangeOne, dateRangeTwo } = this.props;
     const brushCallbacks = {
-      onBrushOneEnd: setDateRangeGroupOne,
-      onBrushTwoEnd: setDateRangeGroupTwo,
+      onBrushOneEnd: this.props.setDateRangeGroupOne,
+      onBrushTwoEnd: this.props.setDateRangeGroupTwo,
     };
-    this.timeline = d3TimeLine(brushCallbacks)(this.svg);
+    const dateRanges = {
+      dateRangeOne,
+      dateRangeTwo,
+    };
+    this.timeline = d3TimeLine(brushCallbacks, dateRanges)(this.svg);
   }
 
   render() {
@@ -55,4 +74,12 @@ class TimeLine extends Component {
   }
 }
 
-export default TimeLine;
+const mapStateToProps = ({ dateRanges }) => {
+  const { group1, group2 } = dateRanges;
+  return {
+    dateRangeOne: group1,
+    dateRangeTwo: group2,
+  };
+};
+
+export default connect(mapStateToProps, { setDateRangeGroupOne, setDateRangeGroupTwo })(TimeLine);

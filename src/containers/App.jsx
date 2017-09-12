@@ -8,7 +8,7 @@ import * as actions from '../actions';
 import SparkLineContainer from '../components/SparkLineContainer';
 import LineChartsContainer from './LineChartsContainer';
 import EntitySelections from './EntitySelections';
-import TimeLine from '../components/TimeLine';
+import TimeLine from './TimeLine';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -36,7 +36,7 @@ class App extends Component {
   }
 
   render() {
-    const { entitiesNested, entityType, setDateRangeGroupOne, setDateRangeGroupTwo } = this.props;
+    const { entitiesNested, entityType } = this.props;
 
     return (
       <div className="App grid-container">
@@ -53,7 +53,7 @@ class App extends Component {
           <LineChartsContainer />
         </div>
         <div className="grid-area timeline">
-          <TimeLine {...{ setDateRangeGroupOne, setDateRangeGroupTwo }} />
+          <TimeLine />
         </div>
         <div className="grid-area barchart" />
       </div>

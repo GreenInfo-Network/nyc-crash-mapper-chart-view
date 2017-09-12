@@ -4,9 +4,12 @@ import * as d3 from 'd3';
  * Function that sets up the D3 brushes for selecting two separate date ranges
  * @param {object} callbacks: callback functions for brush 1 and brush 2 that are
  * invoked on brushend
+ * @param {object} dateRanges: two sets of start and end dates that are used to set the brushes
+ * initial values
  */
-export default function(callbacks) {
+export default function(callbacks, dateRanges) {
   const { onBrushOneEnd, onBrushTwoEnd } = callbacks;
+  const { dateRangeOne, dateRangeTwo } = dateRanges;
 
   const margin = {
     top: 10,
@@ -135,13 +138,13 @@ export default function(callbacks) {
         // set some default values of the brushes
         if (brushObj.id === 0) {
           brushObj.brush.move(d3.select(this), [
-            xScale(new Date(2016, 7, 1)),
-            xScale(new Date(2017, 7, 1)),
+            xScale(dateRangeOne.startDate),
+            xScale(dateRangeOne.endDate),
           ]);
         } else {
           brushObj.brush.move(d3.select(this), [
-            xScale(new Date(2012, 7, 1)),
-            xScale(new Date(2013, 7, 1)),
+            xScale(dateRangeTwo.startDate),
+            xScale(dateRangeTwo.endDate),
           ]);
         }
       });
