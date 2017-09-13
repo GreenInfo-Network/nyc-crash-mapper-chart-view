@@ -111,13 +111,13 @@ class PieChart extends Component {
 
     const path = d3
       .arc()
-      .outerRadius(this.radius - 10)
+      .outerRadius(this.radius)
       .innerRadius(0);
 
     const label = d3
       .arc()
-      .outerRadius(radius - 40)
-      .innerRadius(radius - 40);
+      .outerRadius(radius - 30)
+      .innerRadius(radius - 30);
 
     const arc = g
       .selectAll('.arc')
@@ -142,9 +142,11 @@ class PieChart extends Component {
     const { width, height, category } = this.props;
     const { dataParsed } = this.state;
     const { total } = dataParsed;
+    const title = category === 'injuries' ? 'Injury' : 'Fatality';
 
     return (
       <div className="PieChart">
+        <h6 className="title">{title}</h6>
         <svg
           width={width}
           height={height}
@@ -152,11 +154,7 @@ class PieChart extends Component {
             this.svg = _;
           }}
         />
-        {total && (
-          <p>
-            Total {category}: {total}
-          </p>
-        )}
+        <p>{total}</p>
       </div>
     );
   }

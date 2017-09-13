@@ -2,11 +2,56 @@
   width: 100%;
   height: 100%;
 
+  h6 {
+    padding: 0;
+    margin: 0;
+  }
+
   .period-one,
   .period-two {
     width: 50%;
     height: 100%;
     display: inline-block;
     vertical-align: middle;
+  }
+
+  .primary-container,
+  .secondary-container {
+    width: 100%;
+    height: 50%;
+  }
+
+  .primary-container {
+    border-bottom: 1px solid $medium-grey;
+  }
+
+  .title-labels,
+  .charts {
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .title-labels {
+    position: relative;
+    width: 100px;
+  }
+
+  .charts {
+    width: calc(100% - 100px);
+  }
+
+  .label--title,
+  .label--total {
+    position: absolute;
+    left: 10px;
+  }
+
+  .label--title {
+    top: 20px;
+  }
+
+  .label--total {
+    bottom: 20px;
   }
 }

@@ -2,6 +2,13 @@
   display: inline-block;
   margin: 10px;
 
+  .title,
+  p {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
   .arc text {
     font: 10px sans-serif;
     text-anchor: middle;

@@ -10,6 +10,8 @@ import PieChart from '../components/PieChart';
  */
 class PieChartsContainer extends Component {
   static propTypes = {
+    entity: PropTypes.string,
+    entityType: PropTypes.string,
     valuesDateRange1: PropTypes.shape({
       primary: PropTypes.shape({
         key: PropTypes.string,
@@ -33,75 +35,111 @@ class PieChartsContainer extends Component {
   };
 
   static defaultProps = {
+    entity: '',
+    entityType: '',
     nested: [],
     dateRangeOne: {},
     dateRangeTwo: {},
   };
 
   render() {
-    const { valuesDateRange1, valuesDateRange2 } = this.props;
-    const pieSize = 150;
+    const { valuesDateRange1, valuesDateRange2, entityType } = this.props;
+    const { primary, secondary } = valuesDateRange1;
+    const pieSize = 125;
 
+    // TO DO: refactor this markup!!!
     return (
       <div className="PieChartsContainer">
-        <div className="period-one">
-          <div className="primary-container">
-            <PieChart
-              category="injuries"
-              values={valuesDateRange1.primary.values}
-              width={pieSize}
-              height={pieSize}
-            />
-            <PieChart
-              category="fatalities"
-              values={valuesDateRange1.primary.values}
-              width={pieSize}
-              height={pieSize}
-            />
-          </div>
-          <div className="secondary-container">
-            <PieChart
-              category="injuries"
-              values={valuesDateRange1.secondary.values}
-              width={pieSize}
-              height={pieSize}
-            />
-            <PieChart
-              category="fatalities"
-              values={valuesDateRange1.secondary.values}
-              width={pieSize}
-              height={pieSize}
-            />
-          </div>
-        </div>
         <div className="period-two">
           <div className="primary-container">
-            <PieChart
-              category="injuries"
-              values={valuesDateRange2.primary.values}
-              width={pieSize}
-              height={pieSize}
-            />
-            <PieChart
-              category="fatalities"
-              values={valuesDateRange2.primary.values}
-              width={pieSize}
-              height={pieSize}
-            />
+            <div className="title-labels">
+              <h6 className="label--title">
+                {primary.key ? `${entityType} ${primary.key}` : null}
+              </h6>
+              <h6 className="label--total">{primary.key ? 'Total:' : null}</h6>
+            </div>
+            <div className="charts">
+              <PieChart
+                category="injuries"
+                values={valuesDateRange2.primary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+              <PieChart
+                category="fatalities"
+                values={valuesDateRange2.primary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+            </div>
           </div>
           <div className="secondary-container">
-            <PieChart
-              category="injuries"
-              values={valuesDateRange2.secondary.values}
-              width={pieSize}
-              height={pieSize}
-            />
-            <PieChart
-              category="fatalities"
-              values={valuesDateRange2.secondary.values}
-              width={pieSize}
-              height={pieSize}
-            />
+            <div className="title-labels">
+              <h6 className="label--title">
+                {secondary.key ? `${entityType} ${secondary.key}` : null}
+              </h6>
+              <h6 className="label--total">{secondary.key ? 'Total:' : null}</h6>
+            </div>
+            <div className="charts">
+              <PieChart
+                category="injuries"
+                values={valuesDateRange2.secondary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+              <PieChart
+                category="fatalities"
+                values={valuesDateRange2.secondary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="period-one">
+          <div className="primary-container">
+            <div className="title-labels">
+              <h6 className="label--title">
+                {primary.key ? `${entityType} ${primary.key}` : null}
+              </h6>
+              <h6 className="label--total">{primary.key ? 'Total:' : null}</h6>
+            </div>
+            <div className="charts">
+              <PieChart
+                category="injuries"
+                values={valuesDateRange1.primary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+              <PieChart
+                category="fatalities"
+                values={valuesDateRange1.primary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+            </div>
+          </div>
+          <div className="secondary-container">
+            <div className="title-labels">
+              <h6 className="label--title">
+                {secondary.key ? `${entityType} ${secondary.key}` : null}
+              </h6>
+              <h6 className="label--total">{secondary.key ? 'Total:' : null}</h6>
+            </div>
+            <div className="charts">
+              <PieChart
+                category="injuries"
+                values={valuesDateRange1.secondary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+              <PieChart
+                category="fatalities"
+                values={valuesDateRange1.secondary.values}
+                width={pieSize}
+                height={pieSize}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -110,10 +148,12 @@ class PieChartsContainer extends Component {
 }
 
 const mapStateToProps = state => {
+  const { entities } = state;
   const entitiesValuesFiltered = filterEntitiesValues(state);
   const { valuesDateRange1, valuesDateRange2 } = entitiesValuesFiltered;
 
   return {
+    entityType: entities.entityType,
     valuesDateRange1,
     valuesDateRange2,
   };
