@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import { filterEntitiesValues } from '../reducers';
 import LineChart from '../components/LineChart';
 
+/**
+ * Connected Component that houses the D3 Line Charts
+ */
 class LineChartsContainer extends Component {
   static propTypes = {
     primary: PropTypes.shape({
@@ -69,15 +72,15 @@ class LineChartsContainer extends Component {
           nested={nested}
           keyPrimary={primary.key}
           keySecondary={secondary.key}
-          {...dateRangeOne}
-          valuesByDateRange={valuesDateRange1}
+          {...dateRangeTwo}
+          valuesByDateRange={valuesDateRange2}
         />
         <LineChart
           nested={nested}
           keyPrimary={primary.key}
           keySecondary={secondary.key}
-          {...dateRangeTwo}
-          valuesByDateRange={valuesDateRange2}
+          {...dateRangeOne}
+          valuesByDateRange={valuesDateRange1}
         />
       </div>
     );
