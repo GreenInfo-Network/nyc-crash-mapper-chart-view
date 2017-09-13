@@ -17,15 +17,6 @@ class PieChartsContainer extends Component {
       key: PropTypes.string,
       values: PropTypes.array,
     }).isRequired,
-    nested: PropTypes.arrayOf(PropTypes.object),
-    dateRangeTwo: PropTypes.shape({
-      endDate: PropTypes.instanceOf(Date),
-      startDate: PropTypes.instanceOf(Date),
-    }),
-    dateRangeOne: PropTypes.shape({
-      endDate: PropTypes.instanceOf(Date),
-      startDate: PropTypes.instanceOf(Date),
-    }),
   };
 
   static defaultProps = {
@@ -35,26 +26,44 @@ class PieChartsContainer extends Component {
   };
 
   render() {
-    const { primary } = this.props;
+    const { primary, secondary } = this.props;
+    const pieSize = 150;
 
     return (
       <div className="PieChartsContainer">
-        <PieChart values={primary.values} width={150} height={150} />
+        <div className="primary-container">
+          <PieChart category="injuries" values={primary.values} width={pieSize} height={pieSize} />
+          <PieChart
+            category="fatalities"
+            values={primary.values}
+            width={pieSize}
+            height={pieSize}
+          />
+        </div>
+        <div className="secondary-container">
+          <PieChart
+            category="injuries"
+            values={secondary.values}
+            width={pieSize}
+            height={pieSize}
+          />
+          <PieChart
+            category="fatalities"
+            values={secondary.values}
+            width={pieSize}
+            height={pieSize}
+          />
+        </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ data, entities, dateRanges }) => {
-  const { nested } = data;
+const mapStateToProps = ({ entities }) => {
   const { primary, secondary } = entities;
-  const { group1, group2 } = dateRanges;
   return {
-    nested,
     primary,
     secondary,
-    dateRangeOne: group1,
-    dateRangeTwo: group2,
   };
 };
 
