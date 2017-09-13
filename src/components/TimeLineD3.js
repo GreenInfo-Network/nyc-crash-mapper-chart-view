@@ -61,6 +61,17 @@ export default function(callbacks, dateRanges) {
     const brush = d3
       .brushX()
       .extent([[0, 0], [width, height]])
+      // eslint-disable-next-line
+      .on('brush', function() {
+        const brushG = d3.select(this);
+        const rect = brushG.node().querySelector('rect.selection'); // can't use d3.select() here
+        const rWidth = +rect.getAttribute('width');
+        const xPos = +rect.getAttribute('x');
+        const text = brushG.select('text');
+        if (text.node()) {
+          text.attr('x', xPos + rWidth / 2 - 36).attr('y', height / 2 + 5);
+        }
+      })
       .on('end', () => brushend(onEndCallback));
 
     // add the brush to the brushes array so it can be altered programmatically
@@ -135,17 +146,32 @@ export default function(callbacks, dateRanges) {
         // this init's the brush
         brushObj.brush(d3.select(this));
 
+        // create and position the brush's label
+        const brushG = d3.select(this);
+        const rect = brushG.node().querySelector('rect.selection');
+        const rWidth = +rect.getAttribute('width');
+        const xPos = +rect.getAttribute('x');
+        const text = brushG.insert('text', ':first-child');
+        text
+          .attr('x', xPos + rWidth / 2 - 36)
+          .attr('y', height / 2 + 5)
+          .attr('class', 'brush-label');
+
         // set some default values of the brushes
         if (brushObj.id === 0) {
           brushObj.brush.move(d3.select(this), [
             xScale(dateRangeOne.startDate),
             xScale(dateRangeOne.endDate),
           ]);
+          // create label text for period one
+          text.text('Period One');
         } else {
           brushObj.brush.move(d3.select(this), [
             xScale(dateRangeTwo.startDate),
             xScale(dateRangeTwo.endDate),
           ]);
+          // create label text for period two
+          text.text('Period Two');
         }
       });
 
