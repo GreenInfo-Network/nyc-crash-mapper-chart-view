@@ -11,11 +11,11 @@ import d3TimeLine from '../components/TimeLineD3';
 const margin = {
   top: 10,
   right: 0,
-  bottom: 20,
+  bottom: 40,
   left: 0,
 };
 const width = 960 - margin.left - margin.right;
-const height = 100 - margin.top - margin.bottom;
+const height = 80 - margin.top - margin.bottom;
 
 /**
  * Class that implements a "brushable" timeline using d3

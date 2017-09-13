@@ -1,6 +1,11 @@
 .TimeLine {
   height: 100%;
 
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
+
   .axis {
     text {
       font: 11px sans-serif;

@@ -14,7 +14,7 @@ export default function(callbacks, dateRanges) {
   const margin = {
     top: 10,
     right: 0,
-    bottom: 20,
+    bottom: 40,
     left: 0,
   };
   const width = 960 - margin.left - margin.right;
