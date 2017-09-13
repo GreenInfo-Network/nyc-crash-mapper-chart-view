@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { sum } from 'd3';
 
 import PieChart from '../components/PieChart';
 
@@ -35,56 +34,12 @@ class PieChartsContainer extends Component {
     dateRangeTwo: {},
   };
 
-  constructor() {
-    super();
-    this.state = {
-      data: [],
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { primary } = nextProps;
-    if (nextProps.primary.values.length && primary.key !== this.props.primary.key) {
-      this.formatData(nextProps.primary.values);
-    }
-  }
-
-  formatData(values) {
-    // create a new data structure to pass to the pie chart
-    const newData = {
-      values: [],
-      total: null,
-    };
-
-    newData.values.push({
-      type: 'pedestrian',
-      injuries: sum(values, d => d.pedestrian_injured),
-    });
-
-    newData.values.push({
-      type: 'cyclist',
-      injuries: sum(values, d => d.cyclist_injured),
-    });
-
-    newData.values.push({
-      type: 'motorist',
-      injuries: sum(values, d => d.motorist_injured),
-    });
-
-    // store a sum for the label of the bottom of the pie chart
-    newData.total = sum(newData.values, d => d.injuries);
-
-    // re-render to render piechart
-    this.setState({
-      data: newData,
-    });
-  }
-
   render() {
-    const { data } = this.state;
+    const { primary } = this.props;
+
     return (
       <div className="PieChartsContainer">
-        <PieChart data={data} width={150} height={150} />
+        <PieChart values={primary.values} width={150} height={150} />
       </div>
     );
   }

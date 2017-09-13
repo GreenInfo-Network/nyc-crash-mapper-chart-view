@@ -7,14 +7,11 @@ class PieChart extends Component {
   static propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    data: PropTypes.shape({
-      values: PropTypes.arrayOf(PropTypes.object),
-      total: PropTypes.number,
-    }),
+    values: PropTypes.arrayOf(PropTypes.object),
   };
 
   static defaultProps = {
-    data: {},
+    values: [],
   };
 
   constructor(props) {
@@ -22,12 +19,55 @@ class PieChart extends Component {
     const { width, height } = props;
     this.radius = Math.min(width, height) / 2;
     this.svg = null; // ref to the svg element
+    this.state = {
+      dataParsed: {
+        values: [],
+        sum: null,
+      },
+    };
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.data.values && !isEqual(prevProps.data.values, this.props.data.values)) {
-      this.renderChart(this.props.data.values);
+  componentDidUpdate(prevProps, prevState) {
+    const { dataParsed } = this.state;
+
+    if (this.props.values && !isEqual(prevProps.values, this.props.values)) {
+      this.parseData(this.props.values);
     }
+
+    if (dataParsed.values.length && !isEqual(prevState.dataParsed.values, dataParsed.values)) {
+      this.renderChart(dataParsed.values);
+    }
+  }
+
+  parseData(values) {
+    // create a new data structure to pass to the pie chart
+    const dataParsed = {
+      values: [],
+      total: null,
+    };
+
+    dataParsed.values.push({
+      type: 'pedestrian',
+      injuries: d3.sum(values, d => d.pedestrian_injured),
+    });
+
+    dataParsed.values.push({
+      type: 'cyclist',
+      injuries: d3.sum(values, d => d.cyclist_injured),
+    });
+
+    dataParsed.values.push({
+      type: 'motorist',
+      injuries: d3.sum(values, d => d.motorist_injured),
+    });
+
+    // store a sum for the label of the bottom of the pie chart
+    dataParsed.total = d3.sum(dataParsed.values, d => d.injuries);
+
+    // re-render to render piechart
+    this.setState({
+      dataParsed,
+    });
   }
 
   renderChart(data) {
@@ -77,8 +117,9 @@ class PieChart extends Component {
   }
 
   render() {
-    const { width, height, data } = this.props;
-    const { total } = data;
+    const { width, height } = this.props;
+    const { dataParsed } = this.state;
+    const { total } = dataParsed;
 
     return (
       <div className="PieChart">
@@ -89,7 +130,7 @@ class PieChart extends Component {
             this.svg = _;
           }}
         />
-        <p>Total Injuries: {total}</p>
+        {total && <p>Total Injuries: {total}</p>}
       </div>
     );
   }
