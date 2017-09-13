@@ -62,6 +62,7 @@ class TimeLine extends Component {
   render() {
     return (
       <div className="TimeLine">
+        <h6 className="title">Filter By Date Ranges</h6>
         <svg
           ref={_ => {
             this.svg = _;

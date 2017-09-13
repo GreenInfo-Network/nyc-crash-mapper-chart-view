@@ -23,7 +23,7 @@ body,
   display: grid;
   grid-template-columns: 300px calc(50% - 150px) calc(50% - 150px);
   // 10 + 33 + 15 + 42
-  grid-template-rows: 65px 65px 90px 33% calc(67% - 220px);
+  grid-template-rows: 65px 65px 110px 33% calc(67% - 240px);
   grid-template-areas:
     'header header header'
     'sparklines entityselectors entityselectors'
