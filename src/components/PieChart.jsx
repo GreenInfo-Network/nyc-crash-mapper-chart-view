@@ -35,8 +35,12 @@ class PieChart extends Component {
       this.parseData(this.props.values);
     }
 
-    if (dataParsed.values.length && !isEqual(prevState.dataParsed.values, dataParsed.values)) {
+    if (dataParsed.values.length && !prevState.dataParsed.values.length) {
       this.renderChart(dataParsed.values);
+    }
+
+    if (dataParsed.values.length && !isEqual(dataParsed.values, prevState.dataParsed.values)) {
+      this.update();
     }
 
     if (prevState.dataParsed.values.length && !dataParsed.values.length) {
@@ -54,7 +58,7 @@ class PieChart extends Component {
 
     dataParsed.values.push({
       type: 'pedestrian',
-      injuries: d3.sum(
+      amount: d3.sum(
         values,
         d => (category === 'injuries' ? d.pedestrian_injured : d.pedestrian_killed)
       ),
@@ -62,22 +66,19 @@ class PieChart extends Component {
 
     dataParsed.values.push({
       type: 'cyclist',
-      injuries: d3.sum(
-        values,
-        d => (category === 'injuries' ? d.cyclist_injured : d.cyclist_killed)
-      ),
+      amount: d3.sum(values, d => (category === 'injuries' ? d.cyclist_injured : d.cyclist_killed)),
     });
 
     dataParsed.values.push({
       type: 'motorist',
-      injuries: d3.sum(
+      amount: d3.sum(
         values,
         d => (category === 'injuries' ? d.motorist_injured : d.motorist_killed)
       ),
     });
 
     // store a sum for the label of the bottom of the pie chart
-    dataParsed.total = d3.sum(dataParsed.values, d => d.injuries);
+    dataParsed.total = d3.sum(dataParsed.values, d => d.amount);
 
     // re-render to render piechart
     this.setState({
@@ -90,6 +91,36 @@ class PieChart extends Component {
       .select(this.svg)
       .select('g')
       .remove();
+  }
+
+  update() {
+    // updates existing chart using a custom tween to animate the transition between chart states
+    const { dataParsed } = this.state;
+    const pie = d3
+      .pie()
+      .sort(null)
+      .value(d => d.amount)(dataParsed.values);
+
+    const arc = d3
+      .arc()
+      .outerRadius(this.radius)
+      .innerRadius(0);
+
+    const path = d3
+      .select(this.svg)
+      .selectAll('path')
+      .data(pie);
+
+    function arcTween(a) {
+      const i = d3.interpolate(this._current, a);
+      this._current = i(0);
+      return t => arc(i(t));
+    }
+
+    path
+      .transition()
+      .duration(750)
+      .attrTween('d', arcTween);
   }
 
   renderChart(data) {
@@ -107,35 +138,26 @@ class PieChart extends Component {
     const pie = d3
       .pie()
       .sort(null)
-      .value(d => d.injuries);
+      .value(d => d.amount);
 
-    const path = d3
+    const dataPie = pie(data);
+
+    const arc = d3
       .arc()
-      .outerRadius(this.radius)
+      .outerRadius(radius)
       .innerRadius(0);
 
-    const label = d3
-      .arc()
-      .outerRadius(radius - 30)
-      .innerRadius(radius - 30);
-
-    const arc = g
-      .selectAll('.arc')
-      .data(pie(data))
+    g
+      .selectAll('path')
+      .data(dataPie, d => d.data.type)
       .enter()
-      .append('g')
-      .attr('class', 'arc');
-
-    arc
       .append('path')
-      .attr('d', path)
-      .attr('fill', d => color(d.data.type));
-
-    arc
-      .append('text')
-      .attr('transform', d => `translate(${label.centroid(d)})`)
-      .attr('dy', '0.35em')
-      .text(d => d.data.type);
+      .attr('d', arc)
+      .attr('fill', d => color(d.data.type))
+      .attr('class', 'arc')
+      .each(d => {
+        this._current = d; // store initial angle
+      });
   }
 
   render() {
