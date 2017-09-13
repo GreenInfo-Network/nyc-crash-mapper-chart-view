@@ -8,6 +8,7 @@ class PieChart extends Component {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     values: PropTypes.arrayOf(PropTypes.object),
+    category: PropTypes.oneOf(['injuries', 'fatalities']).isRequired,
   };
 
   static defaultProps = {
@@ -41,6 +42,7 @@ class PieChart extends Component {
 
   parseData(values) {
     // create a new data structure to pass to the pie chart
+    const { category } = this.props;
     const dataParsed = {
       values: [],
       total: null,
@@ -48,17 +50,26 @@ class PieChart extends Component {
 
     dataParsed.values.push({
       type: 'pedestrian',
-      injuries: d3.sum(values, d => d.pedestrian_injured),
+      injuries: d3.sum(
+        values,
+        d => (category === 'injuries' ? d.pedestrian_injured : d.pedestrian_killed)
+      ),
     });
 
     dataParsed.values.push({
       type: 'cyclist',
-      injuries: d3.sum(values, d => d.cyclist_injured),
+      injuries: d3.sum(
+        values,
+        d => (category === 'injuries' ? d.cyclist_injured : d.cyclist_killed)
+      ),
     });
 
     dataParsed.values.push({
       type: 'motorist',
-      injuries: d3.sum(values, d => d.motorist_injured),
+      injuries: d3.sum(
+        values,
+        d => (category === 'injuries' ? d.motorist_injured : d.motorist_killed)
+      ),
     });
 
     // store a sum for the label of the bottom of the pie chart
@@ -117,7 +128,7 @@ class PieChart extends Component {
   }
 
   render() {
-    const { width, height } = this.props;
+    const { width, height, category } = this.props;
     const { dataParsed } = this.state;
     const { total } = dataParsed;
 
@@ -130,7 +141,11 @@ class PieChart extends Component {
             this.svg = _;
           }}
         />
-        {total && <p>Total Injuries: {total}</p>}
+        {total && (
+          <p>
+            Total {category}: {total}
+          </p>
+        )}
       </div>
     );
   }
