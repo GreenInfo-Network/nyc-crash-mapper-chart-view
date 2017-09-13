@@ -14,26 +14,30 @@ const lineGenerator = d3
   .y(d => yScale(d.pedestrian_injured))
   .curve(d3.curveMonotoneX);
 
-/** Class that renders the line chart for selected geographic entities
+/** Class that renders the line chart for selected geographic entities using D3
 */
 class LineChart extends Component {
   static propTypes = {
-    primary: PropTypes.shape({
-      key: PropTypes.string,
-      values: PropTypes.array,
-    }).isRequired,
-    secondary: PropTypes.shape({
-      key: PropTypes.string,
-      values: PropTypes.array,
-    }).isRequired,
+    keyPrimary: PropTypes.string,
+    keySecondary: PropTypes.string,
     nested: PropTypes.arrayOf(PropTypes.object),
     startDate: PropTypes.instanceOf(Date),
     endDate: PropTypes.instanceOf(Date),
+    valuesByDateRange: PropTypes.shape({
+      primary: PropTypes.shape({
+        key: PropTypes.string,
+        values: PropTypes.array,
+      }),
+      secondary: PropTypes.shape({
+        key: PropTypes.string,
+        values: PropTypes.array,
+      }),
+    }).isRequired,
   };
 
   static defaultProps = {
-    primary: {},
-    secondary: {},
+    keyPrimary: '',
+    keySecondary: '',
     nested: [],
     startDate: {},
     endDate: {},
@@ -41,34 +45,14 @@ class LineChart extends Component {
 
   constructor() {
     super();
-    this.state = {
-      primaryEntity: { key: '', values: [] },
-      secondaryEntity: { key: '', values: [] },
-    };
     this.svg = null; // ref to svg element
     this.yAxis = d3.axisLeft();
     this.xAxis = d3.axisBottom();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { primary, secondary, startDate, endDate } = nextProps;
-
-    // diff the keys, if they're different filter data
-    // (when a entity is added and wasn't there previously, needs to have its values filtered)
-    if (primary.key !== this.props.primary.key || secondary.key !== this.props.secondary.key) {
-      this.filterData(primary, secondary, startDate, endDate);
-    }
-
-    // diff the start and end dates, if they're different filter data
-    if (+startDate !== +this.props.startDate || +endDate !== +this.props.endDate) {
-      this.filterData(primary, secondary, startDate, endDate);
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     // do the d3 work here, after the component updated
-    const { nested, startDate, endDate } = this.props;
-    const { primaryEntity, secondaryEntity } = this.state;
+    const { nested, keyPrimary, keySecondary, startDate, endDate } = this.props;
 
     // if we receieved data create the chart structure
     if (nested.length && nested.length !== prevProps.nested.length) {
@@ -76,10 +60,7 @@ class LineChart extends Component {
     }
 
     // if keys in our component state differ, update the chart
-    if (
-      primaryEntity.key !== prevState.primaryEntity.key ||
-      secondaryEntity.key !== prevState.secondaryEntity.key
-    ) {
+    if (keyPrimary !== prevProps.keyPrimary || keySecondary !== prevProps.keySecondary) {
       this.updateChart();
     }
 
@@ -89,41 +70,10 @@ class LineChart extends Component {
     }
   }
 
-  filterData(primary, secondary, startDate, endDate) {
-    // TO DO: move filtering logic to a reducer so that other chart widgets have access
-    const primaryEntity = {
-      ...primary,
-      values: this.filterValuesByDateRange(primary.values, startDate, endDate),
-    };
-
-    const secondaryEntity = {
-      ...secondary,
-      values: this.filterValuesByDateRange(secondary.values, startDate, endDate),
-    };
-
-    // store copies of our entities so that we aren't mutating them
-    // this will cause a re-render that we can detect and have d3 respond to
-    this.setState({
-      primaryEntity,
-      secondaryEntity,
-    });
-  }
-
-  // eslint-disable-next-line
-  filterValuesByDateRange(values, startDate, endDate) {
-    // filters array of objects by date ranges
-    return values.filter(d => {
-      if (+d.year_month >= +startDate && +d.year_month <= +endDate) {
-        return true;
-      }
-      return false;
-    });
-  }
-
   updateChart() {
     // adds or removes data to / from the chart
-    const { primaryEntity, secondaryEntity } = this.state;
-    const entities = [primaryEntity, secondaryEntity];
+    const { primary, secondary } = this.props.valuesByDateRange;
+    const entities = [primary, secondary];
     const svg = d3.select(this.svg);
     const g = svg.select('g.g-parent');
     const yAxis = this.yAxis;
