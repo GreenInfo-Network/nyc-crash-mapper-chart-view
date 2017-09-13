@@ -38,6 +38,10 @@ class PieChart extends Component {
     if (dataParsed.values.length && !isEqual(prevState.dataParsed.values, dataParsed.values)) {
       this.renderChart(dataParsed.values);
     }
+
+    if (prevState.dataParsed.values.length && !dataParsed.values.length) {
+      // TO DO: handle no data after there was data
+    }
   }
 
   parseData(values) {
@@ -79,6 +83,13 @@ class PieChart extends Component {
     this.setState({
       dataParsed,
     });
+  }
+
+  destroyChart() {
+    d3
+      .select(this.svg)
+      .select('g')
+      .remove();
   }
 
   renderChart(data) {
