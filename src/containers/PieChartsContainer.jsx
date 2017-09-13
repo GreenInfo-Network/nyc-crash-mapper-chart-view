@@ -31,29 +31,37 @@ class PieChartsContainer extends Component {
 
     return (
       <div className="PieChartsContainer">
-        <div className="primary-container">
-          <PieChart category="injuries" values={primary.values} width={pieSize} height={pieSize} />
-          <PieChart
-            category="fatalities"
-            values={primary.values}
-            width={pieSize}
-            height={pieSize}
-          />
+        <div className="period-one debug">
+          <div className="primary-container debug">
+            <PieChart
+              category="injuries"
+              values={primary.values}
+              width={pieSize}
+              height={pieSize}
+            />
+            <PieChart
+              category="fatalities"
+              values={primary.values}
+              width={pieSize}
+              height={pieSize}
+            />
+          </div>
+          <div className="secondary-container debug">
+            <PieChart
+              category="injuries"
+              values={secondary.values}
+              width={pieSize}
+              height={pieSize}
+            />
+            <PieChart
+              category="fatalities"
+              values={secondary.values}
+              width={pieSize}
+              height={pieSize}
+            />
+          </div>
         </div>
-        <div className="secondary-container">
-          <PieChart
-            category="injuries"
-            values={secondary.values}
-            width={pieSize}
-            height={pieSize}
-          />
-          <PieChart
-            category="fatalities"
-            values={secondary.values}
-            width={pieSize}
-            height={pieSize}
-          />
-        </div>
+        <div className="period-two debug" />
       </div>
     );
   }
