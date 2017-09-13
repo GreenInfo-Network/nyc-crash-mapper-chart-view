@@ -146,7 +146,7 @@ class PieChart extends Component {
 
     return (
       <div className="PieChart">
-        <h6 className="title">{title}</h6>
+        {total && <h6 className="title">{title}</h6>}
         <svg
           width={width}
           height={height}

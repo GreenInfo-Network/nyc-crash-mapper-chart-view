@@ -4,9 +4,15 @@
 
   .title,
   p {
-    margin: 0;
-    padding: 0;
     text-align: center;
+  }
+
+  .title {
+    padding-bottom: 10px;
+  }
+
+  p {
+    padding: 0;
   }
 
   .arc text {
