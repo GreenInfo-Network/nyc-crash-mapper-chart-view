@@ -7,11 +7,14 @@ class PieChart extends Component {
   static propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    data: PropTypes.arraOf(PropTypes.object),
+    data: PropTypes.shape({
+      values: PropTypes.arrayOf(PropTypes.object),
+      total: PropTypes.number,
+    }),
   };
 
   static defaultProps = {
-    data: [],
+    data: {},
   };
 
   constructor(props) {
@@ -22,8 +25,8 @@ class PieChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.data, this.props.data)) {
-      this.renderChart(this.props.data);
+    if (this.props.data.values && !isEqual(prevProps.data.values, this.props.data.values)) {
+      this.renderChart(this.props.data.values);
     }
   }
 
@@ -37,7 +40,7 @@ class PieChart extends Component {
       .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
     // ped, cyclist, motorist
-    const color = d3.scaleOrdinal(['#E85500', '#7569B3', '#636363']);
+    const color = d3.scaleOrdinal(['#68ADD8', '#FF8D2F', '#969696']);
 
     const pie = d3
       .pie()
@@ -74,17 +77,19 @@ class PieChart extends Component {
   }
 
   render() {
-    const { width, height } = this.props;
+    const { width, height, data } = this.props;
+    const { total } = data;
 
     return (
       <div className="PieChart">
         <svg
           width={width}
-          heigth={height}
+          height={height}
           ref={_ => {
             this.svg = _;
           }}
         />
+        <p>Total Injuries: {total}</p>
       </div>
     );
   }
