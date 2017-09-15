@@ -10,6 +10,8 @@ import LineChart from '../components/LineChart';
  */
 class LineChartsContainer extends Component {
   static propTypes = {
+    appHeight: PropTypes.number.isRequired,
+    appWidth: PropTypes.number.isRequired,
     primary: PropTypes.shape({
       key: PropTypes.string,
       values: PropTypes.array,
@@ -57,6 +59,8 @@ class LineChartsContainer extends Component {
 
   render() {
     const {
+      appHeight,
+      appWidth,
       nested,
       primary,
       secondary,
@@ -66,9 +70,16 @@ class LineChartsContainer extends Component {
       valuesDateRange2,
     } = this.props;
 
+    const style = {
+      height: '100%',
+      width: '100%',
+    };
+
     return (
-      <div className="LineChartsContainer">
+      <div className="LineChartsContainer" style={style}>
         <LineChart
+          appHeight={appHeight}
+          appWidth={appWidth}
           nested={nested}
           keyPrimary={primary.key}
           keySecondary={secondary.key}
@@ -76,6 +87,8 @@ class LineChartsContainer extends Component {
           valuesByDateRange={valuesDateRange2}
         />
         <LineChart
+          appHeight={appHeight}
+          appWidth={appWidth}
           nested={nested}
           keyPrimary={primary.key}
           keySecondary={secondary.key}
@@ -88,10 +101,13 @@ class LineChartsContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  const { data, entities, dateRanges } = state;
+  const { browser, data, entities, dateRanges } = state;
   const entitiesValuesFiltered = filterEntitiesValues(state);
   const { valuesDateRange1, valuesDateRange2 } = entitiesValuesFiltered;
+  const { height, width } = browser;
   return {
+    appHeight: height,
+    appWidth: width,
     nested: data.nested,
     primary: entities.primary,
     secondary: entities.secondary,
