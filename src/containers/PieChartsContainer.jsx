@@ -10,6 +10,8 @@ import PieChart from '../components/PieChart';
  */
 class PieChartsContainer extends Component {
   static propTypes = {
+    appHeight: PropTypes.number.isRequired,
+    appWidth: PropTypes.number.isRequired,
     entity: PropTypes.string,
     entityType: PropTypes.string,
     valuesDateRange1: PropTypes.shape({
@@ -43,9 +45,8 @@ class PieChartsContainer extends Component {
   };
 
   render() {
-    const { valuesDateRange1, valuesDateRange2, entityType } = this.props;
+    const { appWidth, appHeight, valuesDateRange1, valuesDateRange2, entityType } = this.props;
     const { primary, secondary } = valuesDateRange1;
-    const pieSize = 125;
 
     // TO DO: refactor this markup!!!
     return (
@@ -62,14 +63,14 @@ class PieChartsContainer extends Component {
               <PieChart
                 category="injuries"
                 values={valuesDateRange2.primary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
               <PieChart
                 category="fatalities"
                 values={valuesDateRange2.primary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
             </div>
           </div>
@@ -84,14 +85,14 @@ class PieChartsContainer extends Component {
               <PieChart
                 category="injuries"
                 values={valuesDateRange2.secondary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
               <PieChart
                 category="fatalities"
                 values={valuesDateRange2.secondary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
             </div>
           </div>
@@ -108,14 +109,14 @@ class PieChartsContainer extends Component {
               <PieChart
                 category="injuries"
                 values={valuesDateRange1.primary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
               <PieChart
                 category="fatalities"
                 values={valuesDateRange1.primary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
             </div>
           </div>
@@ -130,14 +131,14 @@ class PieChartsContainer extends Component {
               <PieChart
                 category="injuries"
                 values={valuesDateRange1.secondary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
               <PieChart
                 category="fatalities"
                 values={valuesDateRange1.secondary.values}
-                width={pieSize}
-                height={pieSize}
+                appWidth={appWidth}
+                appHeight={appHeight}
               />
             </div>
           </div>
@@ -148,11 +149,14 @@ class PieChartsContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  const { entities } = state;
+  const { browser, entities } = state;
+  const { width, height } = browser;
   const entitiesValuesFiltered = filterEntitiesValues(state);
   const { valuesDateRange1, valuesDateRange2 } = entitiesValuesFiltered;
 
   return {
+    appHeight: height,
+    appWidth: width,
     entityType: entities.entityType,
     valuesDateRange1,
     valuesDateRange2,

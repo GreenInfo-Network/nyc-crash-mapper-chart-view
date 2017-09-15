@@ -5,8 +5,8 @@ import isEqual from 'lodash/isEqual';
 
 class PieChart extends Component {
   static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
+    appWidth: PropTypes.number.isRequired,
+    appHeight: PropTypes.number.isRequired,
     values: PropTypes.arrayOf(PropTypes.object),
     category: PropTypes.oneOf(['injuries', 'fatalities']).isRequired,
   };
@@ -15,10 +15,9 @@ class PieChart extends Component {
     values: [],
   };
 
-  constructor(props) {
-    super(props);
-    const { width, height } = props;
-    this.radius = Math.min(width, height) / 2;
+  constructor() {
+    super();
+    this.radius = null;
     this.svg = null; // ref to the svg element
     this.state = {
       dataParsed: {
@@ -52,6 +51,24 @@ class PieChart extends Component {
       // if no data, then show a placeholder chart
       this.placeholder();
     }
+
+    if (
+      prevProps.appHeight !== this.props.appHeight ||
+      prevProps.appWidth !== this.props.appWidth
+    ) {
+      this.resizeChart();
+      this.update();
+    }
+  }
+
+  getContainerSize() {
+    const width = Math.floor(this.svg.parentNode.clientWidth * 0.6);
+    const height = Math.floor(this.svg.parentNode.clientHeight * 0.6);
+    // this.radius = Math.min(width, height) / 2;
+    return {
+      width,
+      height,
+    };
   }
 
   parseData(values) {
@@ -97,6 +114,15 @@ class PieChart extends Component {
     this.setState({
       dataParsed,
     });
+  }
+
+  resizeChart() {
+    const { width, height } = this.getContainerSize();
+    this.radius = Math.min(width, height) / 2;
+    const svg = d3.select(this.svg);
+    const g = svg.select('g');
+    svg.attr('width', width).attr('height', height);
+    g.attr('transform', `translate(${width / 2}, ${height / 2})`);
   }
 
   placeholder() {
@@ -153,9 +179,15 @@ class PieChart extends Component {
 
   initChart() {
     // set up the barebone structure of the chart, a svg group centered vert & horz
-    const { width, height } = this.props;
+    const { width, height } = this.getContainerSize();
+
+    // store the radius value based on width & height
+    this.radius = Math.min(width, height) / 2;
+
     d3
       .select(this.svg)
+      .attr('width', width)
+      .attr('height', height)
       .append('g')
       .attr('transform', `translate(${width / 2}, ${height / 2})`);
   }
@@ -197,7 +229,7 @@ class PieChart extends Component {
   }
 
   render() {
-    const { width, height, category } = this.props;
+    const { category } = this.props;
     const { dataParsed } = this.state;
     const { total } = dataParsed;
     const title = category === 'injuries' ? 'Injury' : 'Fatality';
@@ -206,8 +238,6 @@ class PieChart extends Component {
       <div className="PieChart">
         <h6 className="title">{title || ''}</h6>
         <svg
-          width={width}
-          height={height}
           ref={_ => {
             this.svg = _;
           }}

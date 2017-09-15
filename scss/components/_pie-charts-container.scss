@@ -9,10 +9,14 @@
 
   .period-one,
   .period-two {
-    width: 50%;
+    width: calc(50% - 10px);
     height: 100%;
     display: inline-block;
     vertical-align: middle;
+  }
+
+  .period-one {
+    margin-left: 20px;
   }
 
   .primary-container,
@@ -23,35 +27,29 @@
 
   .primary-container {
     border-bottom: 1px solid $medium-grey;
+    padding-bottom: 10px;
+  }
+
+  .secondary-container {
+    padding-top: 10px;
   }
 
   .title-labels,
   .charts {
     height: 100%;
-    display: inline-block;
     vertical-align: middle;
   }
 
   .title-labels {
     position: relative;
     width: 100px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .charts {
+    display: inline-block;
     width: calc(100% - 100px);
-  }
-
-  .label--title,
-  .label--total {
-    position: absolute;
-    left: 10px;
-  }
-
-  .label--title {
-    top: 10px;
-  }
-
-  .label--total {
-    bottom: 10px;
   }
 }

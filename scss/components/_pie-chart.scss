@@ -1,18 +1,29 @@
 .PieChart {
-  display: inline-block;
-  margin: 10px;
+  width: 50%;
+  height: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  vertical-align: middle;
+
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
 
   .title,
   p {
     text-align: center;
+    padding: 0;
+    margin: 0;
   }
 
   .title {
-    padding-bottom: 10px;
+    font-size: 1.3rem;
   }
 
   p {
-    padding: 0;
+    font-size: 1.2rem;
   }
 
   path {
