@@ -13,23 +13,36 @@ export default function(callbacks, dateRanges) {
 
   const margin = {
     top: 10,
-    right: 0,
+    right: 10,
     bottom: 40,
-    left: 0,
+    left: 10,
   };
-  const width = 960 - margin.left - margin.right;
-  const height = 100 - margin.top - margin.bottom;
+  let width = 960 - margin.left - margin.right;
+  let height = 100 - margin.top - margin.bottom;
 
-  const xScale = d3
-    .scaleTime()
-    .domain([new Date(2011, 7, 1), new Date()])
-    .range([0, width]);
+  const xScale = d3.scaleTime().domain([new Date(2011, 7, 1), new Date()]);
+
+  const axisMinor = d3
+    .axisBottom()
+    .scale(xScale)
+    .ticks(d3.timeMonth.every(2))
+    .tickSize(-height)
+    .tickFormat('');
+
+  const axisMajor = d3
+    .axisBottom()
+    .scale(xScale)
+    .ticks(d3.timeYear.every(1))
+    .tickPadding(0);
 
   let svg = null;
-  let gBrushes = null; // brushes container
-  const brushes = []; // keep track of existing brushes
+  let gBrushes = null; // brushes svg group
 
-  // invoked on the "end" event of a d3-brush
+  // keep track of existing brushes, probably don't need an array here, some code was borrowed
+  // from an example demoing how to add infinite number of brushes to a viz...
+  const brushes = [];
+
+  // invoked on the "end" event of a d3-brush (user stops dragging or resizing the brush)
   // @param {function} callback: function that is invoked on the brush's "end" event
   function brushend(callback) {
     if (!d3.event.sourceEvent) return; // Only transition after input.
@@ -83,6 +96,8 @@ export default function(callbacks, dateRanges) {
   // set's up the timeline, adds a new brush
   // @param {node} el: element representing the SVG node for d3 to hook into
   function init(el) {
+    xScale.range([0, width]);
+
     svg = d3
       .select(el)
       .append('g')
@@ -98,14 +113,7 @@ export default function(callbacks, dateRanges) {
       .append('g')
       .attr('class', 'x grid')
       .attr('transform', `translate(0, ${height})`)
-      .call(
-        d3
-          .axisBottom()
-          .scale(xScale)
-          .ticks(d3.timeMonth.every(2))
-          .tickSize(-height)
-          .tickFormat('')
-      )
+      .call(axisMinor)
       .selectAll('.tick')
       .classed('minor', d => d.getMonth());
 
@@ -113,13 +121,7 @@ export default function(callbacks, dateRanges) {
       .append('g')
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${height})`)
-      .call(
-        d3
-          .axisBottom()
-          .scale(xScale)
-          .ticks(d3.timeYear.every(1))
-          .tickPadding(0)
-      )
+      .call(axisMajor)
       .selectAll('text')
       .attr('x', 0)
       .attr('y', 10)
@@ -179,5 +181,73 @@ export default function(callbacks, dateRanges) {
     d3.selectAll('.overlay').style('pointer-events', 'none');
   }
 
-  return init;
+  // eslint-disable-next-line
+  const getSetHeight = value => {
+    if (arguments.length) {
+      height = value - margin.top - margin.bottom;
+    } else {
+      return height;
+    }
+  };
+
+  // eslint-disable-next-line
+  const getSetWidth = value => {
+    if (arguments.length) {
+      width = value - margin.left - margin.right;
+    } else {
+      return width;
+    }
+  };
+
+  // method that responds to a browser resize
+  const resize = curDateRanges => {
+    // eslint-disable-next-line
+    const { dateRangeOne, dateRangeTwo } = curDateRanges;
+    // transition selection, this animates everything smoothly
+    const t = svg.transition().duration(750);
+
+    // update xScale range
+    xScale.range([0, width]);
+    axisMinor.scale(xScale);
+    axisMajor.scale(xScale);
+
+    // resize background rect
+    t.select('.grid-background').attr('width', width);
+
+    // update minor axis
+    t.select('.x.grid').call(axisMinor);
+
+    // update major axis
+    t
+      .select('.x.axis')
+      .call(axisMajor)
+      .selectAll('text')
+      .attr('x', 0)
+      .attr('y', 10)
+      .style('text-anchor', null);
+
+    // update brushes' extent & position
+    brushes.forEach(brushObj => {
+      brushObj.brush.extent([[0, 0], [width, height]]);
+
+      if (brushObj.id === 0) {
+        brushObj.brush.move(t.select('#brush-0'), [
+          xScale(dateRangeOne.startDate),
+          xScale(dateRangeOne.endDate),
+        ]);
+      } else {
+        brushObj.brush.move(t.select('#brush-1'), [
+          xScale(dateRangeTwo.startDate),
+          xScale(dateRangeTwo.endDate),
+        ]);
+      }
+    });
+  };
+
+  return {
+    init,
+    getSetWidth,
+    getSetHeight,
+    resize,
+  };
 }
