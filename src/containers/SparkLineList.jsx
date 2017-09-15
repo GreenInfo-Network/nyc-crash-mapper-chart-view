@@ -134,13 +134,20 @@ class SparkLineList extends Component {
     const { key } = entity;
     const { secondary, primary } = this.props;
 
-    if (!primary.key && key !== primary.key) {
+    if (!primary.key && key !== secondary.key) {
       this.props.selectPrimaryEntity(entity);
-      return;
     }
 
-    if (primary.key && !secondary.key && key !== secondary.key) {
+    if (primary.key && key === primary.key) {
+      this.props.deselectPrimaryEntity();
+    }
+
+    if (primary.key && !secondary.key && key !== primary.key) {
       this.props.selectSecondaryEntity(entity);
+    }
+
+    if (secondary.key && key === secondary.key) {
+      this.props.deselectSecondaryEntity();
     }
   }
 
