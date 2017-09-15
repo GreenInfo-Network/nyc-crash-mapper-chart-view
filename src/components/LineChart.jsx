@@ -37,11 +37,14 @@ class LineChart extends Component {
     super();
     this.container = null; // ref to containing div
     this.svg = null; // ref to svg element
-    this.margin = { top: 10, right: 10, bottom: 20, left: 20 };
+    this.margin = { top: 10, right: 15, bottom: 20, left: 20 };
     this.yAxis = d3.axisLeft();
     this.xAxis = d3.axisBottom();
     this.xScale = d3.scaleTime();
     this.yScale = d3.scaleLinear();
+    this.gridlinesX = () => d3.axisBottom(this.xScale).ticks(5);
+    this.gridlinesY = () => d3.axisLeft(this.yScale).ticks(5);
+
     this.lineGenerator = d3
       .line()
       .x(d => this.xScale(d.year_month))
@@ -83,6 +86,7 @@ class LineChart extends Component {
   }
 
   getContainerSize() {
+    // set the width and height of the svg from the parent div's width height, which is set via CSS
     const bcr = this.container.getBoundingClientRect();
     const cWidth = Math.floor(bcr.width) - this.margin.right - this.margin.left;
     const cHeight = Math.floor(bcr.height) - this.margin.top - this.margin.bottom;
@@ -129,6 +133,23 @@ class LineChart extends Component {
       .attr('transform', `translate(0, ${height})`)
       .call(xAxis);
 
+    // transition & update the vertical gridlines
+    t
+      .select('g.x.grid')
+      .attr('transform', `translate(0, ${height})`)
+      .call(
+        this.gridlinesX()
+          .tickSize(-height)
+          .tickFormat('')
+      );
+
+    // transition & update the horizontal gridlines
+    t.select('g.y.grid').call(
+      this.gridlinesY()
+        .tickSize(-width)
+        .tickFormat('')
+    );
+
     // select existing lines
     const lines = g.selectAll('.line');
 
@@ -141,8 +162,10 @@ class LineChart extends Component {
 
   updateChart() {
     // adds or removes data to / from the chart
+    const { width, height } = this.getContainerSize();
     const { primary, secondary } = this.props.valuesByDateRange;
     const entities = [primary, secondary];
+    // const margin = this.margin;
     const xScale = this.xScale;
     const yScale = this.yScale;
     const lineGenerator = this.lineGenerator;
@@ -169,6 +192,20 @@ class LineChart extends Component {
 
     // transition & update the xAxis
     t.select('g.x.axis').call(xAxis);
+
+    // transition & update the vertical gridlines
+    t.select('g.x.grid').call(
+      this.gridlinesX()
+        .tickSize(-height)
+        .tickFormat('')
+    );
+
+    // transition & update the horizontal gridlines
+    t.select('g.y.grid').call(
+      this.gridlinesY()
+        .tickSize(-width)
+        .tickFormat('')
+    );
 
     // update the svg main group element's data binding
     g.datum(entities, d => d.key);
@@ -233,6 +270,27 @@ class LineChart extends Component {
       .append('g')
       .attr('class', 'g-parent')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    // vertical grid lines
+    g
+      .append('g')
+      .attr('class', 'grid x')
+      .attr('transform', `translate(0, ${height})`)
+      .call(
+        this.gridlinesX()
+          .tickSize(-height - margin.top - margin.bottom)
+          .tickFormat('')
+      );
+
+    // horizontal grid lines
+    g
+      .append('g')
+      .attr('class', 'grid y')
+      .call(
+        this.gridlinesY()
+          .tickSize(-width)
+          .tickFormat('')
+      );
 
     g
       .append('g')
