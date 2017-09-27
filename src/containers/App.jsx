@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 
 import * as actions from '../actions';
 
-import SparkLineContainer from '../components/SparkLineContainer';
+import SparkLineContainer from '../components/SparkLineListController';
 import LineChartsContainer from './LineChartsContainer';
 import EntitySelections from './EntitySelections';
 import TimeLine from './TimeLine';
