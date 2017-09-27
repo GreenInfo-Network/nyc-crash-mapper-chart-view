@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 
 import * as actions from '../actions';
 
-import SparkLineContainer from '../components/SparkLineListController';
+import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
 import EntitySelections from './EntitySelections';
 import TimeLine from './TimeLine';
@@ -45,7 +45,7 @@ class App extends Component {
           <h3 style={{ textTransform: 'uppercase' }}>nyc crash mapper</h3>
         </div>
         <div className="grid-area sparklines">
-          <SparkLineContainer entities={entitiesNested} entityType={entityType} />
+          <Sidebar {...{ entitiesNested, entityType }} />
         </div>
         <div className="grid-area entity-selectors">
           <EntitySelections />

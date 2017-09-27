@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SparkLineList from '../containers/SparkLineList';
+import SparkLineList from '../../containers/SparkLineList';
 
 /** Class that houses the SparkLineList and provides a UI & Controller for filtering & sorting it
 */
@@ -56,7 +56,7 @@ class SparkLineContainer extends Component {
     const { inputValue, sortName, sortRank, sortAsc } = this.state;
 
     return (
-      <div className="SparkLineContainer">
+      <div className="SparkLineListController">
         <div className="sparkline-controls">
           <input
             placeholder={`Search a ${entityType}`}
