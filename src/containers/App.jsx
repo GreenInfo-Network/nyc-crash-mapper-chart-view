@@ -7,9 +7,7 @@ import * as actions from '../actions';
 
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
-import EntitySelections from './EntitySelections';
 import TimeLine from './TimeLine';
-import PieChartsContainer from './PieChartsContainer';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -42,22 +40,16 @@ class App extends Component {
     return (
       <div className="App grid-container">
         <div className="grid-area header">
-          <h3 style={{ textTransform: 'uppercase' }}>nyc crash mapper</h3>
+          <h3 style={{ textTransform: 'uppercase', display: 'inline-block' }}>nyc crash mapper</h3>
         </div>
         <div className="grid-area sparklines">
           <Sidebar {...{ entitiesNested, entityType }} />
-        </div>
-        <div className="grid-area entity-selectors">
-          <EntitySelections />
         </div>
         <div className="grid-area timeline">
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
           <LineChartsContainer />
-        </div>
-        <div className="grid-area piecharts">
-          <PieChartsContainer />
         </div>
       </div>
     );
