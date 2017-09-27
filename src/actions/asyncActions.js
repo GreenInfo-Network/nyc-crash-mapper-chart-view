@@ -46,6 +46,7 @@ export default function fetchEntityData() {
         // alias
         const response = result.data;
 
+        // TO DO: move this date parsing & formatting logic to a separate function so that it may be reused
         // parse date string into a date object
         response.forEach(d => {
           d.year_month = parseDate(d.year_month);
@@ -61,7 +62,18 @@ export default function fetchEntityData() {
         // category currently hardcoded to pedestrian_injured, this should be variable
         nested.forEach(entity => {
           entity.maxPedInj = max(entity.values, d => d.pedestrian_injured);
+          entity.maxCycInj = max(entity.values, d => d.cyclist_injured);
+          entity.maxMotInj = max(entity.values, d => d.motorist_injured);
+          entity.maxPedFat = max(entity.values, d => d.pedestrian_killed);
+          entity.maxCycFat = max(entity.values, d => d.cyclist_killed);
+          entity.maxMotFat = max(entity.values, d => d.motorist_killed);
+
           entity.totalPedInj = sum(entity.values, d => d.pedestrian_injured);
+          entity.totalCycInj = sum(entity.values, d => d.cyclist_injured);
+          entity.totalMotInj = sum(entity.values, d => d.motorist_injured);
+          entity.totalPedFat = sum(entity.values, d => d.pedestrian_killed);
+          entity.totalCycFat = sum(entity.values, d => d.cyclist_killed);
+          entity.totalMotFat = sum(entity.values, d => d.motorist_killed);
         });
 
         // sort descending by total ped injuries (rank)
