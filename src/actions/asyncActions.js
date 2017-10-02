@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { nest, sum, max } from 'd3';
+// import { sqlCitywide } from '../common/sqlQueries';
 
+// import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
@@ -41,6 +43,7 @@ function sort(arr, prop, asc) {
 
 export default function fetchEntityData() {
   const url = 'data/inj_fat_city_councils_all_years.json';
+  // const url = `https://${cartoUser}.carto.com/api/v2/sql?q=${encodeURIComponent(sqlCitywide)}`;
 
   return dispatch => {
     dispatch(requestEntityData());
