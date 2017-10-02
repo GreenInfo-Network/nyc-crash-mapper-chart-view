@@ -39,8 +39,13 @@ export const allEntityData = state => {
   const { entityType } = entities;
 
   if (!data[entityType]) {
-    // TO DO: no data has been cached for the current geography, hit the API to grab data
-    return null;
+    // no data has been cached for the current geography, hit the API to grab data
+    // the empty arrays will be diffed by the App component which will then call the
+    // appropriate action to request new data
+    return {
+      response: [],
+      nested: [],
+    };
   }
 
   return data[entityType];
