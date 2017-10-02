@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { filterEntitiesValues } from '../reducers';
+import { allEntityData, filterEntitiesValues } from '../reducers';
 import LineChart from '../components/LineChart';
 
 /**
@@ -101,14 +101,16 @@ class LineChartsContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, data, entities, dateRanges } = state;
+  const { browser, entities, dateRanges } = state;
   const entitiesValuesFiltered = filterEntitiesValues(state);
   const { valuesDateRange1, valuesDateRange2 } = entitiesValuesFiltered;
   const { height, width } = browser;
+  const entityData = allEntityData(state);
+
   return {
     appHeight: height,
     appWidth: width,
-    nested: data.nested,
+    nested: entityData.nested,
     primary: entities.primary,
     secondary: entities.secondary,
     dateRangeOne: dateRanges.group1,

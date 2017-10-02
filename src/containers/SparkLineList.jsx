@@ -11,6 +11,8 @@ import {
   deselectSecondaryEntity,
 } from '../actions';
 
+import { allEntityData } from '../reducers';
+
 // TO DO: move these into the SparkLineList class?
 const margin = { top: 8, right: 10, bottom: 2, left: 10 };
 const width = 240 - margin.left - margin.right;
@@ -32,12 +34,16 @@ const line = d3
   .y(d => yScale(d.pedestrian_injured))
   .curve(d3.curveMonotoneX);
 
-const mapStateToProps = ({ entities, data }) => ({
-  entityType: entities.entityType,
-  nested: data.nested,
-  primary: entities.primary,
-  secondary: entities.secondary,
-});
+const mapStateToProps = state => {
+  const { entities } = state;
+  const entityData = allEntityData(state);
+  return {
+    entityType: entities.entityType,
+    nested: entityData.nested,
+    primary: entities.primary,
+    secondary: entities.secondary,
+  };
+};
 
 /** Class that renders a list of SVG sparkLines
 */

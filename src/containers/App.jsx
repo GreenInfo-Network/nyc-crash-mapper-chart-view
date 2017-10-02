@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
 import * as actions from '../actions';
+import { allEntityData } from '../reducers';
 
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
@@ -30,7 +31,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.props.setEntityType('City Council District');
+    this.props.setEntityType('city_council');
     this.props.fetchEntityData();
   }
 
@@ -56,13 +57,18 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ browser, data, entities }) => ({
-  width: browser.width,
-  height: browser.height,
-  entityData: data.response,
-  entitiesNested: data.nested,
-  entityType: entities.entityType,
-});
+const mapStateToProps = state => {
+  const { browser, entities } = state;
+  const entityData = allEntityData(state);
+
+  return {
+    width: browser.width,
+    height: browser.height,
+    entityData: entityData.response,
+    entitiesNested: entityData.nested,
+    entityType: entities.entityType,
+  };
+};
 
 export default connect(mapStateToProps, {
   ...actions,
