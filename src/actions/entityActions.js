@@ -14,6 +14,7 @@ export const setEntityType = entityType => ({
 
 // action creators for selecting and deselecting a primary and secondary geographic entity
 // TO DO: abstract these into just two action creators?
+// @param {object} entity Represents an object from the Redux `store.data.nested` array with maxes, totals, key, & values array
 export const selectPrimaryEntity = entity => ({
   type: SELECT_PRIMARY_ENTITY,
   entity,

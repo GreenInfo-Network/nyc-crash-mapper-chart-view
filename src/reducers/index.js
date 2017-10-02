@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { createResponsiveStateReducer } from 'redux-responsive';
 
+import mapFilterTypesToProps from '../common/utils';
+
 import filterType from './filterByTypeReducer';
 import entities from './entitiesReducer';
 import data from './dataReducer';
@@ -59,18 +61,21 @@ export const allEntityData = state => {
  */
 export const filterEntitiesValues = state => {
   // eslint-disable-next-line
-  const { entities, dateRanges } = state;
+  const { entities, dateRanges, filterType } = state;
   const { primary, secondary } = entities;
   const { group1, group2 } = dateRanges;
 
   function filterValuesByDateRange(values, startDate, endDate) {
     // filters array of objects by date ranges
-    return values.filter(d => {
+    const newValues = values.filter(d => {
       if (+d.year_month >= +startDate && +d.year_month <= +endDate) {
         return true;
       }
       return false;
     });
+
+    // aggregate data using currently selected crash type filters
+    return mapFilterTypesToProps(filterType, newValues);
   }
 
   return {
