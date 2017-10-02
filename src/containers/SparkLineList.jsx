@@ -12,34 +12,38 @@ import {
 } from '../actions';
 
 import { allEntityData } from '../reducers';
+import mapFilterTypesToProps, { sort } from '../common/utils';
 
 // TO DO: move these into the SparkLineList class?
 const margin = { top: 8, right: 10, bottom: 2, left: 10 };
 const width = 240 - margin.left - margin.right;
 const height = 69 - margin.top - margin.bottom;
 
-const xScale = d3.scaleTime().range([0, width]);
-const yScale = d3.scaleLinear().range([height, 0]);
-
-const area = d3
-  .area()
-  .x(d => xScale(d.year_month))
-  .y0(height)
-  .y1(d => yScale(d.persons_injured)) // TO DO: shouldn't be hardcoded
-  .curve(d3.curveMonotoneX);
-
-const line = d3
-  .line()
-  .x(d => xScale(d.year_month))
-  .y(d => yScale(d.persons_injured)) // TO DO: shouldn't be hardcoded
-  .curve(d3.curveMonotoneX);
-
 const mapStateToProps = state => {
-  const { entities } = state;
-  const entityData = allEntityData(state);
+  const { entities, filterType } = state;
+  const { entityType } = entities;
+  const { response } = allEntityData(state);
+  let nested = [];
+  let mapped = [];
+
+  // TO DO: this pattern will likely be used elsewhere, should get moved to a higher order function
+  if (response) {
+    mapped = mapFilterTypesToProps(filterType, response);
+    nested = d3
+      .nest()
+      .key(d => d[entityType])
+      .entries(mapped);
+    sort(nested, 'count', true);
+    nested.forEach((d, i) => {
+      d.rank = i;
+    });
+  }
+
   return {
-    entityType: entities.entityType,
-    nested: entityData.nested,
+    entityType,
+    filterType,
+    response: mapped,
+    nested,
     primary: entities.primary,
     secondary: entities.secondary,
   };
@@ -50,6 +54,19 @@ const mapStateToProps = state => {
 class SparkLineList extends Component {
   static propTypes = {
     entityType: PropTypes.string,
+    filterType: PropTypes.shape({
+      fatality: PropTypes.shape({
+        cyclist: PropTypes.bool.isRequired,
+        motorist: PropTypes.bool.isRequired,
+        pedestrian: PropTypes.bool.isRequired,
+      }),
+      injury: PropTypes.shape({
+        cyclist: PropTypes.bool.isRequired,
+        motorist: PropTypes.bool.isRequired,
+        pedestrian: PropTypes.bool.isRequired,
+      }),
+      noInjuryFatality: PropTypes.bool.isRequired,
+    }).isRequired,
     primary: PropTypes.shape({
       key: PropTypes.string,
       values: PropTypes.array,
@@ -59,6 +76,7 @@ class SparkLineList extends Component {
       values: PropTypes.array,
     }).isRequired,
     nested: PropTypes.arrayOf(PropTypes.object),
+    response: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
     sortName: PropTypes.bool.isRequired,
     sortRank: PropTypes.bool.isRequired,
@@ -72,12 +90,33 @@ class SparkLineList extends Component {
   static defaultProps = {
     entityType: '',
     nested: [],
+    response: [],
     filterTerm: '',
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.renderSparkLines = this.renderSparkLines.bind(this);
+
+    // x and y scales for drawing spark line paths
+    this.xScale = d3.scaleTime().range([0, width]);
+    this.yScale = d3.scaleLinear().range([height, 0]);
+
+    // svg path generator for drawing an area
+    this.area = d3
+      .area()
+      .x(d => this.xScale(d.year_month))
+      .y0(height)
+      .y1(d => this.yScale(d.count)) // TO DO: shouldn't be hardcoded
+      .curve(d3.curveMonotoneX);
+
+    // svg path generator for drawing a line
+    this.line = d3
+      .line()
+      .x(d => this.xScale(d.year_month))
+      .y(d => this.yScale(d.count)) // TO DO: shouldn't be hardcoded
+      .curve(d3.curveMonotoneX);
   }
 
   filterListItems(listItems) {
@@ -158,19 +197,19 @@ class SparkLineList extends Component {
   }
 
   renderSparkLines() {
-    const { entityType, primary, secondary, nested } = this.props;
+    const { entityType, primary, secondary, nested, response } = this.props;
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
 
-    if (!nested.length) return null;
+    if (!nested || !nested.length) return null;
 
     // set x-scale domain, assumes data is sorted by date
-    xScale.domain([
+    this.xScale.domain([
       d3.min(nested, c => c.values[0].year_month),
       d3.max(nested, c => c.values[c.values.length - 1].year_month),
     ]);
 
     // set y-scale domain
-    yScale.domain([0, d3.max(nested, d => d.maxInj)]); // TO DO: shouldn't be hardcoded
+    this.yScale.domain([0, d3.max(response, d => d.count)]); // TO DO: shouldn't be hardcoded
 
     return nested.map(entity => {
       const { key, values, rank } = entity;
@@ -196,13 +235,13 @@ class SparkLineList extends Component {
         >
           <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label} – Rank: ${rank + 1}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
-            <path fill="#e7e7e7" className="area spark" d={area(values)} />
+            <path fill="#e7e7e7" className="area spark" d={this.area(values)} />
             <path
               fill="none"
               strokeWidth="1.5px"
               stroke="#666"
               className="line spark"
-              d={line(values)}
+              d={this.line(values)}
             />
           </svg>
         </li>

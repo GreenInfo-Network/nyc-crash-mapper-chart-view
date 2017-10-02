@@ -29,9 +29,8 @@ const mapFilterTypesToProps = (filterType, values) => {
   });
 
   return values.reduce((acc, cur) => {
-    const o = {};
+    const o = { ...cur }; // need to keep "year_month" and "<entity_type>" properties
     o.count = 0;
-    o.year_month = cur.year_month;
 
     Object.keys(cur).forEach(key => {
       if (keys.indexOf(key) !== -1) {
@@ -46,3 +45,16 @@ const mapFilterTypesToProps = (filterType, values) => {
 };
 
 export default mapFilterTypesToProps;
+
+// this is the start of an abstracted Array.prototype.sort function,
+// might be more trouble than it's worth though...
+export function sort(arr, prop, asc) {
+  const sortVal = asc ? -1 : 1;
+  const sortVal2 = asc ? 1 : -1;
+
+  arr.sort((a, b) => {
+    if (a[prop] > b[prop]) return sortVal;
+    if (a[prop] < b[prop]) return sortVal2;
+    return 0;
+  });
+}
