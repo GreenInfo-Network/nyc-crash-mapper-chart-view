@@ -48,7 +48,7 @@ class LineChart extends Component {
     this.lineGenerator = d3
       .line()
       .x(d => this.xScale(d.year_month))
-      .y(d => this.yScale(d.pedestrian_injured))
+      .y(d => this.yScale(d.count))
       .curve(d3.curveMonotoneX);
   }
 
@@ -122,7 +122,7 @@ class LineChart extends Component {
     yAxis.scale(yScale);
 
     // update scales in line drawing function
-    this.lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.pedestrian_injured));
+    this.lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.count));
 
     // transition & update the yAxis
     t.select('g.y.axis').call(yAxis);
@@ -182,10 +182,13 @@ class LineChart extends Component {
     ]);
 
     // update yScale domain
-    yScale.domain([0, d3.max(entities, d => (d.maxPedInj ? d.maxPedInj : null))]);
+    yScale.domain([
+      0,
+      d3.max(entities, d => (d.values.length ? d3.max(d.values, k => k.count) : null)),
+    ]);
 
     // update scales in line drawing function
-    lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.pedestrian_injured));
+    lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.count));
 
     // transition & update the yAxis
     t.select('g.y.axis').call(yAxis);

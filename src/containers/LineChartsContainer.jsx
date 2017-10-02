@@ -102,8 +102,9 @@ class LineChartsContainer extends Component {
 
 const mapStateToProps = state => {
   const { browser, entities, dateRanges } = state;
-  const entitiesValuesFiltered = filterEntitiesValues(state);
-  const { valuesDateRange1, valuesDateRange2 } = entitiesValuesFiltered;
+  // NOTE: the values stored in primary and secondary entities ARE NOT FILTERED,
+  // they need to be filtered prior to being passed to the line charts
+  const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
   const { height, width } = browser;
   const entityData = allEntityData(state);
 
