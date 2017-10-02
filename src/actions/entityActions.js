@@ -6,6 +6,7 @@ import {
   DESELECT_SECONDARY_ENTITY,
 } from '../common/actionTypes';
 
+// set the geography type
 export const setEntityType = entityType => ({
   type: SET_ENTITY_TYPE,
   entityType,

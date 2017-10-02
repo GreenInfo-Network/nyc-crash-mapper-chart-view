@@ -17,7 +17,7 @@ const defaultState = {
     key: '',
     values: [],
   },
-  entityType: '',
+  entityType: 'city_council', // matches properties in store.data
 };
 
 export default function(state = defaultState, action) {

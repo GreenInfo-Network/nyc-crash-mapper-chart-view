@@ -1,9 +1,13 @@
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
 const defaultState = {
-  response: [],
   error: null,
   isFetching: false,
+  borough: {},
+  city_council: {},
+  community_board: {},
+  nta: {},
+  nypd: {},
 };
 
 export default function(state = defaultState, action) {
@@ -18,8 +22,10 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         isFetching: false,
-        response: action.response,
-        nested: action.nested,
+        [action.geo]: {
+          response: action.response, // data unformatted from the API call
+          nested: action.nested, // data nested by identifier id
+        },
       };
 
     case ENTITY_DATA_ERROR:

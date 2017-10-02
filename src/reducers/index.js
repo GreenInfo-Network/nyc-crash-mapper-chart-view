@@ -30,6 +30,23 @@ const rootReducer = combineReducers({
 });
 
 /**
+ * Selector function that returns response & nested data for a given geographic entity
+ * @param {object} state: redux state / store
+ */
+export const allEntityData = state => {
+  // eslint-disable-next-line
+  const { entities, data } = state;
+  const { entityType } = entities;
+
+  if (!data[entityType]) {
+    // TO DO: no data has been cached for the current geography, hit the API to grab data
+    return null;
+  }
+
+  return data[entityType];
+};
+
+/**
  * Returns values for primary and secondary entities filtered by both date range groups
  * @param {object} state: redux state / store
  */

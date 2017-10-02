@@ -4,16 +4,23 @@ import { nest, sum, max } from 'd3';
 import { parseDate } from '../common/d3Utils';
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
+// action that states we are making an async request
 const requestEntityData = () => ({
   type: ENTITY_DATA_REQUEST,
 });
 
-const receiveEntityData = (response, nested) => ({
+// action that a async data request was successful
+// @param {string} geo Geography Type
+// @param {response} array Array of objects returned from the API call
+// @param {nested} array Array of objects where each object contains nested data by geo identifier
+const receiveEntityData = (geo, response, nested) => ({
   type: ENTITY_DATA_SUCCESS,
+  geo,
   response,
   nested,
 });
 
+// catch any error that may have occured from the async request
 const handleEntityDataError = error => ({
   type: ENTITY_DATA_ERROR,
   error,
@@ -57,6 +64,11 @@ export default function fetchEntityData() {
           .key(d => d.council) // need to know identifier field here, can't hard code
           .entries(response);
 
+        /*
+         * Move this logic to somewhere else so that when date range or crash types are changed
+         * total & max can be re-computed
+         * data can be re-sorted (ranked)
+        */
         // compute max number of category, necessary for yScale.domain()
         // compute sum of category, so that councils may be sorted from max to min
         // category currently hardcoded to pedestrian_injured, this should be variable
@@ -85,7 +97,7 @@ export default function fetchEntityData() {
         });
 
         // update redux state with response & nested data
-        dispatch(receiveEntityData(response, nested));
+        dispatch(receiveEntityData('city_council', response, nested));
       })
       .catch(error => handleEntityDataError(error));
   };
