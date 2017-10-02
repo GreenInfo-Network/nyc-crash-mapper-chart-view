@@ -1,3 +1,5 @@
+export { filterByTypeInjury, filterByTypeFatality, filterByNoInjFat } from './filterByTypeActions';
+
 export {
   setEntityType,
   selectPrimaryEntity,

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { createResponsiveStateReducer } from 'redux-responsive';
 
+import filterType from './filterByTypeReducer';
 import entities from './entitiesReducer';
 import data from './dataReducer';
 import dateRanges from './dateRangeReducer';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   data,
   dateRanges,
   entities,
+  filterType,
 });
 
 /**
