@@ -21,6 +21,7 @@ window.d3 = d3;
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
+    isFetching: PropTypes.bool.isRequired,
     entitiesNested: PropTypes.arrayOf(PropTypes.object),
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
@@ -41,11 +42,11 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData } = nextProps;
+    const { entityData, isFetching } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
-    if (this.props.entityData.length && !entityData.length) {
+    if (this.props.entityData.length && !entityData.length && !isFetching) {
       this.props.fetchEntityData();
     }
   }
@@ -73,12 +74,14 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, entities } = state;
+  const { browser, entities, data } = state;
+  const { isFetching } = data;
   const entityData = allEntityData(state);
 
   return {
     width: browser.width,
     height: browser.height,
+    isFetching,
     entityData: entityData.response,
     entitiesNested: entityData.nested,
     entityType: entities.entityType,
