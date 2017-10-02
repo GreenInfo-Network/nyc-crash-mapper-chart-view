@@ -25,13 +25,13 @@ const area = d3
   .area()
   .x(d => xScale(d.year_month))
   .y0(height)
-  .y1(d => yScale(d.pedestrian_injured))
+  .y1(d => yScale(d.persons_injured)) // TO DO: shouldn't be hardcoded
   .curve(d3.curveMonotoneX);
 
 const line = d3
   .line()
   .x(d => xScale(d.year_month))
-  .y(d => yScale(d.pedestrian_injured))
+  .y(d => yScale(d.persons_injured)) // TO DO: shouldn't be hardcoded
   .curve(d3.curveMonotoneX);
 
 const mapStateToProps = state => {
@@ -159,6 +159,7 @@ class SparkLineList extends Component {
 
   renderSparkLines() {
     const { entityType, primary, secondary, nested } = this.props;
+    const entityTypeDisplay = entityType.replace(/_/g, ' ');
 
     if (!nested.length) return null;
 
@@ -169,7 +170,7 @@ class SparkLineList extends Component {
     ]);
 
     // set y-scale domain
-    yScale.domain([0, d3.max(nested, d => d.maxPedInj)]);
+    yScale.domain([0, d3.max(nested, d => d.maxInj)]); // TO DO: shouldn't be hardcoded
 
     return nested.map(entity => {
       const { key, values, rank } = entity;
@@ -193,7 +194,7 @@ class SparkLineList extends Component {
           className={listItemClass}
           onClick={() => this.handleSparkLineClick({ ...entity })}
         >
-          <h6 style={{ padding: 0 }}>{`${entityType} ${label} – Rank: ${rank + 1}`}</h6>
+          <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label} – Rank: ${rank + 1}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
             <path fill="#e7e7e7" className="area spark" d={area(values)} />
             <path
