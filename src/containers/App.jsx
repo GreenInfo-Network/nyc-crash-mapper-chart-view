@@ -13,6 +13,11 @@ import TimeLine from './TimeLine';
 // for debugging & messing around
 window.d3 = d3;
 
+/**
+ * Class that houses all components for the Application
+ * Splits UI into separate areas using CSS classes that correspond with CSS Grid layout
+ * Handles making Carto API calls for geographies / entities
+*/
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
@@ -33,6 +38,16 @@ class App extends Component {
   componentDidMount() {
     this.props.setEntityType('city_council');
     this.props.fetchEntityData();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { entityData } = nextProps;
+
+    // user toggled geographic entity and no data has been cached
+    // make a API call to get the data
+    if (this.props.entityData.length && !entityData.length) {
+      this.props.fetchEntityData();
+    }
   }
 
   render() {
