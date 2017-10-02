@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { nest, sum, max } from 'd3';
-// import { sqlCitywide } from '../common/sqlQueries';
+import { sqlByGeo } from '../common/sqlQueries';
 
-// import { cartoUser } from '../common/config';
+import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
@@ -42,19 +42,26 @@ function sort(arr, prop, asc) {
 }
 
 export default function fetchEntityData() {
-  const url = 'data/inj_fat_city_councils_all_years.json';
-  // const url = `https://${cartoUser}.carto.com/api/v2/sql?q=${encodeURIComponent(sqlCitywide)}`;
-
-  return dispatch => {
+  return (dispatch, getState) => {
+    // tell our app we are fetching data
     dispatch(requestEntityData());
+    // the geographic entity that is currently selected
+    const entityType = getState().entities.entityType;
+    // CARTO API endpoint using entityType
+    const url = `https://${cartoUser}.carto.com/api/v2/sql?q=${encodeURIComponent(
+      sqlByGeo(entityType)
+    )}`;
+
     return axios(url)
       .then(result => {
         // check to see that we have a valid response
-        if (!result || !result.data || !result.data.length) {
-          throw new Error('problem with data request');
+        if (!result || !result.data || !result.data.rows) {
+          const error = Error('There was a problem loading data');
+          handleEntityDataError(error);
         }
-        // alias
-        const response = result.data;
+
+        // the response success
+        const response = result.data.rows;
 
         // TO DO: move this date parsing & formatting logic to a separate function so that it may be reused
         // parse date string into a date object
@@ -64,7 +71,7 @@ export default function fetchEntityData() {
 
         // nest data by identifier id;
         const nested = nest()
-          .key(d => d.council) // need to know identifier field here, can't hard code
+          .key(d => d[entityType])
           .entries(response);
 
         /*
@@ -74,25 +81,29 @@ export default function fetchEntityData() {
         */
         // compute max number of category, necessary for yScale.domain()
         // compute sum of category, so that councils may be sorted from max to min
-        // category currently hardcoded to pedestrian_injured, this should be variable
+        // TO DO: category currently hardcoded to total persons injured, should be set via UI
         nested.forEach(entity => {
           entity.maxPedInj = max(entity.values, d => d.pedestrian_injured);
           entity.maxCycInj = max(entity.values, d => d.cyclist_injured);
           entity.maxMotInj = max(entity.values, d => d.motorist_injured);
+          entity.maxInj = max(entity.values, d => d.persons_injured);
           entity.maxPedFat = max(entity.values, d => d.pedestrian_killed);
           entity.maxCycFat = max(entity.values, d => d.cyclist_killed);
           entity.maxMotFat = max(entity.values, d => d.motorist_killed);
+          entity.maxFat = max(entity.values, d => d.persons_killed);
 
           entity.totalPedInj = sum(entity.values, d => d.pedestrian_injured);
           entity.totalCycInj = sum(entity.values, d => d.cyclist_injured);
           entity.totalMotInj = sum(entity.values, d => d.motorist_injured);
+          entity.totalInj = sum(entity.values, d => d.persons_injured);
           entity.totalPedFat = sum(entity.values, d => d.pedestrian_killed);
           entity.totalCycFat = sum(entity.values, d => d.cyclist_killed);
           entity.totalMotFat = sum(entity.values, d => d.motorist_killed);
+          entity.totalFat = sum(entity.values, d => d.persons_killed);
         });
 
         // sort descending by total ped injuries (rank)
-        sort(nested, 'totalPedInj', true);
+        sort(nested, 'totalInj', true);
 
         // store the ranking as a data value
         nested.forEach((d, i) => {
