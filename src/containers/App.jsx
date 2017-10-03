@@ -56,7 +56,7 @@ class App extends Component {
   }
 
   render() {
-    const { entitiesNested, entityType } = this.props;
+    const { entitiesNested, entityType, isFetching } = this.props;
 
     return (
       <div className="App grid-container">
@@ -70,6 +70,8 @@ class App extends Component {
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
+          {/* TO DO: use a real loading indicator */}
+          {isFetching && <h3>Loading...</h3>}
           <LineChartsContainer />
         </div>
       </div>
