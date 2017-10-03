@@ -6,6 +6,7 @@ export const width = 240 - margin.left - margin.right;
 export const height = 69 - margin.top - margin.bottom;
 
 export const parseDate = d3.timeParse('%Y-%m');
+export const formatDate = d3.timeFormat('%b %Y');
 
 // NOTE that trying to share some d3 functions will result in unexpected behavior
 // need to figure out a work around, such as exporting functions that create d3 functions?
