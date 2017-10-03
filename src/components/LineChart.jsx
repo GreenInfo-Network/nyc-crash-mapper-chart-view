@@ -40,7 +40,7 @@ class LineChart extends Component {
 
     this.container = null; // ref to containing div
     this.svg = null; // ref to svg element
-    this.margin = { top: 10, right: 50, bottom: 20, left: 50 };
+    this.margin = { top: 10, right: 50, bottom: 20, left: 25 };
 
     this.yAxis = d3.axisLeft();
     this.yAxis2 = d3.axisRight();

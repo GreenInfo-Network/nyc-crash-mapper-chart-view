@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { formatDate } from '../common/d3Utils';
 import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
 import { allEntityData, filterEntitiesValues } from '../reducers';
 import LineChart from '../components/LineChart';
@@ -84,26 +85,38 @@ class LineChartsContainer extends Component {
 
     return (
       <div className="LineChartsContainer" style={style}>
-        <LineChart
-          appHeight={appHeight}
-          appWidth={appWidth}
-          citywide={citywidePeriod2}
-          nested={nested}
-          keyPrimary={primary.key}
-          keySecondary={secondary.key}
-          {...dateRangeTwo}
-          valuesByDateRange={valuesDateRange2}
-        />
-        <LineChart
-          appHeight={appHeight}
-          appWidth={appWidth}
-          citywide={citywidePeriod1}
-          nested={nested}
-          keyPrimary={primary.key}
-          keySecondary={secondary.key}
-          {...dateRangeOne}
-          valuesByDateRange={valuesDateRange1}
-        />
+        <div className="chart-container">
+          <h6>Period Two</h6>
+          <h6>
+            {formatDate(dateRangeTwo.startDate)} — {formatDate(dateRangeTwo.endDate)}
+          </h6>
+          <LineChart
+            appHeight={appHeight}
+            appWidth={appWidth}
+            citywide={citywidePeriod2}
+            nested={nested}
+            keyPrimary={primary.key}
+            keySecondary={secondary.key}
+            {...dateRangeTwo}
+            valuesByDateRange={valuesDateRange2}
+          />
+        </div>
+        <div className="chart-container">
+          <h6>Period One</h6>
+          <h6>
+            {formatDate(dateRangeOne.startDate)} — {formatDate(dateRangeOne.endDate)}
+          </h6>
+          <LineChart
+            appHeight={appHeight}
+            appWidth={appWidth}
+            citywide={citywidePeriod1}
+            nested={nested}
+            keyPrimary={primary.key}
+            keySecondary={secondary.key}
+            {...dateRangeOne}
+            valuesByDateRange={valuesDateRange1}
+          />
+        </div>
       </div>
     );
   }

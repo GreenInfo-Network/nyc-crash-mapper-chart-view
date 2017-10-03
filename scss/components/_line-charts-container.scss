@@ -4,5 +4,12 @@
     height: 100%;
     display: inline-block;
     vertical-align: top;
+
+    h6 {
+      margin: 0;
+      padding: 0;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
   }
 }
