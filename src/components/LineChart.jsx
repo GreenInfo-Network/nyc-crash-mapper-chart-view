@@ -51,7 +51,7 @@ class LineChart extends Component {
     this.yScale2 = d3.scaleLinear();
 
     this.gridlinesX = () => d3.axisBottom(this.xScale).ticks(5);
-    this.gridlinesY = () => d3.axisLeft(this.yScale).ticks(5);
+    this.gridlinesY = () => d3.axisLeft(this.yScale2).ticks(5);
 
     // line path generator for primary & secondary entities data
     this.lineGenerator = d3
@@ -180,24 +180,29 @@ class LineChart extends Component {
 
   updateChart() {
     // adds or removes data to / from the chart
+    const { valuesByDateRange, citywide } = this.props;
     const { width, height } = this.getContainerSize();
-    const { primary, secondary } = this.props.valuesByDateRange;
+    const { primary, secondary } = valuesByDateRange;
     const entities = [primary, secondary];
     // const margin = this.margin;
     const xScale = this.xScale;
     const yScale = this.yScale;
+    const yScale2 = this.yScale2;
     const lineGenerator = this.lineGenerator;
+    const lineGenerator2 = this.lineGenerator2;
     const svg = d3.select(this.svg);
     const g = svg.select('g.g-parent');
     const yAxis = this.yAxis;
+    const yAxis2 = this.yAxis2;
     const xAxis = this.xAxis;
     const t = svg.transition().duration(750); // transition for updates
 
     // update xScale domain
-    xScale.domain([
-      d3.min(entities, d => (d.values.length ? d.values[0].year_month : null)),
-      d3.max(entities, d => (d.values.length ? d.values[d.values.length - 1].year_month : null)),
-    ]);
+    // xScale.domain([
+    //   d3.min(entities, d => (d.values.length ? d.values[0].year_month : null)),
+    //   d3.max(entities, d => (d.values.length ? d.values[d.values.length - 1].year_month : null)),
+    // ]);
+    xScale.domain(d3.extent(citywide, d => d.year_month));
 
     // update yScale domain
     yScale.domain([
@@ -205,13 +210,18 @@ class LineChart extends Component {
       d3.max(entities, d => (d.values.length ? d3.max(d.values, k => k.count) : null)),
     ]);
 
+    // update citywide yScale domain
+    yScale2.domain([0, d3.max(citywide, d => d.count)]);
+
     // update scales in line drawing function
     lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.count));
+    lineGenerator2.x(d => xScale(d.year_month)).y(d => yScale2(d.count));
 
-    // transition & update the yAxis
+    // transition & update the y axises
     t.select('g.y.axis').call(yAxis);
+    t.select('g.y2.axis').call(yAxis2);
 
-    // transition & update the xAxis
+    // transition & update the x axis
     t.select('g.x.axis').call(xAxis);
 
     // transition & update the vertical gridlines
@@ -227,6 +237,13 @@ class LineChart extends Component {
         .tickSize(-width)
         .tickFormat('')
     );
+
+    // transition the citywide line
+    g
+      .selectAll('.line-citywide')
+      .data([citywide])
+      .transition(t)
+      .attr('d', d => lineGenerator2(d));
 
     // update the svg main group element's data binding
     g.datum(entities, d => d.key);
@@ -338,7 +355,8 @@ class LineChart extends Component {
       .append('path')
       .attr('class', 'line-citywide')
       .attr('d', d => this.lineGenerator2(d))
-      .attr('stroke', '#999');
+      .attr('stroke', '#999')
+      .attr('opacity', 0.7);
   }
 
   render() {
