@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
 import { allEntityData, filterEntitiesValues } from '../reducers';
 import LineChart from '../components/LineChart';
 
@@ -21,6 +22,8 @@ class LineChartsContainer extends Component {
       values: PropTypes.array,
     }).isRequired,
     nested: PropTypes.arrayOf(PropTypes.object),
+    citywidePeriod1: PropTypes.arrayOf(PropTypes.object),
+    citywidePeriod2: PropTypes.arrayOf(PropTypes.object),
     dateRangeTwo: PropTypes.shape({
       endDate: PropTypes.instanceOf(Date),
       startDate: PropTypes.instanceOf(Date),
@@ -53,6 +56,8 @@ class LineChartsContainer extends Component {
 
   static defaultProps = {
     nested: [],
+    citywidePeriod1: [],
+    citywidePeriod2: [],
     dateRangeOne: {},
     dateRangeTwo: {},
   };
@@ -101,21 +106,41 @@ class LineChartsContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, entities, dateRanges } = state;
+  const { browser, data, entities, filterType, dateRanges } = state;
   // NOTE: the values stored in primary and secondary entities ARE NOT FILTERED,
   // they need to be filtered prior to being passed to the line charts
-  const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
   const { height, width } = browser;
+  const { citywide } = data;
+  const { primary, secondary } = entities;
+  const { group1, group2 } = dateRanges;
+
+  // filter primary and secondary entity data by date ranges
+  const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
+
+  // data for the current geography / entity
   const entityData = allEntityData(state);
+
+  // citywide data which always(?) shows up on the line chart
+  const citywideValues = citywide.response || [];
+  const citywidePeriod1 = mapFilterTypesToProps(
+    filterType,
+    filterValuesByDateRange(citywideValues, group1.startDate, group1.endDate)
+  );
+  const citywidePeriod2 = mapFilterTypesToProps(
+    filterType,
+    filterValuesByDateRange(citywideValues, group2.startDate, group2.endDate)
+  );
 
   return {
     appHeight: height,
     appWidth: width,
+    citywidePeriod1,
+    citywidePeriod2,
     nested: entityData.nested,
-    primary: entities.primary,
-    secondary: entities.secondary,
-    dateRangeOne: dateRanges.group1,
-    dateRangeTwo: dateRanges.group2,
+    primary,
+    secondary,
+    dateRangeOne: group1,
+    dateRangeTwo: group2,
     valuesDateRange1,
     valuesDateRange2,
   };
