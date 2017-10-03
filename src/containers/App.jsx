@@ -37,8 +37,12 @@ class App extends Component {
   };
 
   componentDidMount() {
+    // DOM content loaded, make async data requests
+    // TO DO: entity type should be set via a URL param
     this.props.setEntityType('city_council');
-    this.props.fetchEntityData();
+    this.props.fetchEntityData('city_council');
+    // always request citywide data for the line charts, regardless of current entityType
+    this.props.fetchEntityData('citywide');
   }
 
   componentWillReceiveProps(nextProps) {
