@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { nest, sum, max } from 'd3';
-import { sqlByGeo } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
@@ -41,16 +41,17 @@ function sort(arr, prop, asc) {
   });
 }
 
-export default function fetchEntityData() {
-  return (dispatch, getState) => {
+// fetches aggregated crash data via the CARTO SQL API
+// @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
+export default function fetchEntityData(entityType) {
+  const sql = entityType === 'citywide' ? sqlCitywide() : sqlByGeo(entityType);
+
+  return dispatch => {
     // tell our app we are fetching data
     dispatch(requestEntityData());
-    // the geographic entity that is currently selected
-    const entityType = getState().entities.entityType;
+
     // CARTO API endpoint using entityType
-    const url = `https://${cartoUser}.carto.com/api/v2/sql?q=${encodeURIComponent(
-      sqlByGeo(entityType)
-    )}`;
+    const url = `https://${cartoUser}.carto.com/api/v2/sql?q=${encodeURIComponent(sql)}`;
 
     return axios(url)
       .then(result => {
@@ -111,7 +112,7 @@ export default function fetchEntityData() {
         });
 
         // update redux state with response & nested data
-        dispatch(receiveEntityData('city_council', response, nested));
+        dispatch(receiveEntityData(entityType, response, nested));
       })
       .catch(error => handleEntityDataError(error));
   };

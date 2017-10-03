@@ -5,6 +5,7 @@ const defaultState = {
   isFetching: false,
   borough: {},
   city_council: {},
+  citywide: {},
   community_board: {},
   nta: {},
   nypd: {},
