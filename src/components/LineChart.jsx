@@ -120,30 +120,41 @@ class LineChart extends Component {
     const margin = this.margin;
     const xScale = this.xScale;
     const yScale = this.yScale;
+    const yScale2 = this.yScale2;
     const yAxis = this.yAxis;
+    const yAxis2 = this.yAxis2;
     const xAxis = this.xAxis;
     const svg = d3.select(this.svg);
     const g = svg.select('g.g-parent');
-    const t = svg.transition().duration(750);
+    const t = g.transition().duration(750);
 
     // resize the svg element
     svg
-      .attr('width', width + margin.top + margin.bottom)
-      .attr('height', height + margin.right + margin.left);
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.bottom + margin.top);
+
+    // reposition the main group element
+    g.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
     // update ranges for x and y scales
     xScale.range([0, width]);
     yScale.range([height, 0]);
+    yScale2.range([height, 0]);
 
     // update x and y axises scales
     xAxis.scale(xScale);
     yAxis.scale(yScale);
+    yAxis2.scale(yScale2);
 
     // update scales in line drawing function
     this.lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.count));
 
-    // transition & update the yAxis
+    // transition & update the y axises
     t.select('g.y.axis').call(yAxis);
+    t
+      .select('g.y2.axis')
+      .attr('transform', `translate(${width}, 0)`)
+      .call(yAxis2);
 
     // transition & update the xAxis
     t
@@ -176,6 +187,12 @@ class LineChart extends Component {
       .transition(t)
       .attr('d', d => this.lineGenerator(d.values))
       .attr('stroke', d => d.color);
+
+    // update citywide line
+    g
+      .selectAll('.line-citywide')
+      .transition(t)
+      .attr('d', d => this.lineGenerator2(d));
   }
 
   updateChart() {
@@ -184,24 +201,19 @@ class LineChart extends Component {
     const { width, height } = this.getContainerSize();
     const { primary, secondary } = valuesByDateRange;
     const entities = [primary, secondary];
-    // const margin = this.margin;
     const xScale = this.xScale;
     const yScale = this.yScale;
     const yScale2 = this.yScale2;
+    const xAxis = this.xAxis;
+    const yAxis = this.yAxis;
+    const yAxis2 = this.yAxis2;
     const lineGenerator = this.lineGenerator;
     const lineGenerator2 = this.lineGenerator2;
     const svg = d3.select(this.svg);
     const g = svg.select('g.g-parent');
-    const yAxis = this.yAxis;
-    const yAxis2 = this.yAxis2;
-    const xAxis = this.xAxis;
-    const t = svg.transition().duration(750); // transition for updates
+    const t = g.transition().duration(750); // transition for updates
 
     // update xScale domain
-    // xScale.domain([
-    //   d3.min(entities, d => (d.values.length ? d.values[0].year_month : null)),
-    //   d3.max(entities, d => (d.values.length ? d.values[d.values.length - 1].year_month : null)),
-    // ]);
     xScale.domain(d3.extent(citywide, d => d.year_month));
 
     // update yScale domain
