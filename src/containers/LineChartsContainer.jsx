@@ -66,6 +66,8 @@ class LineChartsContainer extends Component {
     const {
       appHeight,
       appWidth,
+      citywidePeriod1,
+      citywidePeriod2,
       nested,
       primary,
       secondary,
@@ -85,6 +87,7 @@ class LineChartsContainer extends Component {
         <LineChart
           appHeight={appHeight}
           appWidth={appWidth}
+          citywide={citywidePeriod2}
           nested={nested}
           keyPrimary={primary.key}
           keySecondary={secondary.key}
@@ -94,6 +97,7 @@ class LineChartsContainer extends Component {
         <LineChart
           appHeight={appHeight}
           appWidth={appWidth}
+          citywide={citywidePeriod1}
           nested={nested}
           keyPrimary={primary.key}
           keySecondary={secondary.key}

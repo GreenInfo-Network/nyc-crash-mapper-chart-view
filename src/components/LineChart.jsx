@@ -10,6 +10,7 @@ class LineChart extends Component {
     appWidth: PropTypes.number.isRequired,
     keyPrimary: PropTypes.string,
     keySecondary: PropTypes.string,
+    citywide: PropTypes.arrayOf(PropTypes.object),
     nested: PropTypes.arrayOf(PropTypes.object),
     startDate: PropTypes.instanceOf(Date),
     endDate: PropTypes.instanceOf(Date),
@@ -28,6 +29,7 @@ class LineChart extends Component {
   static defaultProps = {
     keyPrimary: '',
     keySecondary: '',
+    citywide: [],
     nested: [],
     startDate: {},
     endDate: {},
@@ -35,20 +37,34 @@ class LineChart extends Component {
 
   constructor() {
     super();
+
     this.container = null; // ref to containing div
     this.svg = null; // ref to svg element
-    this.margin = { top: 10, right: 15, bottom: 20, left: 20 };
+    this.margin = { top: 10, right: 50, bottom: 20, left: 50 };
+
     this.yAxis = d3.axisLeft();
+    this.yAxis2 = d3.axisRight();
     this.xAxis = d3.axisBottom();
+
     this.xScale = d3.scaleTime();
     this.yScale = d3.scaleLinear();
+    this.yScale2 = d3.scaleLinear();
+
     this.gridlinesX = () => d3.axisBottom(this.xScale).ticks(5);
     this.gridlinesY = () => d3.axisLeft(this.yScale).ticks(5);
 
+    // line path generator for primary & secondary entities data
     this.lineGenerator = d3
       .line()
       .x(d => this.xScale(d.year_month))
       .y(d => this.yScale(d.count))
+      .curve(d3.curveMonotoneX);
+
+    // line path generator for citywide data
+    this.lineGenerator2 = d3
+      .line()
+      .x(d => this.xScale(d.year_month))
+      .y(d => this.yScale2(d.count))
       .curve(d3.curveMonotoneX);
   }
 
@@ -83,6 +99,8 @@ class LineChart extends Component {
     if (appHeight !== prevProps.appHeight || appWidth !== prevProps.appWidth) {
       this.resizeChart();
     }
+
+    // TO DO: if filter types changed, update chart
   }
 
   getContainerSize() {
@@ -240,12 +258,14 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { nested } = this.props;
+    const { nested, citywide } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
     const yScale = this.yScale;
+    const yScale2 = this.yScale2;
     const yAxis = this.yAxis;
+    const yAxis2 = this.yAxis2;
     const xAxis = this.xAxis;
     const svg = d3.select(this.svg);
 
@@ -257,18 +277,16 @@ class LineChart extends Component {
       .attr('height', height + margin.top + margin.bottom);
 
     // set scale domains and ranges
-    yScale.range([height, 0]).domain([0, d3.max(nested, d => d.maxPedInj)]);
-    xScale
-      .range([0, width])
-      .domain([
-        d3.min(nested, c => c.values[0].year_month),
-        d3.max(nested, c => c.values[c.values.length - 1].year_month),
-      ]);
+    yScale.range([height, 0]);
+    yScale2.range([height, 0]).domain([0, d3.max(citywide, d => d.count)]);
+    xScale.range([0, width]).domain(d3.extent(citywide, d => d.year_month));
 
     // set scales for axises
     xAxis.scale(xScale);
     yAxis.scale(yScale);
+    yAxis2.scale(yScale2);
 
+    // main svg group element
     const g = svg
       .append('g')
       .attr('class', 'g-parent')
@@ -302,9 +320,25 @@ class LineChart extends Component {
 
     g
       .append('g')
+      .attr('class', 'y2 axis')
+      .attr('transform', `translate(${width}, 0)`)
+      .call(yAxis2);
+
+    g
+      .append('g')
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${height})`)
       .call(xAxis.ticks(5));
+
+    // draw the citywide line
+    g
+      .selectAll('.line-citywide')
+      .data([citywide])
+      .enter()
+      .append('path')
+      .attr('class', 'line-citywide')
+      .attr('d', d => this.lineGenerator2(d))
+      .attr('stroke', '#999');
   }
 
   render() {
