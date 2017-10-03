@@ -2,7 +2,7 @@
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
 // Query that returns aggregated data for entire city, note this will include data that hasn't been geocoded
-export const sqlCitywide = sls`
+export const sqlCitywide = () => sls`
   SELECT
     COUNT(c.cartodb_id) as total_crashes,
     SUM(c.number_of_cyclist_injured) as cyclist_injured,
