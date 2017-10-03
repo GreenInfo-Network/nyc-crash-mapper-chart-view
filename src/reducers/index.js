@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createResponsiveStateReducer } from 'redux-responsive';
 
-import mapFilterTypesToProps from '../common/utils';
+import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
 
 import filterType from './filterByTypeReducer';
 import entities from './entitiesReducer';
@@ -65,38 +65,37 @@ export const filterEntitiesValues = state => {
   const { primary, secondary } = entities;
   const { group1, group2 } = dateRanges;
 
-  function filterValuesByDateRange(values, startDate, endDate) {
-    // filters array of objects by date ranges
-    const newValues = values.filter(d => {
-      if (+d.year_month >= +startDate && +d.year_month <= +endDate) {
-        return true;
-      }
-      return false;
-    });
-
-    // aggregate data using currently selected crash type filters
-    return mapFilterTypesToProps(filterType, newValues);
-  }
-
   return {
     valuesDateRange1: {
       primary: {
         ...primary,
-        values: filterValuesByDateRange(primary.values, group1.startDate, group1.endDate),
+        values: mapFilterTypesToProps(
+          filterType,
+          filterValuesByDateRange(primary.values, group1.startDate, group1.endDate)
+        ),
       },
       secondary: {
         ...secondary,
-        values: filterValuesByDateRange(secondary.values, group1.startDate, group1.endDate),
+        values: mapFilterTypesToProps(
+          filterType,
+          filterValuesByDateRange(secondary.values, group1.startDate, group1.endDate)
+        ),
       },
     },
     valuesDateRange2: {
       primary: {
         ...primary,
-        values: filterValuesByDateRange(primary.values, group2.startDate, group2.endDate),
+        values: mapFilterTypesToProps(
+          filterType,
+          filterValuesByDateRange(primary.values, group2.startDate, group2.endDate)
+        ),
       },
       secondary: {
         ...secondary,
-        values: filterValuesByDateRange(secondary.values, group2.startDate, group2.endDate),
+        values: mapFilterTypesToProps(
+          filterType,
+          filterValuesByDateRange(secondary.values, group2.startDate, group2.endDate)
+        ),
       },
     },
   };

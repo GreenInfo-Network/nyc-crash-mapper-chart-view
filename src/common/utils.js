@@ -1,3 +1,18 @@
+// this module contains utility functions for data processing that can be used throughout the app
+
+// filters array of objects by a start and end date
+// @param {array} values Array of objects representing data for a geographic area for a given year_month
+// @param {date} startDate Min date for filtering by
+// @param {date} endDate Max date for filtering by
+export function filterValuesByDateRange(values, startDate, endDate) {
+  return values.filter(d => {
+    if (+d.year_month >= +startDate && +d.year_month <= +endDate) {
+      return true;
+    }
+    return false;
+  });
+}
+
 // @function mapFilterTypesToProps
 // maps selected crash type filters from store.filterTypes to filter entity data values attributes
 // output is an array of objects that includes the sum of each crash type selected
