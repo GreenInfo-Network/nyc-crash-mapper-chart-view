@@ -25,6 +25,8 @@ class LineChart extends Component {
         values: PropTypes.array,
       }),
     }).isRequired,
+    yMax: PropTypes.number,
+    y2Max: PropTypes.number,
   };
 
   static defaultProps = {
@@ -34,6 +36,8 @@ class LineChart extends Component {
     nested: [],
     startDate: {},
     endDate: {},
+    yMax: null,
+    y2Max: null,
   };
 
   constructor() {
@@ -198,7 +202,7 @@ class LineChart extends Component {
 
   updateChart() {
     // adds or removes data to / from the chart
-    const { valuesByDateRange, citywide } = this.props;
+    const { valuesByDateRange, citywide, yMax, y2Max } = this.props;
     const { width, height } = this.getContainerSize();
     const { primary, secondary } = valuesByDateRange;
     const entities = [primary, secondary];
@@ -218,13 +222,10 @@ class LineChart extends Component {
     xScale.domain(d3.extent(citywide, d => d.year_month));
 
     // update yScale domain
-    yScale.domain([
-      0,
-      d3.max(entities, d => (d.values.length ? d3.max(d.values, k => k.count) : null)),
-    ]);
+    yScale.domain([0, yMax]);
 
     // update citywide yScale domain
-    yScale2.domain([0, d3.max(citywide, d => d.count)]);
+    yScale2.domain([0, y2Max]);
 
     // update scales in line drawing function
     lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.count));
@@ -300,7 +301,7 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { nested, citywide } = this.props;
+    const { nested, citywide, y2Max } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -320,7 +321,7 @@ class LineChart extends Component {
 
     // set scale domains and ranges
     yScale.range([height, 0]);
-    yScale2.range([height, 0]).domain([0, d3.max(citywide, d => d.count)]);
+    yScale2.range([height, 0]).domain([0, y2Max]);
     xScale.range([0, width]).domain(d3.extent(citywide, d => d.year_month));
 
     // set scales for axises
