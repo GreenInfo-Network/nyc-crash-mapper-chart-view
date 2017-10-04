@@ -42,13 +42,13 @@ class EntitySelections extends Component {
     );
     return (
       <div className="EntitySelections">
+        <EntitySelector color={'#999'} entityType={'City Wide'} entity={' '} />
         <EntitySelector
           color={primary.color}
           entityType={entityType}
           entity={primary.key}
           deselectEntity={boundActionCreators.deselectPrimaryEntity}
         />
-        <p>Compared to</p>
         <EntitySelector
           color={secondary.color}
           entityType={entityType}
