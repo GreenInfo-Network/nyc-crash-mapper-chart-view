@@ -1,0 +1,49 @@
+// main App / container
+// Makes use of CSS Grid
+.App {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(100% - #{$options-filters-width}) $options-filters-width;
+  grid-template-rows:
+    $header-height
+    $timeline-height
+    minmax(#{$line-chart-container-height-min}, #{$line-chart-container-height-max})
+    minmax(#{$legend-height-min}, #{$legend-height-max});
+  grid-template-areas:
+    'header sparklines'
+    'timeline sparklines'
+    'detailchart sparklines'
+    'legend sparklines';
+
+  .grid-area {
+    padding: 10px 20px;
+    border: 1px solid $light-grey;
+  }
+
+  .grid-area.header {
+    grid-area: header;
+  }
+
+  .grid-area.sparklines {
+    grid-area: sparklines;
+    padding-right: 0;
+  }
+
+  .grid-area.entity-selectors {
+    grid-area: entityselectors;
+  }
+
+  .grid-area.detailchart {
+    grid-area: detailchart;
+  }
+
+  .grid-area.timeline {
+    grid-area: timeline;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .grid-area.legend {
+    grid-area: legend;
+  }
+}
