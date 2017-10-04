@@ -7,14 +7,20 @@ const EntitySelector = props => {
     backgroundColor: entity ? color : null,
   };
 
+  if (!entity) {
+    return null;
+  }
+
   return (
     <div className="EntitySelector">
       <div className="flex-wrapper">
         <span className="color-key" style={colorKeyStyle} />
-        <h6>{entity ? `${entityType} ${entity}` : '(none selected)'}</h6>
-        <button className="deselect" onClick={() => deselectEntity()}>
-          {'×'}
-        </button>
+        <h6>{entity ? `${entityType.replace(/_/g, ' ')} ${entity}` : '(none selected)'}</h6>
+        {deselectEntity && (
+          <button className="deselect" onClick={() => deselectEntity()}>
+            {'×'}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -24,12 +30,13 @@ EntitySelector.propTypes = {
   color: PropTypes.string.isRequired,
   entityType: PropTypes.string,
   entity: PropTypes.string,
-  deselectEntity: PropTypes.func.isRequired,
+  deselectEntity: PropTypes.func,
 };
 
 EntitySelector.defaultProps = {
   entityType: '',
   entity: '',
+  deselectEntity: null,
 };
 
 export default EntitySelector;
