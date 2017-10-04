@@ -1,8 +1,8 @@
 .EntitySelector {
-  width: 30%;
-  display: inline-block;
+  width: 250px;
   padding: 5px;
-  border: 1px solid $grey;
+  margin-right: 10px;
+  border: 1px solid #eee;
 
   .flex-wrapper {
     display: flex;
