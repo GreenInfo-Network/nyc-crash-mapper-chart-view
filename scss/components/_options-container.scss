@@ -1,4 +1,6 @@
 .options-container {
+  overflow: hidden;
+
   &.opened {
     padding-bottom: $padding-10;
   }
@@ -9,6 +11,7 @@
 
   .options-container-header {
     padding-top: $padding-10;
+    padding-right: 20px;
     cursor: default;
     text-transform: uppercase;
   }
