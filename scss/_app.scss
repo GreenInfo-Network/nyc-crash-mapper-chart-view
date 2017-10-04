@@ -22,11 +22,12 @@ body,
   position: relative;
   display: grid;
   grid-template-columns: calc(100% - 300px) 300px;
-  grid-template-rows: 65px 120px calc(100% - 185px);
+  grid-template-rows: 65px 120px calc(100% - 335px) 150px;
   grid-template-areas:
     'header sparklines'
     'timeline sparklines'
-    'detailchart sparklines';
+    'detailchart sparklines'
+    'legend sparklines';
 
   .grid-area {
     padding: 10px;
@@ -54,8 +55,8 @@ body,
     grid-area: timeline;
   }
 
-  .grid-area.piecharts {
-    grid-area: piecharts;
+  .grid-area.legend {
+    grid-area: legend;
   }
 }
 
