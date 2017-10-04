@@ -22,7 +22,7 @@ body,
   position: relative;
   display: grid;
   grid-template-columns: calc(100% - 300px) 300px;
-  grid-template-rows: 65px 120px calc(100% - 305px) 120px;
+  grid-template-rows: 65px 120px minmax(200px, 350px) minmax(120px, calc(100% - 535px));
   grid-template-areas:
     'header sparklines'
     'timeline sparklines'
