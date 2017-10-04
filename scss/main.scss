@@ -3,18 +3,21 @@
 // this includes Normalize CSS
 @import 'skeleton/skeleton';
 
-// global variables: colors, etc.
+// global variables: colors, component sizes, etc.
 @import 'variables';
 
 // general layout & Skeleton overrides
 @import 'layout';
 
-// app globals
+// helper css classes that may be added anywhere
 @import 'helpers';
 
 // styles for individual react components
 @import 'components/app';
 @import 'components/sidebar';
+@import 'components/options-container';
+@import 'components/filter-button';
+@import 'components/filter-by-type';
 @import 'components/sparklines-list';
 @import 'components/sparkline-list-controller';
 @import 'components/line-chart';

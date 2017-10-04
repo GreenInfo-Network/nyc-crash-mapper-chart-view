@@ -35,6 +35,16 @@ p {
   margin: 0;
 }
 
+// UI elements
+.ui {
+  // position: absolute;
+  // z-index: 1;
+  box-sizing: border-box;
+  background-color: $ui-grey;
+  color: $off-white;
+  padding: $padding-10 0 $padding-5 $padding-10;
+}
+
 // chart options ul .filter-lists
 .filter-list {
   display: inline-block;

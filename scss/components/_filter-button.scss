@@ -1,0 +1,53 @@
+.filter-options-button {
+  height: 25px;
+  line-height: 25px;
+  background-color: $btn-bg;
+  border-color: rgba(0, 0, 0, 0);
+  color: $marine-light;
+  padding: 0 10px;
+  text-align: left;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  border: none;
+
+  &:hover,
+  &.active {
+    color: $marine;
+    border: none;
+  }
+
+  &:hover {
+    background-color: $btn-hover;
+  }
+
+  &.active {
+    background-color: $btn-active;
+  }
+
+  &.wide {
+    width: 135px;
+  }
+
+  &.med {
+    width: 125px;
+  }
+
+  &.narrow {
+    width: 90px;
+  }
+
+  &.auto {
+    width: auto;
+  }
+
+  &.link {
+    border: none;
+    border-radius: 0;
+    background-color: $transparent;
+    color: $btn-bg;
+
+    &:hover {
+      color: $btn-hover;
+    }
+  }
+}
