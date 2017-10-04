@@ -23,7 +23,6 @@ class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
     isFetching: PropTypes.bool.isRequired,
-    entitiesNested: PropTypes.arrayOf(PropTypes.object),
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
@@ -57,7 +56,7 @@ class App extends Component {
   }
 
   render() {
-    const { entitiesNested, entityType, isFetching } = this.props;
+    const { entityType, isFetching } = this.props;
 
     return (
       <div className="App grid-container">
@@ -65,7 +64,7 @@ class App extends Component {
           <h3 style={{ textTransform: 'uppercase', display: 'inline-block' }}>nyc crash mapper</h3>
         </div>
         <div className="grid-area sparklines">
-          <Sidebar {...{ entitiesNested, entityType }} />
+          <Sidebar {...{ entityType }} />
         </div>
         <div className="grid-area timeline">
           <TimeLine />
@@ -93,7 +92,6 @@ const mapStateToProps = state => {
     height: browser.height,
     isFetching,
     entityData: entityData.response,
-    entitiesNested: entityData.nested,
     entityType: entities.entityType,
   };
 };

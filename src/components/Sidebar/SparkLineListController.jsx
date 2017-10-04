@@ -7,8 +7,6 @@ import SparkLineList from '../../containers/SparkLineList';
 */
 class SparkLineContainer extends Component {
   static propTypes = {
-    // eslint-disable-next-line
-    entities: PropTypes.arrayOf(PropTypes.object),
     entityType: PropTypes.string,
     sparkLineListHeight: PropTypes.number,
   };
@@ -54,14 +52,14 @@ class SparkLineContainer extends Component {
   }
 
   render() {
-    const { entities, entityType, sparkLineListHeight } = this.props;
+    const { entityType, sparkLineListHeight } = this.props;
     const { inputValue, sortName, sortRank, sortAsc } = this.state;
 
     return (
       <div className="SparkLineListController">
         <div className="sparkline-controls">
           <input
-            placeholder={`Search a ${entityType}`}
+            placeholder={`Search a ${entityType.replace(/_/, ' ')}`}
             value={inputValue}
             onChange={this.handleChange}
             type="text"
@@ -71,7 +69,7 @@ class SparkLineContainer extends Component {
         </div>
         <SparkLineList
           filterTerm={inputValue}
-          {...{ entities, sortName, sortRank, sortAsc, sparkLineListHeight }}
+          {...{ sortName, sortRank, sortAsc, sparkLineListHeight }}
         />
       </div>
     );

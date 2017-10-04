@@ -7,8 +7,6 @@ import FilterByType from '../../containers/FilterByType';
 
 class Sidebar extends Component {
   static propTypes = {
-    // eslint-disable-next-line
-    entities: PropTypes.arrayOf(PropTypes.object),
     entityType: PropTypes.string,
   };
 
@@ -62,7 +60,7 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { entities, entityType } = this.props;
+    const { entityType } = this.props;
     const sparkLineListHeight = this.computeSparkLineListHeight();
 
     return (
@@ -104,7 +102,7 @@ class Sidebar extends Component {
           optionsContainerHeight={sparkLineListHeight}
           collapseHeight={sparkLineListHeight}
         >
-          <SparkLineListController {...{ entities, entityType, sparkLineListHeight }} />
+          <SparkLineListController {...{ entityType, sparkLineListHeight }} />
         </OptionsContainer>
       </div>
     );
