@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as d3 from 'd3';
+
+const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 
 /** Class that renders the line chart for selected geographic entities using D3
 */
@@ -255,7 +256,13 @@ class LineChart extends Component {
       .selectAll('.line-citywide')
       .data([citywide])
       .transition(t)
-      .attr('d', d => lineGenerator2(d));
+      // eslint-disable-next-line
+      .attrTween('d', function(d) {
+        const previous = d3.select(this).attr('d');
+        const current = lineGenerator2(d);
+        return d3.interpolatePath(previous, current);
+      });
+    // .attr('d', d => lineGenerator2(d));
 
     // update the svg main group element's data binding
     g.datum(entities, d => d.key);
@@ -273,7 +280,13 @@ class LineChart extends Component {
     // update existing lines
     lines
       .transition(t)
-      .attr('d', d => lineGenerator(d.values))
+      // eslint-disable-next-line
+      .attrTween('d', function(d) {
+        const previous = d3.select(this).attr('d');
+        const current = lineGenerator(d.values);
+        return d3.interpolatePath(previous, current);
+      })
+      // .attr('d', d => lineGenerator(d.values))
       .attr('stroke', d => d.color);
 
     // create new lines
