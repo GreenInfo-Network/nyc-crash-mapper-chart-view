@@ -36,8 +36,8 @@ class LineChart extends Component {
     nested: [],
     startDate: {},
     endDate: {},
-    yMax: null,
-    y2Max: null,
+    yMax: 0,
+    y2Max: 0,
   };
 
   constructor() {
@@ -75,9 +75,11 @@ class LineChart extends Component {
 
   componentDidUpdate(prevProps) {
     // do the d3 work here, after the component updated
+    // diff current props (this.props) with previous props (prevProps) to detect what's changed
     const {
       appHeight,
       appWidth,
+      citywide,
       nested,
       keyPrimary,
       keySecondary,
@@ -87,32 +89,46 @@ class LineChart extends Component {
       y2Max,
     } = this.props;
 
-    // if we receieved data create the chart structure
-    if (nested.length && nested.length !== prevProps.nested.length) {
-      this.initChart();
+    // a truthy value to use to tell if our chart has been set up yet
+    // if the outer most svg group exists, then our chart has been created
+    const chartExists = d3
+      .select(this.svg)
+      .select('g')
+      .node();
+
+    if (!chartExists) {
+      // if we receieved entity data create the chart structure
+      if (nested.length && nested.length !== prevProps.nested.length) {
+        this.initChart();
+      }
+
+      // citywide data always loaded regardless of other entities, so set up the chart if it exists
+      if (citywide.length && !prevProps.citywide.length) {
+        this.initChart();
+      }
     }
 
-    // if keys in our component state differ, update the chart
-    if (keyPrimary !== prevProps.keyPrimary || keySecondary !== prevProps.keySecondary) {
-      this.updateChart();
-    }
+    if (chartExists) {
+      // if keys in our component state differ, update the chart
+      if (keyPrimary !== prevProps.keyPrimary || keySecondary !== prevProps.keySecondary) {
+        this.updateChart();
+      }
 
-    // if the start or end dates changed, update the chart
-    if (+startDate !== +prevProps.startDate || +endDate !== +prevProps.endDate) {
-      this.updateChart();
-    }
+      // if the start or end dates changed, update the chart
+      if (+startDate !== +prevProps.startDate || +endDate !== +prevProps.endDate) {
+        this.updateChart();
+      }
 
-    // if the max y values changed then update the chart
-    if (yMax !== prevProps.yMax || y2Max !== prevProps.y2Max) {
-      this.updateChart();
-    }
+      // if the max y values changed then update the chart
+      if (yMax !== prevProps.yMax || y2Max !== prevProps.y2Max) {
+        this.updateChart();
+      }
 
-    // listen for changes in viewport and resize charts
-    if (appHeight !== prevProps.appHeight || appWidth !== prevProps.appWidth) {
-      this.resizeChart();
+      // listen for changes in viewport and resize charts
+      if (appHeight !== prevProps.appHeight || appWidth !== prevProps.appWidth) {
+        this.resizeChart();
+      }
     }
-
-    // TO DO: if filter types changed, update chart
   }
 
   getContainerSize() {
@@ -327,7 +343,7 @@ class LineChart extends Component {
       .attr('height', height + margin.top + margin.bottom);
 
     // set scale domains and ranges
-    yScale.range([height, 0]);
+    yScale.range([height, 0]).domain([0, 0]);
     yScale2.range([height, 0]).domain([0, y2Max]);
     xScale.range([0, width]).domain(d3.extent(citywide, d => d.year_month));
 
