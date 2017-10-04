@@ -9,6 +9,7 @@ import { allEntityData } from '../reducers';
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
 import TimeLine from './TimeLine';
+import Legend from '../components/Legend';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -73,6 +74,9 @@ class App extends Component {
           {/* TO DO: use a real loading indicator */}
           {isFetching && <h3>Loading...</h3>}
           <LineChartsContainer />
+        </div>
+        <div className="grid-area legend">
+          <Legend />
         </div>
       </div>
     );

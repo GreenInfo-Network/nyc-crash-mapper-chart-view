@@ -1,0 +1,13 @@
+.Legend {
+  span {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+
+    &.citywide {
+      background-color: #999;
+    }
+  }
+}
