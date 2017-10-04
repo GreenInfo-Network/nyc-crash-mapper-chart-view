@@ -18,7 +18,7 @@ export default function(callbacks, dateRanges) {
     left: 0,
   };
   let width = 960 - margin.left - margin.right;
-  let height = 75 - margin.top - margin.bottom;
+  let height = 80 - margin.top - margin.bottom;
 
   const xScale = d3.scaleTime().domain([new Date(2011, 7, 1), new Date()]);
 
