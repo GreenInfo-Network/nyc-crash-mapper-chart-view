@@ -30,6 +30,7 @@
     "babel-polyfill": "^6.23.0",
     "classnames": "^2.2.5",
     "d3": "^4.10.0",
+    "d3-interpolate-path": "^2.0.0",
     "lodash": "^4.17.4",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
