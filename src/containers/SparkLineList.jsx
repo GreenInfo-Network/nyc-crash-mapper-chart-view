@@ -16,8 +16,8 @@ import mapFilterTypesToProps, { sort } from '../common/utils';
 
 // TO DO: move these into the SparkLineList class?
 const margin = { top: 8, right: 10, bottom: 2, left: 10 };
-const width = 240 - margin.left - margin.right;
-const height = 69 - margin.top - margin.bottom;
+const width = 260 - margin.left - margin.right;
+const height = 45 - margin.top - margin.bottom;
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -49,7 +49,7 @@ const mapStateToProps = state => {
   };
 };
 
-/** Class that renders a list of SVG sparkLines
+/** Connected Component that renders a list of SVG sparkLines
 */
 class SparkLineList extends Component {
   static propTypes = {
@@ -211,7 +211,7 @@ class SparkLineList extends Component {
     ]);
 
     // set y-scale domain
-    this.yScale.domain([0, d3.max(response, d => d.count)]); // TO DO: shouldn't be hardcoded
+    this.yScale.domain([0, d3.max(response, d => d.count)]);
 
     return nested.map(entity => {
       const { key, values, rank } = entity;
@@ -235,7 +235,8 @@ class SparkLineList extends Component {
           className={listItemClass}
           onClick={() => this.handleSparkLineClick({ ...entity })}
         >
-          <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label} – Rank: ${rank + 1}`}</h6>
+          <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label} – Rank: ${rank +
+            1} / ${nested.length}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
             <path fill="#e7e7e7" className="area spark" d={this.area(values)} />
             <path
