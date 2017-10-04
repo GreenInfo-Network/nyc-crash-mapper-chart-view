@@ -85,6 +85,7 @@ class SparkLineList extends Component {
     deselectPrimaryEntity: PropTypes.func.isRequired,
     selectSecondaryEntity: PropTypes.func.isRequired,
     deselectSecondaryEntity: PropTypes.func.isRequired,
+    sparkLineListHeight: PropTypes.number,
   };
 
   static defaultProps = {
@@ -92,6 +93,7 @@ class SparkLineList extends Component {
     nested: [],
     response: [],
     filterTerm: '',
+    sparkLineListHeight: null,
   };
 
   constructor(props) {
@@ -250,11 +252,18 @@ class SparkLineList extends Component {
   }
 
   render() {
+    const { sparkLineListHeight } = this.props;
     let listItems = this.renderSparkLines();
     listItems = this.filterListItems(listItems);
     this.sortListItems(listItems);
 
-    return <ul className="SparkLineList scroll">{listItems}</ul>;
+    // NOTE: sparkLineListHeight is used to explicity set the height of the sparklines list so that it is scrollable if there are lots of list items
+    // this value is calculated in the Sidebar parent component (Sidebar/index.jsx) and passed down
+    return (
+      <ul style={{ height: sparkLineListHeight - 110 }} className="SparkLineList scroll">
+        {listItems}
+      </ul>
+    );
   }
 }
 

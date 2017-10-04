@@ -13,7 +13,8 @@ class OptionsContainer extends Component {
     optionsContainerHeight: PropTypes.number, // height for the options container
     ruledLine: PropTypes.bool, // add a ruled line under the header?
     scroll: PropTypes.bool, // should the content in Collapse be scrollable?
-    title: PropTypes.string.isRequired, // title in the header
+    title: PropTypes.string.isRequired, // title in the header,
+    onMeasure: PropTypes.func, // function to be invoked when Collapse changes size
   };
 
   static defaultProps = {
@@ -24,6 +25,7 @@ class OptionsContainer extends Component {
     optionsContainerHeight: null,
     ruledLine: false,
     scroll: false,
+    onMeasure: () => {},
   };
 
   constructor(props) {
@@ -50,6 +52,7 @@ class OptionsContainer extends Component {
       scroll,
       title,
       className,
+      onMeasure,
     } = this.props;
     const { opened } = this.state;
     const fixedHeight = collapseHeight > 0 ? collapseHeight : undefined;
@@ -72,7 +75,12 @@ class OptionsContainer extends Component {
           )}
           {ruledLine ? <hr /> : null}
         </div>
-        <Collapse className={collapseCX} isOpened={opened} fixedHeight={fixedHeight}>
+        <Collapse
+          className={collapseCX}
+          isOpened={opened}
+          fixedHeight={fixedHeight}
+          onMeasure={onMeasure}
+        >
           {children}
         </Collapse>
       </section>
