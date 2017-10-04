@@ -62,7 +62,8 @@ p {
 
 // ruled lines
 hr {
-  border-top-color: $hr-border;
+  border-top-color: #333;
+  // border-top-color: $hr-border;
   margin: 0;
   padding: 0;
 }
