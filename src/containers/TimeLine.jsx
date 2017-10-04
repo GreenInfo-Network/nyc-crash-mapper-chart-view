@@ -34,14 +34,8 @@ class TimeLine extends Component {
     this.svg = null;
     this.timeline = null;
     this.container = null;
-    this.margin = {
-      top: 10,
-      right: 0,
-      bottom: 40,
-      left: 0,
-    };
     this.width = 0;
-    this.height = 100;
+    this.height = 0;
   }
 
   componentDidMount() {
@@ -56,6 +50,7 @@ class TimeLine extends Component {
     };
     const bcr = this.container.getBoundingClientRect();
     this.width = bcr.width;
+    this.height = bcr.height - 42; // account for height of h6 element
     this.svg.setAttribute('width', this.width);
     this.svg.setAttribute('height', this.height);
     this.timeline = d3TimeLine(brushCallbacks, dateRanges);

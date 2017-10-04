@@ -12,13 +12,13 @@ export default function(callbacks, dateRanges) {
   const { dateRangeOne, dateRangeTwo } = dateRanges;
 
   const margin = {
-    top: 10,
-    right: 10,
-    bottom: 40,
-    left: 10,
+    top: 0,
+    right: 0,
+    bottom: 50,
+    left: 0,
   };
   let width = 960 - margin.left - margin.right;
-  let height = 100 - margin.top - margin.bottom;
+  let height = 75 - margin.top - margin.bottom;
 
   const xScale = d3.scaleTime().domain([new Date(2011, 7, 1), new Date()]);
 

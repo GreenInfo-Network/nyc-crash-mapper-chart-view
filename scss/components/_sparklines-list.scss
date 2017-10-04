@@ -1,11 +1,12 @@
 .SparkLineList {
   width: 100%;
-  height: calc(100% - 100px);
-  cursor: pointer;
+  height: $sparkline-list-height;
+  margin-bottom: 0;
 
   .sparkline-list-item {
     display: inline-block;
     padding: 5px;
+    cursor: pointer;
 
     h6 {
       text-transform: capitalize;
