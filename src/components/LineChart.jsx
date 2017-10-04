@@ -83,6 +83,8 @@ class LineChart extends Component {
       keySecondary,
       startDate,
       endDate,
+      yMax,
+      y2Max,
     } = this.props;
 
     // if we receieved data create the chart structure
@@ -97,6 +99,11 @@ class LineChart extends Component {
 
     // if the start or end dates changed, update the chart
     if (+startDate !== +prevProps.startDate || +endDate !== +prevProps.endDate) {
+      this.updateChart();
+    }
+
+    // if the max y values changed then update the chart
+    if (yMax !== prevProps.yMax || y2Max !== prevProps.y2Max) {
       this.updateChart();
     }
 
