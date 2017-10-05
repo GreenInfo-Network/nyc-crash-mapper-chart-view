@@ -1,23 +1,81 @@
 // this module contains template strings that form SQL queries that are passed to CARTO's SQL API
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
-// Query that determines rank
-export const sqlRank = geo => sls`
-  SELECT ${geo}, injuries, fatalities,
-  rank() OVER (ORDER BY injuries DESC, fatalities DESC)
-  FROM (
+// SQL Helper functions
+// maps the filterType part of Redux state to "number_of_<x>_<y>" strings
+const mapTypes = (personTypes, harmType) =>
+  Object.keys(personTypes)
+    .filter(type => personTypes[type])
+    .map(type => {
+      const term = harmType === 'injury' ? 'injured' : 'killed';
+      return `number_of_${type}_${term}`;
+    })
+    .join(' + ');
+
+// Query that determines rank for SparkLineList items
+export const sqlRank = (geo, filterType) => {
+  const { injury, fatality } = filterType;
+  const select = [];
+  const orderBy = [];
+  const sum = [];
+  const sumInjured = mapTypes(injury, 'injury');
+  const sumKilled = mapTypes(fatality, 'fatality');
+
+  if (sumInjured.length) {
+    select.push('injuries');
+    orderBy.push('injuries DESC');
+    sum.push(`SUM(${sumInjured}) as injuries`);
+  }
+
+  if (sumKilled.length) {
+    select.push('fatalities');
+    orderBy.push('fatalities DESC');
+    sum.push(`SUM(${sumKilled}) as fatalities`);
+  }
+
+  if (!sumInjured.length && !sumKilled.length) {
+    // something went wrong, bail
+    return '';
+  }
+
+  return sls`
+    SELECT ${geo}, ${select},
+    rank() OVER (ORDER BY ${orderBy})
+    FROM (
+      SELECT
+        COUNT(cartodb_id) as total_crashes,
+        ${geo},
+        ${sum}
+      FROM crashes_all_prod c
+      WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
+      AND the_geom IS NOT NULL
+      AND date_val >= now() - interval '3 years'
+      GROUP BY ${geo}
+    ) AS _
+    ORDER BY rank ASC
+  `;
+};
+
+// Query for Sparklines
+export const sqlSparkLines = (geo, filterType) => {
+  const { injury, fatality } = filterType;
+  const sumInjured = mapTypes(injury, 'injury');
+  const sumKilled = mapTypes(fatality, 'fatality');
+  const count = [sumInjured, sumKilled].join(' + ');
+
+  return sls`
     SELECT
-      COUNT(cartodb_id) as total_crashes,
+      COUNT(c.cartodb_id) as total_crashes,
       ${geo},
-      SUM(number_of_pedestrian_injured + number_of_cyclist_injured + number_of_motorist_injured) as injuries,
-      SUM(number_of_pedestrian_killed + number_of_cyclist_killed + number_of_motorist_killed) as fatalities
+      SUM(${count}) as count,
+      year || '-' || LPAD(month::text, 2, '0') as year_month
     FROM crashes_all_prod c
     WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
     AND the_geom IS NOT NULL
-    GROUP BY ${geo}
-  ) AS _
-  ORDER BY rank ASC
-`;
+    GROUP BY year, month, ${geo}
+    ORDER BY year asc, month asc, ${geo} asc
+  `;
+};
 
 // Query that returns aggregated data for entire city, note this will include data that hasn't been geocoded
 export const sqlCitywide = () => sls`
