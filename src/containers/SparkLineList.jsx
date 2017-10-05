@@ -28,12 +28,21 @@ const mapStateToProps = state => {
 
   // TO DO: this pattern will likely be used elsewhere, should get moved to a higher order function
   if (response) {
+    // compute sum of currently enabled crash type type filters
     mapped = mapFilterTypesToProps(filterType, response);
+    // nest data by geo identifier
     nested = d3
       .nest()
       .key(d => d[entityType])
-      .entries(mapped);
-    sort(nested, 'count', true);
+      .entries(mapped.filter(d => d[entityType] !== '')); // be sure to filter out blanks
+    // compute the max sum of each nested geo
+    nested.forEach(entity => {
+      const max = d3.max(entity.values, k => k.count);
+      entity.max = max;
+    });
+    // sort nested data by max
+    sort(nested, 'max', true);
+    // apply a rank value using sorted array index
     nested.forEach((d, i) => {
       d.rank = i;
     });
