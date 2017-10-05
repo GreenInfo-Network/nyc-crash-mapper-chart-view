@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import SparkLineListController from './SparkLineListController';
 import OptionsContainer from './OptionsContainer';
 import FilterByType from '../../containers/FilterByType';
+import FilterByBoundary from './FilterByBoundary';
 
 class Sidebar extends Component {
   static propTypes = {
@@ -90,7 +91,7 @@ class Sidebar extends Component {
           onMeasure={({ height }) => this.updateCollapsedHeight('filterByBoundaryHeight', height)}
         >
           <div className="FilterByBoundary">
-            <p>TO DO...</p>
+            <FilterByBoundary entityType={entityType} />
           </div>
         </OptionsContainer>
 
