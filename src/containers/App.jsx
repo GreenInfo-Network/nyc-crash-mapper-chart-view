@@ -46,12 +46,17 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, isFetching } = nextProps;
+    const { entityData, entityType, isFetching } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
-    if (this.props.entityData.length && !entityData.length && !isFetching) {
-      this.props.fetchEntityData();
+    if (
+      entityType !== this.props.entityType &&
+      this.props.entityData.length &&
+      !entityData.length &&
+      !isFetching
+    ) {
+      this.props.fetchEntityData(entityType);
     }
   }
 
