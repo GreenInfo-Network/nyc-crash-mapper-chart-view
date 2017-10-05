@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import SparkLineListController from './SparkLineListController';
 import OptionsContainer from './OptionsContainer';
 import FilterByType from '../../containers/FilterByType';
-import FilterByBoundary from './FilterByBoundary';
+import FilterByBoundary from '../../containers/FilterByBoundary';
 
 class Sidebar extends Component {
   static propTypes = {
@@ -19,9 +19,7 @@ class Sidebar extends Component {
     super();
     this.state = {
       filterByTypeHeight: null,
-      filterByTypeOpened: true,
       filterByBoundaryHeight: null,
-      filterByBoundaryOpened: true,
     };
 
     // ref to component's self

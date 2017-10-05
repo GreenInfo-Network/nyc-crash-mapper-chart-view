@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import { setEntityType } from '../actions';
 
 class FilterByBoundary extends Component {
   static propTypes = {
     entityType: PropTypes.string.isRequired,
+    setEntityType: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -13,14 +17,20 @@ class FilterByBoundary extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.entityType !== this.props.entityType) {
+      return true;
+    }
+
+    return false;
+  }
+
   handleChange(event) {
-    this.setState({
-      value: event.target.value,
-    });
+    this.props.setEntityType(event.target.value);
   }
 
   render() {
-    const { value } = this.state;
+    const { entityType } = this.props;
 
     const values = [
       { value: 'borough', label: 'Borough' },
@@ -31,7 +41,7 @@ class FilterByBoundary extends Component {
     ];
 
     return (
-      <select value={value} onChange={this.handleChange}>
+      <select value={entityType} onChange={this.handleChange}>
         {values.map(item => (
           <option key={item.value} value={item.value}>
             {item.label}
@@ -42,4 +52,9 @@ class FilterByBoundary extends Component {
   }
 }
 
-export default FilterByBoundary;
+const mapStateToProps = ({ entities }) => {
+  const { entityType } = entities;
+  return { entityType };
+};
+
+export default connect(mapStateToProps, { setEntityType })(FilterByBoundary);
