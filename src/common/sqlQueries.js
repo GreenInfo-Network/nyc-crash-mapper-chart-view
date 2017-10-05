@@ -1,6 +1,24 @@
 // this module contains template strings that form SQL queries that are passed to CARTO's SQL API
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
+// Query that determines rank
+export const sqlRank = geo => sls`
+  SELECT ${geo}, injuries, fatalities,
+  rank() OVER (ORDER BY injuries DESC, fatalities DESC)
+  FROM (
+    SELECT
+      COUNT(cartodb_id) as total_crashes,
+      ${geo},
+      SUM(number_of_pedestrian_injured + number_of_cyclist_injured + number_of_motorist_injured) as injuries,
+      SUM(number_of_pedestrian_killed + number_of_cyclist_killed + number_of_motorist_killed) as fatalities
+    FROM crashes_all_prod c
+    WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
+    AND the_geom IS NOT NULL
+    GROUP BY ${geo}
+  ) AS _
+  ORDER BY rank ASC
+`;
+
 // Query that returns aggregated data for entire city, note this will include data that hasn't been geocoded
 export const sqlCitywide = () => sls`
   SELECT
@@ -37,7 +55,8 @@ export const sqlByGeo = geo =>
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
       year || '-' || LPAD(month::text, 2, '0') as year_month
     FROM crashes_all_prod c
-    WHERE ${geo} IS NOT NULL
+    WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
+    AND the_geom IS NOT NULL
     GROUP BY year, month, ${geo}
     ORDER BY year asc, month asc, ${geo} asc
   `;
