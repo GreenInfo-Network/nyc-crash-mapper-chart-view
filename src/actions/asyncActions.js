@@ -1,9 +1,18 @@
 import axios from 'axios';
-import { sqlByGeo, sqlCitywide } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide, sqlRank } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
-import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
+import {
+  ENTITY_DATA_REQUEST,
+  ENTITY_DATA_SUCCESS,
+  DATA_FETCH_ERROR,
+  RANK_DATA_REQUEST,
+  RANK_DATA_SUCCESS,
+} from '../common/actionTypes';
+
+// CARTO SQL API endpoint
+const url = `https://${cartoUser}.carto.com/api/v2/sql?q=`;
 
 // action that states we are making an async request
 const requestEntityData = () => ({
@@ -20,9 +29,9 @@ const receiveEntityData = (geo, response) => ({
   response,
 });
 
-// catch any error that may have occured from the async request
-const handleEntityDataError = error => ({
-  type: ENTITY_DATA_ERROR,
+// generic error handling action
+const handleError = error => ({
+  type: DATA_FETCH_ERROR,
   error,
 });
 
@@ -35,15 +44,13 @@ export default function fetchEntityData(entityType) {
     // tell our app we are fetching data
     dispatch(requestEntityData());
 
-    // CARTO API endpoint using entityType
-    const url = `https://${cartoUser}.carto.com/api/v2/sql?q=${encodeURIComponent(sql)}`;
-
-    return axios(url)
+    // use axios library to make the GET request to the CARTO API with the SQL query from above
+    return axios(`${url}${encodeURIComponent(sql)}`)
       .then(result => {
         // check to see that we have a valid response
         if (!result || !result.data || !result.data.rows) {
           const error = Error('There was a problem loading data');
-          handleEntityDataError(error);
+          dispatch(handleError(error));
         }
 
         // the response success
@@ -57,6 +64,34 @@ export default function fetchEntityData(entityType) {
         // update redux state with response & nested data
         dispatch(receiveEntityData(entityType, response));
       })
-      .catch(error => handleEntityDataError(error));
+      .catch(error => handleError(error));
   };
 }
+
+const requestRankData = () => ({
+  type: RANK_DATA_REQUEST,
+});
+
+const receiveRankData = (geo, ranked) => ({
+  type: RANK_DATA_SUCCESS,
+  geo,
+  ranked,
+});
+
+export const fetchRankData = (entityType, filterType) => {
+  const sql = sqlRank(entityType, filterType);
+
+  return dispatch => {
+    dispatch(requestRankData());
+
+    return axios(`${url}${encodeURIComponent(sql)}`)
+      .then(result => {
+        if (!result || !result.data || !result.data.rows) {
+          dispatch(handleError('error fetching rank data'));
+        }
+        const response = result.data.rows;
+        dispatch(receiveRankData(entityType, response));
+      })
+      .catch(error => handleError(error));
+  };
+};

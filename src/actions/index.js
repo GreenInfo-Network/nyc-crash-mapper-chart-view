@@ -10,4 +10,4 @@ export {
 
 export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
 
-export fetchEntityData from './asyncActions';
+export fetchEntityData, { fetchRankData } from './asyncActions';
