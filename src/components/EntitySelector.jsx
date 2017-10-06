@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as pt from '../common/reactPropTypeDefs';
 
 const EntitySelector = props => {
   const { color, entityType, entity, deselectEntity } = props;
@@ -29,13 +30,13 @@ const EntitySelector = props => {
 EntitySelector.propTypes = {
   color: PropTypes.string.isRequired,
   entityType: PropTypes.string,
-  entity: PropTypes.string,
+  entity: pt.key,
   deselectEntity: PropTypes.func,
 };
 
 EntitySelector.defaultProps = {
   entityType: '',
-  entity: '',
+  entity: null,
   deselectEntity: null,
 };
 

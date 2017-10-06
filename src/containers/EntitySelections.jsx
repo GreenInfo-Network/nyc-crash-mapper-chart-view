@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import { deselectPrimaryEntity, deselectSecondaryEntity } from '../actions';
 import EntitySelector from '../components/EntitySelector';
+import * as pt from '../common/reactPropTypeDefs';
 
 // maps part of redux store to component props
 const mapStateToProps = ({ entities }) => {
@@ -22,9 +23,9 @@ const mapStateToProps = ({ entities }) => {
  */
 class EntitySelections extends Component {
   static propTypes = {
-    entityType: PropTypes.string,
-    primary: PropTypes.shape({}),
-    secondary: PropTypes.shape({}),
+    entityType: pt.key,
+    primary: pt.entity,
+    secondary: pt.entity,
     dispatch: PropTypes.func.isRequired,
   };
 

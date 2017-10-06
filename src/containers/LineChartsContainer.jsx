@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { max } from 'd3';
 
+import * as pt from '../common/reactPropTypeDefs';
 import { formatDate } from '../common/d3Utils';
 import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
 import { filterEntitiesValues } from '../reducers';
@@ -15,45 +16,15 @@ class LineChartsContainer extends Component {
   static propTypes = {
     appHeight: PropTypes.number.isRequired,
     appWidth: PropTypes.number.isRequired,
-    primary: PropTypes.shape({
-      key: PropTypes.string,
-      values: PropTypes.array,
-    }).isRequired,
-    secondary: PropTypes.shape({
-      key: PropTypes.string,
-      values: PropTypes.array,
-    }).isRequired,
+    primary: pt.entity.isRequired,
+    secondary: pt.entity.isRequired,
     nested: PropTypes.arrayOf(PropTypes.object),
     citywidePeriod1: PropTypes.arrayOf(PropTypes.object),
     citywidePeriod2: PropTypes.arrayOf(PropTypes.object),
-    dateRangeTwo: PropTypes.shape({
-      endDate: PropTypes.instanceOf(Date),
-      startDate: PropTypes.instanceOf(Date),
-    }),
-    dateRangeOne: PropTypes.shape({
-      endDate: PropTypes.instanceOf(Date),
-      startDate: PropTypes.instanceOf(Date),
-    }),
-    valuesDateRange1: PropTypes.shape({
-      primary: PropTypes.shape({
-        key: PropTypes.string,
-        values: PropTypes.array,
-      }),
-      secondary: PropTypes.shape({
-        key: PropTypes.string,
-        values: PropTypes.array,
-      }),
-    }).isRequired,
-    valuesDateRange2: PropTypes.shape({
-      primary: PropTypes.shape({
-        key: PropTypes.string,
-        values: PropTypes.array,
-      }),
-      secondary: PropTypes.shape({
-        key: PropTypes.string,
-        values: PropTypes.array,
-      }),
-    }).isRequired,
+    dateRangeTwo: pt.dateRange,
+    dateRangeOne: pt.dateRange,
+    valuesDateRange1: pt.valuesByDateRange.isRequired,
+    valuesDateRange2: pt.valuesByDateRange.isRequired,
   };
 
   static defaultProps = {

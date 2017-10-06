@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import * as pt from '../common/reactPropTypeDefs';
+
 const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 
 /** Class that renders the line chart for selected geographic entities using D3
@@ -9,21 +11,12 @@ class LineChart extends Component {
   static propTypes = {
     appHeight: PropTypes.number.isRequired,
     appWidth: PropTypes.number.isRequired,
-    keyPrimary: PropTypes.string,
-    keySecondary: PropTypes.string,
+    keyPrimary: pt.key,
+    keySecondary: pt.key,
     citywide: PropTypes.arrayOf(PropTypes.object),
-    startDate: PropTypes.instanceOf(Date),
-    endDate: PropTypes.instanceOf(Date),
-    valuesByDateRange: PropTypes.shape({
-      primary: PropTypes.shape({
-        key: PropTypes.string,
-        values: PropTypes.array,
-      }),
-      secondary: PropTypes.shape({
-        key: PropTypes.string,
-        values: PropTypes.array,
-      }),
-    }).isRequired,
+    startDate: pt.dateRange,
+    endDate: pt.dateRange,
+    valuesByDateRange: pt.valuesByDateRange.isRequired,
     yMax: PropTypes.number,
     y2Max: PropTypes.number,
   };
