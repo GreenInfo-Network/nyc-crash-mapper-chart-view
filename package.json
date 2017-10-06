@@ -32,6 +32,7 @@
     "d3": "^4.10.0",
     "d3-interpolate-path": "^2.0.0",
     "lodash": "^4.17.4",
+    "lodash.isequal": "^4.5.0",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
     "react-collapse": "^4.0.3",
