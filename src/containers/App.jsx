@@ -44,7 +44,6 @@ class App extends Component {
   componentDidMount() {
     const { entityType, filterType } = this.props;
     // DOM content loaded, make async data requests
-    this.props.setEntityType(entityType);
     this.props.fetchEntityData(entityType);
     this.props.fetchRankData(entityType, filterType);
 
