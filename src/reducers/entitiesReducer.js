@@ -9,12 +9,12 @@ import {
 const defaultState = {
   primary: {
     color: '#393B79',
-    key: '',
+    key: null,
     values: [],
   },
   secondary: {
     color: '#843C39',
-    key: '',
+    key: null,
     values: [],
   },
   entityType: 'city_council', // matches properties in store.data
