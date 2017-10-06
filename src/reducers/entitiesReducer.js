@@ -24,7 +24,7 @@ export default function(state = defaultState, action) {
   switch (action.type) {
     case SET_ENTITY_TYPE:
       return {
-        ...state,
+        ...defaultState,
         entityType: action.entityType,
       };
 
