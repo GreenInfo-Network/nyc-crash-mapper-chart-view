@@ -2,78 +2,79 @@
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
 // SQL Helper functions
-// maps the filterType part of Redux state to "number_of_<x>_<y>" strings
-const mapTypes = (personTypes, harmType) =>
-  Object.keys(personTypes)
-    .filter(type => personTypes[type])
+// Query that maps the filterType part of Redux state to "number_of_<x>_<y>" strings
+// @param {object} personTypes Either filterType.injury or filterType.fatality
+// @param {string} harmType Either "injury" or "fatality"
+// @returns {string} concatenated list of strings e.g. "number_of_pedestrian_injured, number_of_cyclist_injured"
+const mapTypes = (filterTypePart, harmType) =>
+  Object.keys(filterTypePart)
+    .filter(type => filterTypePart[type])
     .map(type => {
       const term = harmType === 'injury' ? 'injured' : 'killed';
       return `number_of_${type}_${term}`;
     })
     .join(' + ');
 
-// Query that determines rank for SparkLineList items
-export const sqlRank = (geo, filterType) => {
+// Sparklines and Ranking combined using sub queries
+export const sqlSparklinesRanked = (geo, filterType) => {
   const { injury, fatality } = filterType;
-  const select = [];
   const orderBy = [];
-  const sum = [];
+  const sum1 = [];
+  const sum2 = [];
   const sumInjured = mapTypes(injury, 'injury');
   const sumKilled = mapTypes(fatality, 'fatality');
 
   if (sumInjured.length) {
-    select.push('injuries');
-    orderBy.push('injuries DESC');
-    sum.push(`SUM(${sumInjured}) as injuries`);
+    orderBy.push('_.injuries DESC');
+    sum1.push(`SUM(${sumInjured}) as injuries`);
+    sum2.push(sumInjured);
   }
 
   if (sumKilled.length) {
-    select.push('fatalities');
-    orderBy.push('fatalities DESC');
-    sum.push(`SUM(${sumKilled}) as fatalities`);
+    orderBy.push('_.fatalities DESC');
+    sum1.push(`SUM(${sumKilled}) as fatalities`);
+    sum2.push(sumKilled);
   }
 
-  if (!sumInjured.length && !sumKilled.length) {
-    // something went wrong, bail
+  if (!sumKilled.length && !sumInjured.length) {
+    // user selected nothing to filter by
     return '';
   }
 
-  return sls`
-    SELECT ${geo}, ${select},
-    rank() OVER (ORDER BY ${orderBy})
+  return `
+    SELECT
+    b.${geo},
+    b.year_month,
+    b.total,
+    a.rank
     FROM (
       SELECT
-        COUNT(cartodb_id) as total_crashes,
+      _.${geo},
+      rank() OVER (ORDER BY ${orderBy.join(',')})
+      FROM (
+        SELECT
+          ${geo},
+          ${sum1.join(',')}
+        FROM crashes_all_prod
+        WHERE ${geo} IS NOT NULL
+        AND the_geom IS NOT NULL
+        AND date_val >= now() - interval '3 years'
+        GROUP BY ${geo}
+      ) AS _
+    ) AS a,
+    (
+      SELECT
+        SUM(${sum2.join(' + ')}) as total,
         ${geo},
-        ${sum}
-      FROM crashes_all_prod c
-      WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
+        year || '-' || LPAD(month::text, 2, '0') as year_month
+      FROM
+        crashes_all_prod c
+      WHERE ${geo} IS NOT NULL
       AND the_geom IS NOT NULL
-      AND date_val >= now() - interval '3 years'
-      GROUP BY ${geo}
-    ) AS _
-    ORDER BY rank ASC
-  `;
-};
-
-// Query for Sparklines
-export const sqlSparkLines = (geo, filterType) => {
-  const { injury, fatality } = filterType;
-  const sumInjured = mapTypes(injury, 'injury');
-  const sumKilled = mapTypes(fatality, 'fatality');
-  const count = [sumInjured, sumKilled].join(' + ');
-
-  return sls`
-    SELECT
-      COUNT(c.cartodb_id) as total_crashes,
-      ${geo},
-      SUM(${count}) as count,
-      year || '-' || LPAD(month::text, 2, '0') as year_month
-    FROM crashes_all_prod c
-    WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
-    AND the_geom IS NOT NULL
-    GROUP BY year, month, ${geo}
-    ORDER BY year asc, month asc, ${geo} asc
+      GROUP BY ${geo}, year, month
+    ) AS b
+    WHERE a.${geo} = b.${geo}
+    ORDER BY b.year_month ASC, b.${geo} ASC
   `;
 };
 
