@@ -36,6 +36,7 @@ const rootReducer = combineReducers({
 /**
  * Selector function that returns response & nested data for a given geographic entity
  * @param {object} state: redux state / store
+ * @returns {object} part of redux store.data for the current geographic entity
  */
 export const allEntityData = state => {
   // eslint-disable-next-line
@@ -48,6 +49,7 @@ export const allEntityData = state => {
     // appropriate action to request new data
     return {
       response: [],
+      ranked: [],
     };
   }
 
