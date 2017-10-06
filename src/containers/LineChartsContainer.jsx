@@ -5,7 +5,7 @@ import { max } from 'd3';
 
 import { formatDate } from '../common/d3Utils';
 import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
-import { allEntityData, filterEntitiesValues } from '../reducers';
+import { filterEntitiesValues } from '../reducers';
 import LineChart from '../components/LineChart';
 
 /**
@@ -153,9 +153,6 @@ const mapStateToProps = state => {
   // filter primary and secondary entity data by date ranges
   const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
 
-  // data for the current geography / entity
-  const entityData = allEntityData(state);
-
   // citywide data which always(?) shows up on the line chart
   const citywideValues = citywide.response || [];
   const citywidePeriod1 = mapFilterTypesToProps(
@@ -172,7 +169,6 @@ const mapStateToProps = state => {
     appWidth: width,
     citywidePeriod1,
     citywidePeriod2,
-    nested: entityData.nested,
     primary,
     secondary,
     dateRangeOne: group1,

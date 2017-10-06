@@ -30,6 +30,14 @@ const mapStateToProps = state => {
   if (response) {
     // compute sum of currently enabled crash type type filters
     mapped = mapFilterTypesToProps(filterType, response);
+    // normalize enitity names
+    mapped.forEach(value => {
+      let type = value[entityType];
+      if (typeof type === 'string') {
+        type = type.replace(/the\s/, '').toLowerCase();
+      }
+      value[entityType] = type;
+    });
     // nest data by geo identifier
     nested = d3
       .nest()

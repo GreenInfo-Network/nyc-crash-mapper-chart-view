@@ -12,7 +12,6 @@ class LineChart extends Component {
     keyPrimary: PropTypes.string,
     keySecondary: PropTypes.string,
     citywide: PropTypes.arrayOf(PropTypes.object),
-    nested: PropTypes.arrayOf(PropTypes.object),
     startDate: PropTypes.instanceOf(Date),
     endDate: PropTypes.instanceOf(Date),
     valuesByDateRange: PropTypes.shape({
@@ -33,7 +32,6 @@ class LineChart extends Component {
     keyPrimary: '',
     keySecondary: '',
     citywide: [],
-    nested: [],
     startDate: {},
     endDate: {},
     yMax: 0,
@@ -80,7 +78,6 @@ class LineChart extends Component {
       appHeight,
       appWidth,
       citywide,
-      nested,
       keyPrimary,
       keySecondary,
       startDate,
@@ -97,12 +94,7 @@ class LineChart extends Component {
       .node();
 
     if (!chartExists) {
-      // if we receieved entity data create the chart structure
-      if (nested.length && nested.length !== prevProps.nested.length) {
-        this.initChart();
-      }
-
-      // citywide data always loaded regardless of other entities, so set up the chart if it exists
+      // citywide data is always loaded regardless of other entities, so set up the chart if it exists
       if (citywide.length && !prevProps.citywide.length) {
         this.initChart();
       }
@@ -324,7 +316,7 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { nested, citywide, y2Max } = this.props;
+    const { citywide, y2Max } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -334,8 +326,6 @@ class LineChart extends Component {
     const yAxis2 = this.yAxis2;
     const xAxis = this.xAxis;
     const svg = d3.select(this.svg);
-
-    if (!nested.length) return;
 
     // set dimensions of the svg element
     svg
