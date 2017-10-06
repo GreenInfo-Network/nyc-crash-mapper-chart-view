@@ -225,8 +225,9 @@ class SparkLineList extends Component {
           className={listItemClass}
           onClick={() => this.handleSparkLineClick(key)}
         >
-          <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label} – Rank: ${rank +
-            1} / ${nested.length}`}</h6>
+          <h6
+            style={{ padding: 0 }}
+          >{`${entityTypeDisplay} ${label} – Rank: ${rank} / ${nested.length}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
             <path fill="#e7e7e7" className="area spark" d={this.area(values)} />
             <path
