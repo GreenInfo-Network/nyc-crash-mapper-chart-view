@@ -15,21 +15,6 @@ const mapTypes = (filterTypePart, harmType) =>
     })
     .join(' + ');
 
-// Check if geo === 'borough', if so normalize borough spellings,
-// because NYC Open Data people have 11 spellings of NYC Boroughs...
-const normalizeGeoRegExp = (geo, x) => {
-  if (geo === 'borough') {
-    const term = x ? 'borough' : 'borough_normalized';
-    return `regexp_replace(lower(borough), '^the ', '') as ${term}`;
-  }
-
-  return geo;
-};
-
-const normalizeGeoNorm = geo => (geo === 'borough' ? 'borough_normalized' : geo);
-const normalizeGeoAlias = geo =>
-  geo === 'borough' ? 'b.borough_normalized as borough' : `b.${geo}`;
-
 // Sparklines and Ranking combined using sub queries
 // @param {string} geo The geographic entity type (e.g. "city_council")
 // @param {object} filterType
@@ -61,40 +46,40 @@ export const sqlSparklinesRanked = (geo, filterType) => {
 
   return sls`
     SELECT
-    ${normalizeGeoAlias(geo)},
+    b.${geo},
     b.year_month,
     b.total,
     a.rank
     FROM (
       SELECT
-      _.${normalizeGeoNorm(geo)},
+      _.${geo},
       rank() OVER (ORDER BY ${orderBy.join(',')})
       FROM (
         SELECT
-          ${normalizeGeoRegExp(geo)},
+          ${geo},
           ${sum1.join(',')}
         FROM crashes_all_prod
         WHERE ${geo} IS NOT NULL
         AND ${geo}::text != ''
         AND the_geom IS NOT NULL
         AND date_val >= now() - interval '3 years'
-        GROUP BY ${normalizeGeoNorm(geo)}
+        GROUP BY ${geo}
       ) AS _
     ) AS a,
     (
       SELECT
         SUM(${sum2.join(' + ')}) as total,
-        ${normalizeGeoRegExp(geo)},
+        ${geo},
         year || '-' || LPAD(month::text, 2, '0') as year_month
       FROM
         crashes_all_prod c
       WHERE ${geo} IS NOT NULL
       AND ${geo}::text != ''
       AND the_geom IS NOT NULL
-      GROUP BY ${normalizeGeoNorm(geo)}, year_month
+      GROUP BY ${geo}, year_month
     ) AS b
-    WHERE a.${normalizeGeoNorm(geo)} = b.${normalizeGeoNorm(geo)}
-    ORDER BY b.year_month ASC, b.${normalizeGeoNorm(geo)} ASC
+    WHERE a.${geo} = b.${geo}
+    ORDER BY b.year_month ASC, b.${geo} ASC
   `;
 };
 
@@ -123,7 +108,7 @@ export const sqlByGeo = geo =>
   sls`
     SELECT
       COUNT(c.cartodb_id) as total_crashes,
-      ${normalizeGeoRegExp(geo, true)},
+      ${geo},
       SUM(c.number_of_cyclist_injured) as cyclist_injured,
       SUM(c.number_of_cyclist_killed) as cyclist_killed,
       SUM(c.number_of_motorist_injured) as motorist_injured,
