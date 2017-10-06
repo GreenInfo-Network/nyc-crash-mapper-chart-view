@@ -12,7 +12,7 @@ import {
 } from '../actions';
 
 import { allEntityData } from '../reducers';
-import mapFilterTypesToProps, { sort } from '../common/utils';
+import * as pt from '../common/reactPropTypeDefs';
 
 // TO DO: move these into the SparkLineList class?
 const margin = { top: 8, right: 10, bottom: 2, left: 10 };
@@ -22,44 +22,27 @@ const height = 45 - margin.top - margin.bottom;
 const mapStateToProps = state => {
   const { entities, filterType } = state;
   const { entityType } = entities;
-  const { response } = allEntityData(state);
+  const { ranked, response } = allEntityData(state);
   let nested = [];
-  let mapped = [];
 
-  // TO DO: this pattern will likely be used elsewhere, should get moved to a higher order function
-  if (response) {
-    // compute sum of currently enabled crash type type filters
-    mapped = mapFilterTypesToProps(filterType, response);
-    // normalize enitity names
-    mapped.forEach(value => {
-      let type = value[entityType];
-      if (typeof type === 'string') {
-        type = type.replace(/the\s/, '').toLowerCase();
-      }
-      value[entityType] = type;
-    });
-    // nest data by geo identifier
+  // only nest data if we have it after the async request
+  if (ranked && ranked.length) {
     nested = d3
       .nest()
       .key(d => d[entityType])
-      .entries(mapped.filter(d => d[entityType] !== '')); // be sure to filter out blanks
-    // compute the max sum of each nested geo
+      .entries(ranked);
+
+    // compute max(d.count) for setting y scale domain later
     nested.forEach(entity => {
-      const max = d3.max(entity.values, k => k.count);
-      entity.max = max;
-    });
-    // sort nested data by max
-    sort(nested, 'max', true);
-    // apply a rank value using sorted array index
-    nested.forEach((d, i) => {
-      d.rank = i;
+      entity.rank = entity.values[0].rank;
+      entity.maxTotal = d3.max(entity.values, d => d.total);
     });
   }
 
   return {
     entityType,
     filterType,
-    response: mapped,
+    response,
     nested,
     primary: entities.primary,
     secondary: entities.secondary,
@@ -71,27 +54,9 @@ const mapStateToProps = state => {
 class SparkLineList extends Component {
   static propTypes = {
     entityType: PropTypes.string,
-    filterType: PropTypes.shape({
-      fatality: PropTypes.shape({
-        cyclist: PropTypes.bool.isRequired,
-        motorist: PropTypes.bool.isRequired,
-        pedestrian: PropTypes.bool.isRequired,
-      }),
-      injury: PropTypes.shape({
-        cyclist: PropTypes.bool.isRequired,
-        motorist: PropTypes.bool.isRequired,
-        pedestrian: PropTypes.bool.isRequired,
-      }),
-      noInjuryFatality: PropTypes.bool.isRequired,
-    }).isRequired,
-    primary: PropTypes.shape({
-      key: PropTypes.string,
-      values: PropTypes.array,
-    }).isRequired,
-    secondary: PropTypes.shape({
-      key: PropTypes.string,
-      values: PropTypes.array,
-    }).isRequired,
+    filterType: pt.filterType.isRequired,
+    primary: pt.entity.isRequired,
+    secondary: pt.entity.isRequired,
     nested: PropTypes.arrayOf(PropTypes.object),
     response: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
@@ -127,14 +92,14 @@ class SparkLineList extends Component {
       .area()
       .x(d => this.xScale(d.year_month))
       .y0(height)
-      .y1(d => this.yScale(d.count)) // TO DO: shouldn't be hardcoded
+      .y1(d => this.yScale(d.total))
       .curve(d3.curveMonotoneX);
 
     // svg path generator for drawing a line
     this.line = d3
       .line()
       .x(d => this.xScale(d.year_month))
-      .y(d => this.yScale(d.count)) // TO DO: shouldn't be hardcoded
+      .y(d => this.yScale(d.total))
       .curve(d3.curveMonotoneX);
   }
 
@@ -194,9 +159,13 @@ class SparkLineList extends Component {
     }
   }
 
-  handleSparkLineClick(entity) {
-    const { key } = entity;
-    const { secondary, primary } = this.props;
+  handleSparkLineClick(key) {
+    // when a user clicks a sparkline list item, pass that entity's data off to the redux store
+    // so that it may be used by the line and dot grid charts
+    const { secondary, primary, response, entityType } = this.props;
+    const entity = {};
+    entity.key = parseInt(key, 10);
+    entity.values = response.filter(d => d[entityType] === parseInt(key, 10));
 
     if (!primary.key && key !== secondary.key) {
       this.props.selectPrimaryEntity(entity);
@@ -216,19 +185,20 @@ class SparkLineList extends Component {
   }
 
   renderSparkLines() {
+    // eslint-disable-next-line
     const { entityType, primary, secondary, nested, response } = this.props;
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
 
-    if (!nested || !nested.length) return null;
+    if (!nested.length) return null;
 
     // set x-scale domain, assumes data is sorted by date
     this.xScale.domain([
-      d3.min(nested, c => c.values[0].year_month),
-      d3.max(nested, c => c.values[c.values.length - 1].year_month),
+      d3.min(nested, d => d.values[0].year_month),
+      d3.max(nested, d => d.values[d.values.length - 1].year_month),
     ]);
 
     // set y-scale domain
-    this.yScale.domain([0, d3.max(response, d => d.count)]);
+    this.yScale.domain([0, d3.max(nested, d => d.maxTotal)]);
 
     return nested.map(entity => {
       const { key, values, rank } = entity;
@@ -250,7 +220,7 @@ class SparkLineList extends Component {
           data-name-sort={+key}
           data-search={`city council ${label}`}
           className={listItemClass}
-          onClick={() => this.handleSparkLineClick({ ...entity })}
+          onClick={() => this.handleSparkLineClick(key)}
         >
           <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label} – Rank: ${rank +
             1} / ${nested.length}`}</h6>
