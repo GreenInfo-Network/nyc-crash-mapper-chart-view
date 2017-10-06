@@ -25,7 +25,6 @@ export default function(state = defaultState, action) {
         isFetching: false,
         [action.geo]: {
           response: action.response, // data unformatted from the API call
-          nested: action.nested, // data nested by identifier id
         },
       };
 

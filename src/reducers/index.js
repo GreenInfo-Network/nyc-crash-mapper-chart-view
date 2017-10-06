@@ -48,7 +48,6 @@ export const allEntityData = state => {
     // appropriate action to request new data
     return {
       response: [],
-      nested: [],
     };
   }
 
