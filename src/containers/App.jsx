@@ -6,6 +6,7 @@ import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
 import { allEntityData } from '../reducers';
+import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
@@ -28,10 +29,7 @@ class App extends Component {
     fetchRankData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
-    filterType: PropTypes.shape({
-      injury: PropTypes.object,
-      fatality: PropTypes.object,
-    }).isRequired,
+    filterType: pt.filterType.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
   };

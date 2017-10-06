@@ -3,30 +3,34 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { filterByTypeInjury, filterByTypeFatality, filterByNoInjFat } from '../actions/';
+import * as pt from '../common/reactPropTypeDefs';
 
 import FilterButton from '../components/FilterButton';
 
-const mapStateToProps = ({ filterType }) => {
-  const { injury, fatality, noInjuryFatality } = filterType;
-  return {
-    injury,
-    fatality,
-    noInjuryFatality,
-  };
-};
+const mapStateToProps = ({ filterType }) => ({
+  filterType,
+});
 
 class FilterByType extends Component {
+  static propTypes = {
+    filterByTypeInjury: PropTypes.func.isRequired,
+    filterByTypeFatality: PropTypes.func.isRequired,
+    filterByNoInjFat: PropTypes.func.isRequired,
+    filterType: pt.filterType.isRequired,
+  };
+
   render() {
     const {
+      filterType,
       // eslint-disable-next-line
       filterByTypeFatality,
       // eslint-disable-next-line
       filterByTypeInjury,
       // eslint-disable-next-line
       filterByNoInjFat,
-      injury,
-      fatality,
     } = this.props;
+
+    const { injury, fatality } = filterType;
 
     return (
       <div className="filter-by-type">
@@ -92,23 +96,6 @@ class FilterByType extends Component {
     );
   }
 }
-
-FilterByType.propTypes = {
-  filterByTypeInjury: PropTypes.func.isRequired,
-  filterByTypeFatality: PropTypes.func.isRequired,
-  filterByNoInjFat: PropTypes.func.isRequired,
-  fatality: PropTypes.shape({
-    cyclist: PropTypes.bool.isRequired,
-    motorist: PropTypes.bool.isRequired,
-    pedestrian: PropTypes.bool.isRequired,
-  }).isRequired,
-  injury: PropTypes.shape({
-    cyclist: PropTypes.bool.isRequired,
-    motorist: PropTypes.bool.isRequired,
-    pedestrian: PropTypes.bool.isRequired,
-  }).isRequired,
-  noInjuryFatality: PropTypes.bool.isRequired,
-};
 
 export default connect(mapStateToProps, {
   filterByTypeFatality,
