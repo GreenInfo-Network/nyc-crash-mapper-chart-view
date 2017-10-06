@@ -15,7 +15,25 @@ const mapTypes = (filterTypePart, harmType) =>
     })
     .join(' + ');
 
+// Check if geo === 'borough', if so normalize borough spellings,
+// because NYC Open Data people have 11 spellings of NYC Boroughs...
+const normalizeGeoRegExp = (geo, x) => {
+  if (geo === 'borough') {
+    const term = x ? 'borough' : 'borough_normalized';
+    return `regexp_replace(lower(borough), '^the ', '') as ${term}`;
+  }
+
+  return geo;
+};
+
+const normalizeGeoNorm = geo => (geo === 'borough' ? 'borough_normalized' : geo);
+const normalizeGeoAlias = geo =>
+  geo === 'borough' ? 'b.borough_normalized as borough' : `b.${geo}`;
+
 // Sparklines and Ranking combined using sub queries
+// @param {string} geo The geographic entity type (e.g. "city_council")
+// @param {object} filterType
+// @returns SQL string
 export const sqlSparklinesRanked = (geo, filterType) => {
   const { injury, fatality } = filterType;
   const orderBy = [];
@@ -41,40 +59,42 @@ export const sqlSparklinesRanked = (geo, filterType) => {
     return '';
   }
 
-  return `
+  return sls`
     SELECT
-    b.${geo},
+    ${normalizeGeoAlias(geo)},
     b.year_month,
     b.total,
     a.rank
     FROM (
       SELECT
-      _.${geo},
+      _.${normalizeGeoNorm(geo)},
       rank() OVER (ORDER BY ${orderBy.join(',')})
       FROM (
         SELECT
-          ${geo},
+          ${normalizeGeoRegExp(geo)},
           ${sum1.join(',')}
         FROM crashes_all_prod
         WHERE ${geo} IS NOT NULL
+        AND ${geo}::text != ''
         AND the_geom IS NOT NULL
         AND date_val >= now() - interval '3 years'
-        GROUP BY ${geo}
+        GROUP BY ${normalizeGeoNorm(geo)}
       ) AS _
     ) AS a,
     (
       SELECT
         SUM(${sum2.join(' + ')}) as total,
-        ${geo},
+        ${normalizeGeoRegExp(geo)},
         year || '-' || LPAD(month::text, 2, '0') as year_month
       FROM
         crashes_all_prod c
       WHERE ${geo} IS NOT NULL
+      AND ${geo}::text != ''
       AND the_geom IS NOT NULL
-      GROUP BY ${geo}, year, month
+      GROUP BY ${normalizeGeoNorm(geo)}, year_month
     ) AS b
-    WHERE a.${geo} = b.${geo}
-    ORDER BY b.year_month ASC, b.${geo} ASC
+    WHERE a.${normalizeGeoNorm(geo)} = b.${normalizeGeoNorm(geo)}
+    ORDER BY b.year_month ASC, b.${normalizeGeoNorm(geo)} ASC
   `;
 };
 
@@ -103,7 +123,7 @@ export const sqlByGeo = geo =>
   sls`
     SELECT
       COUNT(c.cartodb_id) as total_crashes,
-      ${geo},
+      ${normalizeGeoRegExp(geo, true)},
       SUM(c.number_of_cyclist_injured) as cyclist_injured,
       SUM(c.number_of_cyclist_killed) as cyclist_killed,
       SUM(c.number_of_motorist_injured) as motorist_injured,
@@ -114,8 +134,9 @@ export const sqlByGeo = geo =>
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
       year || '-' || LPAD(month::text, 2, '0') as year_month
     FROM crashes_all_prod c
-    WHERE ${geo} IS NOT NULL OR ${geo}::text != ''
+    WHERE ${geo} IS NOT NULL
+    AND ${geo}::text != ''
     AND the_geom IS NOT NULL
-    GROUP BY year, month, ${geo}
-    ORDER BY year asc, month asc, ${geo} asc
+    GROUP BY year_month, ${geo}
+    ORDER BY year_month asc, ${geo} asc
   `;
