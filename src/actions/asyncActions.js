@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sqlByGeo, sqlCitywide, sqlRank } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide, sqlSparklinesRanked } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
@@ -79,7 +79,12 @@ const receiveRankData = (geo, ranked) => ({
 });
 
 export const fetchRankData = (entityType, filterType) => {
-  const sql = sqlRank(entityType, filterType);
+  const sql = sqlSparklinesRanked(entityType, filterType);
+
+  if (!sql.length) {
+    // TO DO: user has no crash type filters selected, prevent them from doing so?
+    return dispatch => dispatch(handleError('no crash types selected'));
+  }
 
   return dispatch => {
     dispatch(requestRankData());
@@ -89,7 +94,14 @@ export const fetchRankData = (entityType, filterType) => {
         if (!result || !result.data || !result.data.rows) {
           dispatch(handleError('error fetching rank data'));
         }
+
         const response = result.data.rows;
+
+        // parse date string into a date object
+        response.forEach(d => {
+          d.year_month = parseDate(d.year_month);
+        });
+
         dispatch(receiveRankData(entityType, response));
       })
       .catch(error => handleError(error));
