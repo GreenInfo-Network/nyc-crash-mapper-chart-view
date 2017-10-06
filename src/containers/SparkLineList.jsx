@@ -34,6 +34,9 @@ const mapStateToProps = state => {
 
     // compute max(d.count) for setting y scale domain later
     nested.forEach(entity => {
+      if (!isNaN(+entity.key)) {
+        entity.key = parseInt(entity.key, 10);
+      }
       entity.rank = entity.values[0].rank;
       entity.maxTotal = d3.max(entity.values, d => d.total);
     });
@@ -164,8 +167,8 @@ class SparkLineList extends Component {
     // so that it may be used by the line and dot grid charts
     const { secondary, primary, response, entityType } = this.props;
     const entity = {};
-    entity.key = parseInt(key, 10);
-    entity.values = response.filter(d => d[entityType] === parseInt(key, 10));
+    entity.key = key;
+    entity.values = response.filter(d => d[entityType] === key);
 
     if (!primary.key && key !== secondary.key) {
       this.props.selectPrimaryEntity(entity);
