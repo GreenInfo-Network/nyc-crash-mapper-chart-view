@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
 import { allEntityData } from '../reducers';
@@ -65,6 +66,11 @@ class App extends Component {
       this.props.fetchEntityData(entityType);
       this.props.fetchRankData(entityType, filterType);
     }
+
+    if (!isEqual(filterType, this.props.filterType)) {
+      // if selected crash filters change, update the sparklines list
+      this.props.fetchRankData(entityType, filterType);
+    }
   }
 
   render() {
@@ -82,12 +88,11 @@ class App extends Component {
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
-          {/* TO DO: use a real loading indicator */}
-          {isFetching && <h3>Loading...</h3>}
           <LineChartsContainer />
         </div>
         <div className="grid-area legend">
-          <Legend />
+          {/* TO DO: use a real loading indicator */}
+          {isFetching ? <h3>Loading Data...</h3> : <Legend />}
         </div>
       </div>
     );
