@@ -24,8 +24,13 @@ class App extends Component {
     entityData: PropTypes.arrayOf(PropTypes.object),
     isFetching: PropTypes.bool.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
+    fetchRankData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
+    filterType: PropTypes.shape({
+      injury: PropTypes.object,
+      fatality: PropTypes.object,
+    }).isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
   };
@@ -37,10 +42,12 @@ class App extends Component {
   };
 
   componentDidMount() {
+    const { entityType, filterType } = this.props;
     // DOM content loaded, make async data requests
-    // TO DO: entity type should be set via a URL param
-    this.props.setEntityType('city_council');
-    this.props.fetchEntityData('city_council');
+    this.props.setEntityType(entityType);
+    this.props.fetchEntityData(entityType);
+    this.props.fetchRankData(entityType, filterType);
+
     // always request citywide data for the line charts, regardless of current entityType
     this.props.fetchEntityData('citywide');
   }
@@ -88,7 +95,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, entities, data } = state;
+  const { browser, entities, data, filterType } = state;
   const { isFetching } = data;
   const entityData = allEntityData(state);
 
@@ -98,6 +105,7 @@ const mapStateToProps = state => {
     isFetching,
     entityData: entityData.response,
     entityType: entities.entityType,
+    filterType,
   };
 };
 
