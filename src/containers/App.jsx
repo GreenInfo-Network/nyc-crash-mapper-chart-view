@@ -80,7 +80,7 @@ class App extends Component {
           <h3 style={{ textTransform: 'uppercase', display: 'inline-block' }}>nyc crash mapper</h3>
         </div>
         <div className="grid-area sparklines">
-          <Sidebar {...{ entityType }} />
+          <Sidebar {...{ entityType, isFetching }} />
         </div>
         <div className="grid-area timeline">
           <TimeLine />
@@ -89,8 +89,7 @@ class App extends Component {
           <LineChartsContainer />
         </div>
         <div className="grid-area legend">
-          {/* TO DO: use a real loading indicator */}
-          {isFetching ? <h3>Loading Data...</h3> : <Legend />}
+          <Legend />
         </div>
       </div>
     );

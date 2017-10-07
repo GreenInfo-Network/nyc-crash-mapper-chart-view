@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import SparkLineList from '../../containers/SparkLineList';
+import LoadingMsg from '../LoadingMsg';
 
 /** Class that houses the SparkLineList and provides a UI & Controller for filtering & sorting it
 */
 class SparkLineContainer extends Component {
   static propTypes = {
     entityType: PropTypes.string,
+    isFetching: PropTypes.bool.isRequired,
     sparkLineListHeight: PropTypes.number,
   };
 
@@ -52,7 +54,7 @@ class SparkLineContainer extends Component {
   }
 
   render() {
-    const { entityType, sparkLineListHeight } = this.props;
+    const { entityType, sparkLineListHeight, isFetching } = this.props;
     const { inputValue, sortName, sortRank, sortAsc } = this.state;
 
     return (
@@ -67,10 +69,14 @@ class SparkLineContainer extends Component {
           <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
           <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>
-        <SparkLineList
-          filterTerm={inputValue}
-          {...{ sortName, sortRank, sortAsc, sparkLineListHeight }}
-        />
+        {!isFetching ? (
+          <SparkLineList
+            filterTerm={inputValue}
+            {...{ sortName, sortRank, sortAsc, sparkLineListHeight }}
+          />
+        ) : (
+          <LoadingMsg />
+        )}
       </div>
     );
   }
