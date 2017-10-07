@@ -7,17 +7,40 @@ import * as pt from '../common/reactPropTypeDefs';
 
 import FilterButton from '../components/FilterButton';
 
-const mapStateToProps = ({ filterType }) => ({
+const mapStateToProps = ({ filterType, data }) => ({
   filterType,
+  isFetching: data.isFetching,
 });
 
+/**
+ * Class that handles toggling crash filter types
+ */
 class FilterByType extends Component {
   static propTypes = {
+    isFetching: PropTypes.bool.isRequired,
     filterByTypeInjury: PropTypes.func.isRequired,
     filterByTypeFatality: PropTypes.func.isRequired,
     filterByNoInjFat: PropTypes.func.isRequired,
     filterType: pt.filterType.isRequired,
   };
+
+  constructor() {
+    super();
+    this.handleInjuryFilter = this.handleInjuryFilter.bind(this);
+    this.handleFatalityFilter = this.handleFatalityFilter.bind(this);
+  }
+
+  handleInjuryFilter(id) {
+    // eslint-disable-next-line
+    const { isFetching, filterByTypeInjury } = this.props;
+    if (!isFetching) filterByTypeInjury(id);
+  }
+
+  handleFatalityFilter(id) {
+    // eslint-disable-next-line
+    const { isFetching, filterByTypeFatality } = this.props;
+    if (!isFetching) filterByTypeFatality(id);
+  }
 
   render() {
     const {
@@ -39,7 +62,7 @@ class FilterByType extends Component {
             <FilterButton
               label={'cyclist fatality'}
               id={'cyclist'}
-              handleClick={filterByTypeFatality}
+              handleClick={this.handleFatalityFilter}
               btnSize={'med'}
               isActive={fatality.cyclist}
             />
@@ -48,7 +71,7 @@ class FilterByType extends Component {
             <FilterButton
               label={'motorist fatality'}
               id={'motorist'}
-              handleClick={filterByTypeFatality}
+              handleClick={this.handleFatalityFilter}
               btnSize={'med'}
               isActive={fatality.motorist}
             />
@@ -57,7 +80,7 @@ class FilterByType extends Component {
             <FilterButton
               label={'pedestrian fatality'}
               id={'pedestrian'}
-              handleClick={filterByTypeFatality}
+              handleClick={this.handleFatalityFilter}
               btnSize={'med'}
               isActive={fatality.pedestrian}
             />
@@ -68,7 +91,7 @@ class FilterByType extends Component {
             <FilterButton
               label={'cyclist injury'}
               id={'cyclist'}
-              handleClick={filterByTypeInjury}
+              handleClick={this.handleInjuryFilter}
               btnSize={'med'}
               isActive={injury.cyclist}
             />
@@ -77,7 +100,7 @@ class FilterByType extends Component {
             <FilterButton
               label={'motorist injury'}
               id={'motorist'}
-              handleClick={filterByTypeInjury}
+              handleClick={this.handleInjuryFilter}
               btnSize={'med'}
               isActive={injury.motorist}
             />
@@ -86,7 +109,7 @@ class FilterByType extends Component {
             <FilterButton
               label={'pedestrian injury'}
               id={'pedestrian'}
-              handleClick={filterByTypeInjury}
+              handleClick={this.handleInjuryFilter}
               btnSize={'med'}
               isActive={injury.pedestrian}
             />
