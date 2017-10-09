@@ -7,8 +7,8 @@
   grid-template-rows:
     $header-height
     $timeline-height
-    minmax(#{$line-chart-container-height-min}, #{$line-chart-container-height-max})
-    minmax(#{$legend-height-min}, #{$legend-height-max});
+    $line-chart-container-height
+    $legend-height;
   grid-template-areas:
     'header sparklines'
     'timeline sparklines'

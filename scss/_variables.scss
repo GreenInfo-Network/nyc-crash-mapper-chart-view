@@ -72,11 +72,9 @@ $sparkline-list-height: calc(100% - #{$sparkline-controls-height});
 
 $timeline-height: 100px !default;
 
-$line-chart-container-height-min: 200px !default;
-$line-chart-container-height-max: 550px !default;
+$legend-height: 65px !default;
 
-$legend-height-min: 120px;
-$legend-height-max: calc(100% - #{$header-height} - #{$timeline-height} - #{$line-chart-container-height-max});
+$line-chart-container-height: calc(100% - #{$header-height} - #{$timeline-height} - #{$legend-height});
 
 $options-filters-height: 100% !default;
 $options-filters-width: 300px !default;

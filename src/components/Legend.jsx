@@ -3,7 +3,6 @@ import EntitySelections from '../containers/EntitySelections';
 
 const Legend = () => (
   <div className="Legend">
-    <h6>Legend</h6>
     <EntitySelections />
   </div>
 );
