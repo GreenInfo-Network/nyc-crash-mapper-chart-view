@@ -1,21 +1,23 @@
 import {
   ENTITY_DATA_REQUEST,
   ENTITY_DATA_SUCCESS,
-  DATA_FETCH_ERROR,
+  ENTITY_DATA_ERROR,
   RANK_DATA_REQUEST,
   RANK_DATA_SUCCESS,
+  RANK_DATA_ERROR,
 } from '../common/actionTypes';
 
 const defaultState = {
-  error: null,
-  isFetchingCharts: false,
-  isFetchingRanked: false,
-  borough: {},
-  city_council: {},
-  citywide: {},
-  community_board: {},
-  nta: {},
-  nypd: {},
+  errorCharts: null, // any error from the charts data request
+  errorRanked: null, // any error from the ranked list data request
+  isFetchingCharts: false, // is the app waiting on a chart data request?
+  isFetchingRanked: false, // is the app waiting on ranked list data request?
+  borough: {}, // hash to store borough data
+  city_council: {}, // ... city council district data
+  citywide: {}, // ... citywide data
+  community_board: {}, // ... community board data
+  nta: {}, // ... neighborhood (tabulation area) data
+  nypd: {}, // ... nypd precinct data
 };
 
 export default function(state = defaultState, action) {
@@ -36,6 +38,13 @@ export default function(state = defaultState, action) {
         },
       };
 
+    case ENTITY_DATA_ERROR:
+      return {
+        ...state,
+        isFetchingCharts: false,
+        errorCharts: action.error,
+      };
+
     case RANK_DATA_REQUEST:
       return {
         ...state,
@@ -52,13 +61,11 @@ export default function(state = defaultState, action) {
         },
       };
 
-    // store an error from any async request that went bad
-    case DATA_FETCH_ERROR:
+    case RANK_DATA_ERROR:
       return {
         ...state,
-        isFetchingCharts: false,
         isFetchingRanked: false,
-        error: action.error,
+        errorRanked: action.error,
       };
 
     default:
