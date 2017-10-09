@@ -9,7 +9,7 @@ import FilterByBoundary from '../../containers/FilterByBoundary';
 class Sidebar extends Component {
   static propTypes = {
     entityType: PropTypes.string,
-    isFetching: PropTypes.bool.isRequired,
+    isFetchingRanked: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -60,7 +60,7 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { entityType, isFetching } = this.props;
+    const { entityType, isFetchingRanked } = this.props;
     const sparkLineListHeight = this.computeSparkLineListHeight();
 
     return (
@@ -102,7 +102,7 @@ class Sidebar extends Component {
           optionsContainerHeight={sparkLineListHeight}
           collapseHeight={sparkLineListHeight}
         >
-          <SparkLineListController {...{ entityType, isFetching, sparkLineListHeight }} />
+          <SparkLineListController {...{ entityType, isFetchingRanked, sparkLineListHeight }} />
         </OptionsContainer>
       </div>
     );

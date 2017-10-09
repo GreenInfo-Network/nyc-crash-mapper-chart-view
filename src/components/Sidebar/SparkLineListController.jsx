@@ -9,7 +9,7 @@ import LoadingMsg from '../LoadingMsg';
 class SparkLineContainer extends Component {
   static propTypes = {
     entityType: PropTypes.string,
-    isFetching: PropTypes.bool.isRequired,
+    isFetchingRanked: PropTypes.bool.isRequired,
     sparkLineListHeight: PropTypes.number,
   };
 
@@ -54,7 +54,7 @@ class SparkLineContainer extends Component {
   }
 
   render() {
-    const { entityType, sparkLineListHeight, isFetching } = this.props;
+    const { entityType, sparkLineListHeight, isFetchingRanked } = this.props;
     const { inputValue, sortName, sortRank, sortAsc } = this.state;
 
     return (
@@ -69,7 +69,7 @@ class SparkLineContainer extends Component {
           <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
           <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>
-        {!isFetching ? (
+        {!isFetchingRanked ? (
           <SparkLineList
             filterTerm={inputValue}
             {...{ sortName, sortRank, sortAsc, sparkLineListHeight }}

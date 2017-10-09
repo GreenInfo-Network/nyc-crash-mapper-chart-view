@@ -8,7 +8,8 @@ import {
 
 const defaultState = {
   error: null,
-  isFetching: false,
+  isFetchingCharts: false,
+  isFetchingRanked: false,
   borough: {},
   city_council: {},
   citywide: {},
@@ -22,13 +23,13 @@ export default function(state = defaultState, action) {
     case ENTITY_DATA_REQUEST:
       return {
         ...state,
-        isFetching: true,
+        isFetchingCharts: true,
       };
 
     case ENTITY_DATA_SUCCESS:
       return {
         ...state,
-        isFetching: false,
+        isFetchingCharts: false,
         [action.geo]: {
           ...state[action.geo],
           response: action.response, // data unformatted from the API call
@@ -38,13 +39,13 @@ export default function(state = defaultState, action) {
     case RANK_DATA_REQUEST:
       return {
         ...state,
-        isFetching: true,
+        isFetchingRanked: true,
       };
 
     case RANK_DATA_SUCCESS:
       return {
         ...state,
-        isFetching: false,
+        isFetchingRanked: false,
         [action.geo]: {
           ...state[action.geo],
           ranked: action.ranked,
@@ -55,7 +56,8 @@ export default function(state = defaultState, action) {
     case DATA_FETCH_ERROR:
       return {
         ...state,
-        isFetching: false,
+        isFetchingCharts: false,
+        isFetchingRanked: false,
         error: action.error,
       };
 

@@ -9,7 +9,7 @@ import FilterButton from '../components/FilterButton';
 
 const mapStateToProps = ({ filterType, data }) => ({
   filterType,
-  isFetching: data.isFetching,
+  isFetchingRanked: data.isFetchingRanked,
 });
 
 /**
@@ -17,7 +17,7 @@ const mapStateToProps = ({ filterType, data }) => ({
  */
 class FilterByType extends Component {
   static propTypes = {
-    isFetching: PropTypes.bool.isRequired,
+    isFetchingRanked: PropTypes.bool.isRequired,
     filterByTypeInjury: PropTypes.func.isRequired,
     filterByTypeFatality: PropTypes.func.isRequired,
     filterByNoInjFat: PropTypes.func.isRequired,
@@ -32,14 +32,14 @@ class FilterByType extends Component {
 
   handleInjuryFilter(id) {
     // eslint-disable-next-line
-    const { isFetching, filterByTypeInjury } = this.props;
-    if (!isFetching) filterByTypeInjury(id);
+    const { isFetchingRanked, filterByTypeInjury } = this.props;
+    if (!isFetchingRanked) filterByTypeInjury(id);
   }
 
   handleFatalityFilter(id) {
     // eslint-disable-next-line
-    const { isFetching, filterByTypeFatality } = this.props;
-    if (!isFetching) filterByTypeFatality(id);
+    const { isFetchingRanked, filterByTypeFatality } = this.props;
+    if (!isFetchingRanked) filterByTypeFatality(id);
   }
 
   render() {
