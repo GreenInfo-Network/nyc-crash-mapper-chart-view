@@ -64,6 +64,17 @@ class LineChart extends Component {
       .curve(d3.curveMonotoneX);
   }
 
+  componentDidMount() {
+    const { citywide } = this.props;
+
+    // if the app loaded with pre-fetched data OR if the user toggled between "trend" and "compare"
+    // make sure to create and update the chart
+    if (citywide && citywide.length) {
+      this.initChart();
+      this.updateChart();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     // do the d3 work here, after the component updated
     // diff current props (this.props) with previous props (prevProps) to detect what's changed
