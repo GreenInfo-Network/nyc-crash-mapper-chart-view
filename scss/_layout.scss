@@ -38,14 +38,28 @@ p {
 button {
   height: 25px;
   line-height: 25px;
-  background-color: #fffad5;
+  background-color: $btn-bg;
   border-color: transparent;
-  color: #17838f;
+  color: $btn-color;
   padding: 0 10px;
   text-align: left;
   text-transform: capitalize;
   letter-spacing: 0.5px;
   border: none;
+
+  &:hover,
+  &.active {
+    color: $btn-color-active;
+    border: none;
+  }
+
+  &:hover {
+    background-color: $btn-hover;
+  }
+
+  &.active {
+    background-color: $btn-active;
+  }
 }
 
 // UI containers

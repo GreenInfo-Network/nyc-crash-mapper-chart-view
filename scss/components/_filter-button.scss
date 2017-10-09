@@ -3,7 +3,7 @@
   line-height: 25px;
   background-color: $btn-bg;
   border-color: rgba(0, 0, 0, 0);
-  color: $marine-light;
+  color: $btn-color;
   padding: 0 10px;
   text-align: left;
   text-transform: capitalize;
@@ -12,7 +12,7 @@
 
   &:hover,
   &.active {
-    color: $marine;
+    color: $btn-color-active;
     border: none;
   }
 
