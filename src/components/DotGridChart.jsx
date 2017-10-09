@@ -40,6 +40,11 @@ class DotGridChart extends Component {
       this.renderChart();
     }
 
+    // if an entity was deselected, remove the chart
+    if (!entity.values.length && prevProps.entity.values.length) {
+      this.destroyChart();
+    }
+
     // TO DO: update chart if values in filterType change
   }
 
@@ -53,6 +58,38 @@ class DotGridChart extends Component {
       height: cHeight,
       width: cWidth,
     };
+  }
+
+  destroyChart() {
+    // gracefully remove chart text and circles when there's no more data
+    const duration = 750;
+    const svg = d3.select(this.svg);
+    const g = svg.select('g.main');
+    const t = d3
+      .transition()
+      .duration(duration)
+      .ease(d3.easeLinear);
+
+    g
+      .selectAll('circle')
+      .transition(t)
+      .attr('stroke', 'rgba(0,0,0,0)')
+      .attr('fill', 'rgba(0,0,0,0)')
+      .remove();
+
+    g
+      .selectAll('text')
+      .transition(t)
+      .attr('fill', 'rgba(0,0,0,0)')
+      .remove();
+
+    g.transition(t).remove();
+
+    svg
+      .transition(t)
+      .delay(duration)
+      .attr('width', 0)
+      .attr('height', 0);
   }
 
   renderChart() {
