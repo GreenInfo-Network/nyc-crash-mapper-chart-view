@@ -74,8 +74,6 @@ export default function fetchEntityData(entityType) {
       },
     })
       .then(result => {
-        // eslint-disable-next-line
-        console.log(result);
         // check to see that we have a valid response
         if (!result || !result.data || !result.data.rows) {
           const error = Error({
