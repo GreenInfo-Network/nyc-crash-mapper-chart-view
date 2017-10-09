@@ -10,7 +10,7 @@ import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
-import DotGridCharts from '../components/DotGridCharts';
+import DotGridChartsContainer from './DotGridChartsContainer';
 import TimeLine from './TimeLine';
 import Legend from '../components/Legend/';
 
@@ -91,7 +91,7 @@ class App extends Component {
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
-          {trend ? <LineChartsContainer /> : <DotGridCharts />}
+          {trend ? <LineChartsContainer /> : <DotGridChartsContainer />}
         </div>
         <div className="grid-area legend">
           <Legend />
