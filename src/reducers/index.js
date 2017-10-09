@@ -7,6 +7,7 @@ import filterType from './filterByTypeReducer';
 import entities from './entitiesReducer';
 import data from './dataReducer';
 import dateRanges from './dateRangeReducer';
+import trendCompare from './trendCompareReducer';
 
 // breakpoints to match Skeleton CSS's
 const browser = createResponsiveStateReducer(
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   dateRanges,
   entities,
   filterType,
+  trendCompare,
 });
 
 /**
