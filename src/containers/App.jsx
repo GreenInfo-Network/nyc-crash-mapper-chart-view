@@ -10,6 +10,7 @@ import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
+import DotGridCharts from '../components/DotGridCharts';
 import TimeLine from './TimeLine';
 import Legend from '../components/Legend/';
 
@@ -33,6 +34,7 @@ class App extends Component {
     filterType: pt.filterType.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
+    trendCompare: pt.trendCompare.isRequired,
   };
 
   static defaultProps = {
@@ -74,7 +76,8 @@ class App extends Component {
   }
 
   render() {
-    const { entityType, isFetchingRanked } = this.props;
+    const { entityType, isFetchingRanked, trendCompare } = this.props;
+    const { trend } = trendCompare;
 
     return (
       <div className="App grid-container">
@@ -88,7 +91,7 @@ class App extends Component {
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
-          <LineChartsContainer />
+          {trend ? <LineChartsContainer /> : <DotGridCharts />}
         </div>
         <div className="grid-area legend">
           <Legend />
@@ -99,7 +102,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, entities, data, filterType } = state;
+  const { browser, entities, data, filterType, trendCompare } = state;
   const { isFetchingCharts, isFetchingRanked } = data;
   const entityData = allEntityData(state);
 
@@ -111,6 +114,7 @@ const mapStateToProps = state => {
     entityData: entityData.response,
     entityType: entities.entityType,
     filterType,
+    trendCompare,
   };
 };
 
