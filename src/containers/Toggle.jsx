@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import * as pt from '../common/reactPropTypeDefs';
 
 import { toggleTrendCompare } from '../actions';
 
@@ -30,10 +31,7 @@ const Toggle = props => {
 
 Toggle.propTypes = {
   toggleTrendCompare: PropTypes.func.isRequired,
-  trendCompare: PropTypes.shape({
-    trend: PropTypes.bool.isRequired,
-    compare: PropTypes.bool.isRequired,
-  }).isRequired,
+  trendCompare: pt.trendCompare.isRequired,
 };
 
 export default connect(mapStateToProps, { toggleTrendCompare })(Toggle);

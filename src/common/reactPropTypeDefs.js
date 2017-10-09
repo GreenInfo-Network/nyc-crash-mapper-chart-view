@@ -42,3 +42,8 @@ export const dateRange = PropTypes.shape({
   endDate: date,
   startDate: date,
 });
+
+export const trendCompare = PropTypes.shape({
+  trend: PropTypes.bool,
+  compare: PropTypes.bool,
+});
