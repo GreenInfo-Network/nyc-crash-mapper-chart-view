@@ -15,6 +15,9 @@
 // styles for individual react components
 @import 'components/app';
 @import 'components/sidebar';
+@import 'components/entity-selections';
+@import 'components/entity-selector';
+@import 'components/toggle';
 @import 'components/options-container';
 @import 'components/filter-button';
 @import 'components/filter-by-type';
@@ -22,7 +25,5 @@
 @import 'components/sparkline-list-controller';
 @import 'components/line-chart';
 @import 'components/line-charts-container';
-@import 'components/entity-selector';
-@import 'components/entity-selections';
 @import 'components/timeline';
 @import 'components/legend';

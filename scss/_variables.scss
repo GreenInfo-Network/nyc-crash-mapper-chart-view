@@ -78,3 +78,7 @@ $line-chart-container-height: calc(100% - #{$header-height} - #{$timeline-height
 
 $options-filters-height: 100% !default;
 $options-filters-width: 300px !default;
+
+$toggle-width: 130px !default; // width of the trend & compare toggle
+
+$entity-selections-width: calc(100% - #{$toggle-width});

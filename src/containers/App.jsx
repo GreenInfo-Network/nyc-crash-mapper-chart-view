@@ -11,7 +11,7 @@ import * as pt from '../common/reactPropTypeDefs';
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
 import TimeLine from './TimeLine';
-import Legend from '../components/Legend';
+import Legend from '../components/Legend/';
 
 // for debugging & messing around
 window.d3 = d3;
