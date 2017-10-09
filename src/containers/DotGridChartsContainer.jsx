@@ -17,14 +17,18 @@ const mapStateToProps = state => {
 
 class DotGridChartsContainer extends Component {
   render() {
-    const { valuesDateRange1, filterType } = this.props;
-
-    // eslint-disable-next-line
-    console.log(valuesDateRange1);
+    const { valuesDateRange1, valuesDateRange2, filterType } = this.props;
 
     return (
       <div className="DotGridChartsContainer">
-        <DotGridChart filterType={filterType} entity={valuesDateRange1.primary} />
+        <div>
+          <DotGridChart filterType={filterType} entity={valuesDateRange1.primary} />
+          <DotGridChart filterType={filterType} entity={valuesDateRange2.primary} />
+        </div>
+        <div>
+          <DotGridChart filterType={filterType} entity={valuesDateRange1.secondary} />
+          <DotGridChart filterType={filterType} entity={valuesDateRange2.secondary} />
+        </div>
       </div>
     );
   }
