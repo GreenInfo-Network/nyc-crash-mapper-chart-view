@@ -35,7 +35,20 @@ p {
   margin: 0;
 }
 
-// UI elements
+button {
+  height: 25px;
+  line-height: 25px;
+  background-color: #fffad5;
+  border-color: transparent;
+  color: #17838f;
+  padding: 0 10px;
+  text-align: left;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+// UI containers
 .ui {
   // position: absolute;
   // z-index: 1;
