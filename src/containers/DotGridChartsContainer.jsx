@@ -9,13 +9,16 @@ import { filterEntitiesValues } from '../reducers';
 import DotGridChart from '../components/DotGridChart';
 
 const mapStateToProps = state => {
-  const { filterType, dateRanges } = state;
+  const { filterType, dateRanges, entities } = state;
   const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
+  const { entityType } = entities;
+
   return {
     dateRanges,
     filterType,
     valuesDateRange1,
     valuesDateRange2,
+    entityType,
   };
 };
 
@@ -25,6 +28,7 @@ class DotGridChartsContainer extends Component {
       group1: pt.dateRange,
       group2: pt.dateRange,
     }).isRequired,
+    entityType: PropTypes.string.isRequired,
     filterType: pt.filterType.isRequired,
     valuesDateRange1: pt.valuesByDateRange.isRequired,
     valuesDateRange2: pt.valuesByDateRange.isRequired,
@@ -269,9 +273,10 @@ class DotGridChartsContainer extends Component {
   }
 
   render() {
-    const { dateRanges } = this.props;
+    const { dateRanges, valuesDateRange1, entityType } = this.props;
     const { group1, group2 } = dateRanges;
     const { primary, secondary } = this.state;
+    const entityLabel = entityType.replace(/_/, ' ');
 
     return (
       <div
@@ -280,6 +285,9 @@ class DotGridChartsContainer extends Component {
           this.dotGridChart = _;
         }}
       >
+        {valuesDateRange1.primary.key && (
+          <h5>{`${entityLabel} ${valuesDateRange1.primary.key}`}</h5>
+        )}
         <div className="dot-grid-entity-one">
           <DotGridChart
             data={primary.period1}
@@ -298,6 +306,9 @@ class DotGridChartsContainer extends Component {
             title={'Period Two'}
           />
         </div>
+        {valuesDateRange1.secondary.key && (
+          <h5>{`${entityLabel} ${valuesDateRange1.secondary.key}`}</h5>
+        )}
         <div className="dot-grid-entity-two">
           <DotGridChart
             data={secondary.period1}
