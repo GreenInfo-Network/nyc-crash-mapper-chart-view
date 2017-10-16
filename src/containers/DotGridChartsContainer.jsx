@@ -327,6 +327,9 @@ class DotGridChartsContainer extends Component {
             title={'Period Two'}
           />
         </div>
+        {!valuesDateRange1.primary.key && !valuesDateRange1.secondary.key ? (
+          <h5 className="select-entity">Select a {entityLabel}</h5>
+        ) : null}
       </div>
     );
   }
