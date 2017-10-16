@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as d3 from 'd3';
 import isEqual from 'lodash.isequal';
@@ -8,9 +9,10 @@ import { filterEntitiesValues } from '../reducers';
 import DotGridChart from '../components/DotGridChart';
 
 const mapStateToProps = state => {
-  const { filterType } = state;
+  const { filterType, dateRanges } = state;
   const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
   return {
+    dateRanges,
     filterType,
     valuesDateRange1,
     valuesDateRange2,
@@ -19,6 +21,10 @@ const mapStateToProps = state => {
 
 class DotGridChartsContainer extends Component {
   static propTypes = {
+    dateRanges: PropTypes.shape({
+      group1: pt.dateRange,
+      group2: pt.dateRange,
+    }).isRequired,
     filterType: pt.filterType.isRequired,
     valuesDateRange1: pt.valuesByDateRange.isRequired,
     valuesDateRange2: pt.valuesByDateRange.isRequired,
@@ -80,31 +86,37 @@ class DotGridChartsContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { filterType, valuesDateRange1, valuesDateRange2 } = nextProps;
+    const { filterType, valuesDateRange1, valuesDateRange2, dateRanges } = nextProps;
 
     // Set Component State
-    // if a key for a primary geo entity was set, group the data & set subheading heights
-    if (
-      (valuesDateRange1.primary.key && !this.props.valuesDateRange1.primary.key) ||
-      (valuesDateRange1.primary.key && !isEqual(filterType, this.props.filterType))
-    ) {
-      this.setSubheadingHeights(
-        this.groupData(filterType, valuesDateRange1, 'primary'),
-        this.groupData(filterType, valuesDateRange2, 'primary'),
-        'primary'
-      );
+    if (valuesDateRange1.primary.key) {
+      if (
+        valuesDateRange1.primary.key !== this.props.valuesDateRange1.primary.key ||
+        !isEqual(filterType, this.props.filterType) ||
+        !isEqual(dateRanges.group1, this.props.dateRanges.group1) ||
+        !isEqual(dateRanges.group2, this.props.dateRanges.group2)
+      ) {
+        this.setSubheadingHeights(
+          this.groupData(filterType, valuesDateRange1, 'primary'),
+          this.groupData(filterType, valuesDateRange2, 'primary'),
+          'primary'
+        );
+      }
     }
 
-    // if a key for a secondary geo entity was set, group the data & set subheading heights
-    if (
-      (valuesDateRange1.secondary.key && !this.props.valuesDateRange1.secondary.key) ||
-      (valuesDateRange1.secondary.key && !isEqual(filterType, this.props.filterType))
-    ) {
-      this.setSubheadingHeights(
-        this.groupData(filterType, valuesDateRange1, 'secondary'),
-        this.groupData(filterType, valuesDateRange2, 'secondary'),
-        'secondary'
-      );
+    if (valuesDateRange1.secondary.key) {
+      if (
+        valuesDateRange1.secondary.key !== this.props.valuesDateRange1.secondary.key ||
+        !isEqual(filterType, this.props.filterType) ||
+        !isEqual(dateRanges.group1, this.props.dateRanges.group1) ||
+        !isEqual(dateRanges.group2, this.props.dateRanges.group2)
+      ) {
+        this.setSubheadingHeights(
+          this.groupData(filterType, valuesDateRange1, 'secondary'),
+          this.groupData(filterType, valuesDateRange2, 'secondary'),
+          'secondary'
+        );
+      }
     }
 
     // Clear Component State
@@ -257,6 +269,8 @@ class DotGridChartsContainer extends Component {
   }
 
   render() {
+    const { dateRanges } = this.props;
+    const { group1, group2 } = dateRanges;
     const { primary, secondary } = this.state;
 
     return (
@@ -266,13 +280,41 @@ class DotGridChartsContainer extends Component {
           this.dotGridChart = _;
         }}
       >
-        <div className="dot-grid-entity">
-          <DotGridChart data={primary.period1} subheadHeights={primary.subheadHeights} />
-          <DotGridChart data={primary.period2} subheadHeights={primary.subheadHeights} />
+        <div className="dot-grid-entity-one">
+          <DotGridChart
+            data={primary.period1}
+            subheadHeights={primary.subheadHeights}
+            startDate={group1.startDate}
+            endDate={group1.endDate}
+            radius={this.circleRadius}
+            title={'Period One'}
+          />
+          <DotGridChart
+            data={primary.period2}
+            subheadHeights={primary.subheadHeights}
+            startDate={group2.startDate}
+            endDate={group2.endDate}
+            radius={this.circleRadius}
+            title={'Period Two'}
+          />
         </div>
-        <div className="dot-grid-entity">
-          <DotGridChart data={secondary.period1} subheadHeights={secondary.subheadHeights} />
-          <DotGridChart data={secondary.period2} subheadHeights={secondary.subheadHeights} />
+        <div className="dot-grid-entity-two">
+          <DotGridChart
+            data={secondary.period1}
+            subheadHeights={secondary.subheadHeights}
+            startDate={group1.startDate}
+            endDate={group1.endDate}
+            radius={this.circleRadius}
+            title={'Period One'}
+          />
+          <DotGridChart
+            data={secondary.period2}
+            subheadHeights={secondary.subheadHeights}
+            startDate={group2.startDate}
+            endDate={group2.endDate}
+            radius={this.circleRadius}
+            title={'Period Two'}
+          />
         </div>
       </div>
     );
@@ -280,8 +322,3 @@ class DotGridChartsContainer extends Component {
 }
 
 export default connect(mapStateToProps, null)(DotGridChartsContainer);
-
-// <div className="dot-grid-chart-column">
-//   <DotGridChart />
-//   <DotGridChart />
-// </div>
