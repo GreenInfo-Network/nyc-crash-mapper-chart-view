@@ -3,4 +3,13 @@
   height: 100%;
   display: inline-block;
   vertical-align: top;
+
+  h6 {
+    text-transform: capitalize;
+    padding: 0;
+  }
+
+  svg {
+    margin-top: 10px;
+  }
 }

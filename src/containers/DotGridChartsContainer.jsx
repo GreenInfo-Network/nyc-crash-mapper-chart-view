@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as d3 from 'd3';
+import isEqual from 'lodash.isequal';
 
 import * as pt from '../common/reactPropTypeDefs';
 import { filterEntitiesValues } from '../reducers';
@@ -83,7 +84,10 @@ class DotGridChartsContainer extends Component {
 
     // Set Component State
     // if a key for a primary geo entity was set, group the data & set subheading heights
-    if (valuesDateRange1.primary.key && !this.props.valuesDateRange1.primary.key) {
+    if (
+      (valuesDateRange1.primary.key && !this.props.valuesDateRange1.primary.key) ||
+      (valuesDateRange1.primary.key && !isEqual(filterType, this.props.filterType))
+    ) {
       this.setSubheadingHeights(
         this.groupData(filterType, valuesDateRange1, 'primary'),
         this.groupData(filterType, valuesDateRange2, 'primary'),
@@ -92,7 +96,10 @@ class DotGridChartsContainer extends Component {
     }
 
     // if a key for a secondary geo entity was set, group the data & set subheading heights
-    if (valuesDateRange1.secondary.key && !this.props.valuesDateRange1.secondary.key) {
+    if (
+      (valuesDateRange1.secondary.key && !this.props.valuesDateRange1.secondary.key) ||
+      (valuesDateRange1.secondary.key && !isEqual(filterType, this.props.filterType))
+    ) {
       this.setSubheadingHeights(
         this.groupData(filterType, valuesDateRange1, 'secondary'),
         this.groupData(filterType, valuesDateRange2, 'secondary'),
@@ -214,9 +221,12 @@ class DotGridChartsContainer extends Component {
     const reordered = [];
     order.forEach(ptype => {
       const o = nested.find(group => group.key === ptype);
-      reordered.push(o);
+      if (o) {
+        reordered.push(o);
+      }
     });
 
+    // create a grid (array of objects) with values for x,y positions for each circle
     reordered.forEach(group => {
       // eslint-disable-next-line
       const values = group.values;
@@ -226,7 +236,7 @@ class DotGridChartsContainer extends Component {
       const killedTotal = killed.length ? killed[0].total : 0;
       const totalHarmed = injuredTotal + killedTotal;
       const columns = Math.floor(width / (circleRadius * 3));
-      const rows = Math.ceil(totalHarmed / columns);
+      const rows = Math.floor(totalHarmed / columns);
 
       group.killed = killed;
       group.injured = injured;
@@ -238,8 +248,8 @@ class DotGridChartsContainer extends Component {
       group.gridHeight = rows * circleRadius * 3;
       // x, y positions for each circle
       group.grid = d3.range(totalHarmed).map(d => ({
-        x: d % columns,
-        y: Math.floor(d / columns),
+        x: (d % columns) * circleRadius * 3,
+        y: Math.floor(d / columns) * circleRadius * 3,
       }));
     });
 
