@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-// import * as pt from '../common/reactPropTypeDefs';
+import * as pt from '../common/reactPropTypeDefs';
 
 class DotGridChart extends Component {
   static propTypes = {
@@ -12,15 +12,21 @@ class DotGridChart extends Component {
       motorist: PropTypes.number,
       pedestrian: PropTypes.number,
     }),
+    startDate: pt.date.isRequired,
+    endDate: pt.date.isRequired,
+    radius: PropTypes.number,
+    title: PropTypes.string,
   };
 
   static defaultProps = {
     data: [],
     subheadHeights: {},
+    radius: 3,
+    title: '',
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.container = null; // ref to chart container
     this.svg = null; // ref to svg
 
@@ -33,7 +39,8 @@ class DotGridChart extends Component {
 
     // radius of circles
     // TO DO: make it a prop
-    this.radius = 3;
+    this.radius = props.radius;
+    this.formatTime = d3.timeFormat('%b %Y');
   }
 
   getContainerSize() {
@@ -84,6 +91,9 @@ class DotGridChart extends Component {
   }
 
   render() {
+    const { data } = this.props;
+    const { startDate, endDate, title } = this.props;
+
     return (
       <div
         className="DotGridChart"
@@ -91,6 +101,12 @@ class DotGridChart extends Component {
           this.container = _;
         }}
       >
+        {data.length > 0 && (
+          <div className="dot-grid-title">
+            <h6>{title}</h6>
+            <h6>{`${this.formatTime(startDate)} – ${this.formatTime(endDate)}`}</h6>
+          </div>
+        )}
         {this.renderGrids()}
       </div>
     );
