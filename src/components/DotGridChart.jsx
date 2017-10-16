@@ -98,7 +98,9 @@ class DotGridChart extends Component {
     const { width, height } = this.getContainerSize();
     const colorScale = this.colorScale;
     const svg = d3.select(this.svg);
+
     svg.attr('width', width).attr('height', height);
+
     const g = svg
       .append('g')
       .attr('class', 'main')
