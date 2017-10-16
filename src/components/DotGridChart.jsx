@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-import * as pt from '../common/reactPropTypeDefs';
+// import * as pt from '../common/reactPropTypeDefs';
 
 class DotGridChart extends Component {
   static propTypes = {
-    entity: pt.entity.isRequired,
-    filterType: pt.filterType.isRequired,
+    data: PropTypes.arrayOf(PropTypes.object),
+    subheadHeights: PropTypes.shape({
+      cyclist: PropTypes.number,
+      motorist: PropTypes.number,
+      pedestrian: PropTypes.number,
+    }),
+  };
+
+  static defaultProps = {
+    data: [],
+    subheadHeights: {},
   };
 
   constructor() {
@@ -24,24 +33,24 @@ class DotGridChart extends Component {
   }
 
   componentDidMount() {
-    const { entity } = this.props;
+    const { data } = this.props;
 
     // if data appeared, render the chart
-    if (entity.values.length) {
+    if (data.length) {
       this.renderChart();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { entity } = this.props;
+    const { data } = this.props;
 
     // if data appeared, render the chart
-    if (entity.values.length && !prevProps.entity.values.length) {
+    if (data.length && !prevProps.data.length) {
       this.renderChart();
     }
 
     // if an entity was deselected, remove the chart
-    if (!entity.values.length && prevProps.entity.values.length) {
+    if (!data.length && prevProps.data.length) {
       this.destroyChart();
     }
 
@@ -93,86 +102,43 @@ class DotGridChart extends Component {
   }
 
   renderChart() {
-    const { entity, filterType } = this.props;
-    const { values } = entity;
-    const { width, height } = this.getContainerSize();
+    const { data, subheadHeights } = this.props;
     const colorScale = this.colorScale;
+    const { width } = this.getContainerSize();
     const svg = d3.select(this.svg);
 
-    svg.attr('width', width).attr('height', height);
+    const newHeight = data.reduce((acc, cur) => {
+      acc += cur.gridHeight + 20;
+      return acc;
+    }, 0);
+
+    svg.attr('width', width).attr('height', newHeight);
 
     const g = svg
       .append('g')
       .attr('class', 'main')
       .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
-    let yOffset = 0;
-
-    // group the data by crash type
-    const grouped = [];
-
-    Object.keys(filterType.fatality).forEach(type => {
-      if (filterType.fatality[type]) {
-        grouped.push({
-          type,
-          group: 'fatality',
-          total: d3.sum(values, d => d[`${type}_killed`]),
-        });
-      }
-    });
-
-    Object.keys(filterType.injury).forEach(type => {
-      if (filterType.injury[type]) {
-        grouped.push({
-          type,
-          group: 'injury',
-          total: d3.sum(values, d => d[`${type}_injured`]),
-        });
-      }
-    });
-
-    if (!grouped.length) return;
-
-    const nested = d3
-      .nest()
-      .key(d => d.type)
-      .entries(grouped);
-
-    const reordered = [nested[2], nested[0], nested[1]];
-
     const groups = g
       .selectAll('g.crash-type')
-      .data(reordered)
+      .data(data)
       .enter()
       .append('g')
       .attr('class', 'crash-type');
+
+    let yOffset = 0;
 
     // eslint-disable-next-line
     groups.each(function(group, i) {
       // category = bound datum
       // this = svg group element
-
-      const radius = 5;
+      const { key, killed, killedTotal, injuredTotal, grid } = group;
+      const type = key;
+      const radius = 3;
       const margin = { top: 30, left: 10 };
-
-      const type = group.key;
-      const injured = group.values.filter(d => d.group === 'injury');
-      const killed = group.values.filter(d => d.group === 'fatality');
-      const injuredTotal = injured.length ? injured[0].total : 0;
-      const killedTotal = killed.length ? killed[0].total : 0;
-      const total = injuredTotal + killedTotal;
 
       // eslint-disable-next-line
       const emoji = type === 'pedestrian' ? '🚶' : type === 'cyclist' ? '🚴' : '🚙';
-
-      const columns = Math.floor(width / (radius * 3));
-      const rows = Math.ceil(total / columns);
-      const gridHeight = rows * radius * 3 + margin.top;
-
-      const grid = d3.range(total).map(d => ({
-        x: d % columns,
-        y: Math.floor(d / columns),
-      }));
 
       // append circles to each group
       // eslint-disable-next-line
@@ -199,15 +165,7 @@ class DotGridChart extends Component {
         .attr('fill', (d, j) => (j + 1 <= killed ? colorScale(type) : 'none'))
         .attr('stroke', () => colorScale(type));
 
-      // increase the group y-offset so the next group will be positioned below the last
-      yOffset += gridHeight;
-
-      // on the last iteration set the SVG height
-      const len = groups.nodes().length;
-
-      if (i === len - 1) {
-        svg.attr('height', yOffset + 10);
-      }
+      yOffset += subheadHeights[type] + 10;
     });
   }
 

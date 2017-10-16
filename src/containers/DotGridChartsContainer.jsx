@@ -56,9 +56,32 @@ class DotGridChartsContainer extends Component {
     this.dotGridChart = null; // to store react ref to component
   }
 
+  componentDidMount() {
+    const { filterType, valuesDateRange1, valuesDateRange2 } = this.props;
+
+    // if a key for a primary geo entity was set, group the data & set subheading heights
+    if (valuesDateRange1.primary.key && valuesDateRange1.primary.values.length) {
+      this.setSubheadingHeights(
+        this.groupData(filterType, valuesDateRange1, 'primary'),
+        this.groupData(filterType, valuesDateRange2, 'primary'),
+        'primary'
+      );
+    }
+
+    // if a key for a secondary geo entity was set, group the data & set subheading heights
+    if (valuesDateRange1.secondary.key && valuesDateRange1.secondary.values.length) {
+      this.setSubheadingHeights(
+        this.groupData(filterType, valuesDateRange1, 'secondary'),
+        this.groupData(filterType, valuesDateRange2, 'secondary'),
+        'secondary'
+      );
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     const { filterType, valuesDateRange1, valuesDateRange2 } = nextProps;
 
+    // Set Component State
     // if a key for a primary geo entity was set, group the data & set subheading heights
     if (valuesDateRange1.primary.key && !this.props.valuesDateRange1.primary.key) {
       this.setSubheadingHeights(
@@ -75,6 +98,37 @@ class DotGridChartsContainer extends Component {
         this.groupData(filterType, valuesDateRange2, 'secondary'),
         'secondary'
       );
+    }
+
+    // Clear Component State
+    // if a primary entity was deselected, reset the component level state for it
+    if (!valuesDateRange1.primary.key && this.props.valuesDateRange1.primary.key) {
+      this.setState({
+        primary: {
+          subheadHeights: {
+            pedestrian: 0,
+            cyclist: 0,
+            motorist: 0,
+          },
+          period1: [],
+          period2: [],
+        },
+      });
+    }
+
+    // if a secondary entity was deselected, reset component level state for it
+    if (!valuesDateRange2.secondary.key && this.props.valuesDateRange2.secondary.key) {
+      this.setState({
+        secondary: {
+          subheadHeights: {
+            pedestrian: 0,
+            cyclist: 0,
+            motorist: 0,
+          },
+          period1: [],
+          period2: [],
+        },
+      });
     }
   }
 
@@ -94,18 +148,18 @@ class DotGridChartsContainer extends Component {
     const yPositions = {};
     const len = period1.length;
 
+    // these should be additive
     d3.range(len).forEach((d, i) => {
       const h1 = period1[i].gridHeight;
       const h2 = period2[i].gridHeight;
       const height = h1 > h2 ? h1 : h2;
       const personType = period1[i].key; // same for both periods
-      yPositions[personType] = height;
+      yPositions[personType] = height + 20;
     });
 
     // store processed data & subheading heights in component state
     // this will cause a re-render
     this.setState({
-      ...this.state,
       [entity]: {
         subheadHeights: {
           ...yPositions,
@@ -174,6 +228,12 @@ class DotGridChartsContainer extends Component {
       const columns = Math.floor(width / (circleRadius * 3));
       const rows = Math.ceil(totalHarmed / columns);
 
+      group.killed = killed;
+      group.injured = injured;
+      group.killedTotal = killedTotal;
+      group.injuredTotal = injuredTotal;
+      group.totalHarmed = totalHarmed;
+
       // the fixed height of this group of circles
       group.gridHeight = rows * circleRadius * 3;
       // x, y positions for each circle
@@ -187,7 +247,7 @@ class DotGridChartsContainer extends Component {
   }
 
   render() {
-    const { valuesDateRange1, valuesDateRange2, filterType } = this.props;
+    const { primary, secondary } = this.state;
 
     return (
       <div
@@ -196,13 +256,13 @@ class DotGridChartsContainer extends Component {
           this.dotGridChart = _;
         }}
       >
-        <div className="dot-grid-chart-column">
-          <DotGridChart filterType={filterType} entity={valuesDateRange1.primary} />
-          <DotGridChart filterType={filterType} entity={valuesDateRange2.primary} />
+        <div className="dot-grid-entity">
+          <DotGridChart data={primary.period1} subheadHeights={primary.subheadHeights} />
+          <DotGridChart data={primary.period2} subheadHeights={primary.subheadHeights} />
         </div>
-        <div className="dot-grid-chart-column">
-          <DotGridChart filterType={filterType} entity={valuesDateRange1.secondary} />
-          <DotGridChart filterType={filterType} entity={valuesDateRange2.secondary} />
+        <div className="dot-grid-entity">
+          <DotGridChart data={secondary.period1} subheadHeights={secondary.subheadHeights} />
+          <DotGridChart data={secondary.period2} subheadHeights={secondary.subheadHeights} />
         </div>
       </div>
     );
@@ -210,3 +270,8 @@ class DotGridChartsContainer extends Component {
 }
 
 export default connect(mapStateToProps, null)(DotGridChartsContainer);
+
+// <div className="dot-grid-chart-column">
+//   <DotGridChart />
+//   <DotGridChart />
+// </div>
