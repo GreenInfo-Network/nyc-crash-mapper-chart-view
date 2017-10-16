@@ -41,6 +41,7 @@ class DotGridChart extends Component {
     // TO DO: make it a prop
     this.radius = props.radius;
     this.formatTime = d3.timeFormat('%b %Y');
+    this.formatNumber = d3.format(',.2r');
   }
 
   getContainerSize() {
@@ -59,6 +60,7 @@ class DotGridChart extends Component {
     const { data, subheadHeights } = this.props;
     if (!data.length) return null;
     const colorScale = this.colorScale;
+    const formatNumber = this.formatNumber;
     const radius = this.radius;
     const { width } = this.getContainerSize();
 
@@ -69,8 +71,8 @@ class DotGridChart extends Component {
       // TO DO: replace SVG with Canvas? Boroughs take a while to render...
       return (
         <div className="person-type-grids" key={personType}>
-          {killed.length ? <h6>{`${personType} killed: ${killedTotal}`}</h6> : null}
-          {injured.length ? <h6>{`${personType} injured: ${injuredTotal}`}</h6> : null}
+          {killed.length > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
+          {injured.length > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
           <svg width={width} height={subheadHeights[personType]}>
             <g transform={`translate(5,5)`}>
               {grid.map((d, i) => (
@@ -103,8 +105,10 @@ class DotGridChart extends Component {
       >
         {data.length > 0 && (
           <div className="dot-grid-title">
-            <h6>{title}</h6>
-            <h6>{`${this.formatTime(startDate)} – ${this.formatTime(endDate)}`}</h6>
+            <h6 className="period">{title}</h6>
+            <h6 className="date-range">
+              {`${this.formatTime(startDate)} – ${this.formatTime(endDate)}`}
+            </h6>
           </div>
         )}
         {this.renderGrids()}

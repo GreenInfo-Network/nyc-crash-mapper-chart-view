@@ -7,6 +7,11 @@
   h6 {
     text-transform: capitalize;
     padding: 0;
+
+    &.period,
+    &.date-range {
+      text-transform: uppercase;
+    }
   }
 
   svg {
