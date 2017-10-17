@@ -16,6 +16,13 @@ export const entity = PropTypes.shape({
   values: PropTypes.arrayOf(PropTypes.object),
 });
 
+// represents the `entities` part of the Redux store
+export const entities = PropTypes.shape({
+  primary: entity,
+  secondary: entity,
+  entityType: PropTypes.string,
+});
+
 // represents the filterType part of the Redux store
 export const filterType = PropTypes.shape({
   fatality: PropTypes.shape({

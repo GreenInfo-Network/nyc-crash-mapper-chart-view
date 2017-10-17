@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as pt from '../common/reactPropTypeDefs';
+
+import * as pt from '../../common/reactPropTypeDefs';
 
 const EntitySelector = props => {
   const { color, entityType, entity, deselectEntity } = props;

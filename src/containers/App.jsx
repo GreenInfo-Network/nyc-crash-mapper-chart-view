@@ -12,7 +12,7 @@ import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from './LineChartsContainer';
 import DotGridChartsContainer from './DotGridChartsContainer';
 import TimeLine from './TimeLine';
-import Legend from '../components/Legend/';
+import Legend from '../containers/Legend';
 
 // for debugging & messing around
 window.d3 = d3;
