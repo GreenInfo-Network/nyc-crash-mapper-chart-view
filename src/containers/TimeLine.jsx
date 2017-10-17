@@ -94,11 +94,11 @@ class TimeLine extends Component {
 
 const mapStateToProps = ({ browser, dateRanges }) => {
   const { width } = browser;
-  const { group1, group2 } = dateRanges;
+  const { period1, period2 } = dateRanges;
   return {
     appWidth: width,
-    dateRangeOne: group1,
-    dateRangeTwo: group2,
+    dateRangeOne: period1,
+    dateRangeTwo: period2,
   };
 };
 

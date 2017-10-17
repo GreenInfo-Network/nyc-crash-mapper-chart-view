@@ -66,7 +66,7 @@ export const filterEntitiesValues = state => {
   // eslint-disable-next-line
   const { entities, dateRanges, filterType } = state;
   const { primary, secondary } = entities;
-  const { group1, group2 } = dateRanges;
+  const { period1, period2 } = dateRanges;
 
   return {
     valuesDateRange1: {
@@ -74,14 +74,14 @@ export const filterEntitiesValues = state => {
         ...primary,
         values: mapFilterTypesToProps(
           filterType,
-          filterValuesByDateRange(primary.values, group1.startDate, group1.endDate)
+          filterValuesByDateRange(primary.values, period1.startDate, period1.endDate)
         ),
       },
       secondary: {
         ...secondary,
         values: mapFilterTypesToProps(
           filterType,
-          filterValuesByDateRange(secondary.values, group1.startDate, group1.endDate)
+          filterValuesByDateRange(secondary.values, period1.startDate, period1.endDate)
         ),
       },
     },
@@ -90,14 +90,14 @@ export const filterEntitiesValues = state => {
         ...primary,
         values: mapFilterTypesToProps(
           filterType,
-          filterValuesByDateRange(primary.values, group2.startDate, group2.endDate)
+          filterValuesByDateRange(primary.values, period2.startDate, period2.endDate)
         ),
       },
       secondary: {
         ...secondary,
         values: mapFilterTypesToProps(
           filterType,
-          filterValuesByDateRange(secondary.values, group2.startDate, group2.endDate)
+          filterValuesByDateRange(secondary.values, period2.startDate, period2.endDate)
         ),
       },
     },

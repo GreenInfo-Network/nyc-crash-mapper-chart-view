@@ -119,7 +119,7 @@ const mapStateToProps = state => {
   const { height, width } = browser;
   const { citywide } = data;
   const { primary, secondary } = entities;
-  const { group1, group2 } = dateRanges;
+  const { period1, period2 } = dateRanges;
 
   // filter primary and secondary entity data by date ranges
   const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
@@ -128,11 +128,11 @@ const mapStateToProps = state => {
   const citywideValues = citywide.response || [];
   const citywidePeriod1 = mapFilterTypesToProps(
     filterType,
-    filterValuesByDateRange(citywideValues, group1.startDate, group1.endDate)
+    filterValuesByDateRange(citywideValues, period1.startDate, period1.endDate)
   );
   const citywidePeriod2 = mapFilterTypesToProps(
     filterType,
-    filterValuesByDateRange(citywideValues, group2.startDate, group2.endDate)
+    filterValuesByDateRange(citywideValues, period2.startDate, period2.endDate)
   );
 
   return {
@@ -142,8 +142,8 @@ const mapStateToProps = state => {
     citywidePeriod2,
     primary,
     secondary,
-    dateRangeOne: group1,
-    dateRangeTwo: group2,
+    dateRangeOne: period1,
+    dateRangeTwo: period2,
     valuesDateRange1,
     valuesDateRange2,
   };

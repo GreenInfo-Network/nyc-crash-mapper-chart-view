@@ -25,8 +25,8 @@ const mapStateToProps = state => {
 class DotGridChartsContainer extends Component {
   static propTypes = {
     dateRanges: PropTypes.shape({
-      group1: pt.dateRange,
-      group2: pt.dateRange,
+      period1: pt.dateRange,
+      period2: pt.dateRange,
     }).isRequired,
     entityType: PropTypes.string.isRequired,
     filterType: pt.filterType.isRequired,
@@ -97,8 +97,8 @@ class DotGridChartsContainer extends Component {
       if (
         valuesDateRange1.primary.key !== this.props.valuesDateRange1.primary.key ||
         !isEqual(filterType, this.props.filterType) ||
-        !isEqual(dateRanges.group1, this.props.dateRanges.group1) ||
-        !isEqual(dateRanges.group2, this.props.dateRanges.group2)
+        !isEqual(dateRanges.period1, this.props.dateRanges.period1) ||
+        !isEqual(dateRanges.period2, this.props.dateRanges.period2)
       ) {
         this.setSubheadingHeights(
           this.groupData(filterType, valuesDateRange1, 'primary'),
@@ -112,8 +112,8 @@ class DotGridChartsContainer extends Component {
       if (
         valuesDateRange1.secondary.key !== this.props.valuesDateRange1.secondary.key ||
         !isEqual(filterType, this.props.filterType) ||
-        !isEqual(dateRanges.group1, this.props.dateRanges.group1) ||
-        !isEqual(dateRanges.group2, this.props.dateRanges.group2)
+        !isEqual(dateRanges.period1, this.props.dateRanges.period1) ||
+        !isEqual(dateRanges.period2, this.props.dateRanges.period2)
       ) {
         this.setSubheadingHeights(
           this.groupData(filterType, valuesDateRange1, 'secondary'),
@@ -274,7 +274,7 @@ class DotGridChartsContainer extends Component {
 
   render() {
     const { dateRanges, valuesDateRange1, entityType } = this.props;
-    const { group1, group2 } = dateRanges;
+    const { period1, period2 } = dateRanges;
     const { primary, secondary } = this.state;
     const entityLabel = entityType.replace(/_/, ' ');
 
@@ -292,8 +292,8 @@ class DotGridChartsContainer extends Component {
           <DotGridChart
             data={primary.period1}
             subheadHeights={primary.subheadHeights}
-            startDate={group1.startDate}
-            endDate={group1.endDate}
+            startDate={period1.startDate}
+            endDate={period1.endDate}
             radius={this.circleRadius}
             strokeWidth={2}
             title={'Period One'}
@@ -301,8 +301,8 @@ class DotGridChartsContainer extends Component {
           <DotGridChart
             data={primary.period2}
             subheadHeights={primary.subheadHeights}
-            startDate={group2.startDate}
-            endDate={group2.endDate}
+            startDate={period2.startDate}
+            endDate={period2.endDate}
             radius={this.circleRadius}
             strokeWidth={2}
             title={'Period Two'}
@@ -315,8 +315,8 @@ class DotGridChartsContainer extends Component {
           <DotGridChart
             data={secondary.period1}
             subheadHeights={secondary.subheadHeights}
-            startDate={group1.startDate}
-            endDate={group1.endDate}
+            startDate={period1.startDate}
+            endDate={period1.endDate}
             radius={this.circleRadius}
             strokeWidth={2}
             title={'Period One'}
@@ -324,8 +324,8 @@ class DotGridChartsContainer extends Component {
           <DotGridChart
             data={secondary.period2}
             subheadHeights={secondary.subheadHeights}
-            startDate={group2.startDate}
-            endDate={group2.endDate}
+            startDate={period2.startDate}
+            endDate={period2.endDate}
             radius={this.circleRadius}
             strokeWidth={2}
             title={'Period Two'}

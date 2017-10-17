@@ -3,11 +3,11 @@ import { parseDate } from '../common/d3Utils';
 
 // TO DO: should these be date strings or date objects?
 const defaultState = {
-  group1: {
+  period1: {
     startDate: parseDate('2016-01'),
     endDate: parseDate('2017-01'),
   },
-  group2: {
+  period2: {
     startDate: parseDate('2013-01'),
     endDate: parseDate('2014-01'),
   },
@@ -18,7 +18,7 @@ export default function(state = defaultState, action) {
     case SET_DATE_RANGE_GROUP_ONE:
       return {
         ...state,
-        group1: {
+        period1: {
           startDate: action.dates[0],
           endDate: action.dates[1],
         },
@@ -27,7 +27,7 @@ export default function(state = defaultState, action) {
     case SET_DATE_RANGE_GROUP_TWO:
       return {
         ...state,
-        group2: {
+        period2: {
           startDate: action.dates[0],
           endDate: action.dates[1],
         },
