@@ -9,7 +9,7 @@ import { filterEntitiesValues } from '../reducers';
 import DotGridChart from '../components/DotGridChart';
 
 const mapStateToProps = state => {
-  const { filterType, dateRanges, entities } = state;
+  const { browser, filterType, dateRanges, entities } = state;
   const { valuesDateRange1, valuesDateRange2 } = filterEntitiesValues(state);
   const { entityType } = entities;
 
@@ -19,6 +19,7 @@ const mapStateToProps = state => {
     valuesDateRange1,
     valuesDateRange2,
     entityType,
+    width: browser.width,
   };
 };
 
@@ -32,6 +33,7 @@ class DotGridChartsContainer extends Component {
     filterType: pt.filterType.isRequired,
     valuesDateRange1: pt.valuesByDateRange.isRequired,
     valuesDateRange2: pt.valuesByDateRange.isRequired,
+    width: PropTypes.number.isRequired,
   };
 
   constructor() {
@@ -90,7 +92,7 @@ class DotGridChartsContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { filterType, valuesDateRange1, valuesDateRange2, dateRanges } = nextProps;
+    const { filterType, valuesDateRange1, valuesDateRange2, dateRanges, width } = nextProps;
 
     // Set Component State
     if (valuesDateRange1.primary.key) {
@@ -98,7 +100,8 @@ class DotGridChartsContainer extends Component {
         valuesDateRange1.primary.key !== this.props.valuesDateRange1.primary.key ||
         !isEqual(filterType, this.props.filterType) ||
         !isEqual(dateRanges.period1, this.props.dateRanges.period1) ||
-        !isEqual(dateRanges.period2, this.props.dateRanges.period2)
+        !isEqual(dateRanges.period2, this.props.dateRanges.period2) ||
+        width !== this.props.width
       ) {
         this.setSubheadingHeights(
           this.groupData(filterType, valuesDateRange1, 'primary'),
@@ -113,7 +116,8 @@ class DotGridChartsContainer extends Component {
         valuesDateRange1.secondary.key !== this.props.valuesDateRange1.secondary.key ||
         !isEqual(filterType, this.props.filterType) ||
         !isEqual(dateRanges.period1, this.props.dateRanges.period1) ||
-        !isEqual(dateRanges.period2, this.props.dateRanges.period2)
+        !isEqual(dateRanges.period2, this.props.dateRanges.period2) ||
+        width !== this.props.width
       ) {
         this.setSubheadingHeights(
           this.groupData(filterType, valuesDateRange1, 'secondary'),
