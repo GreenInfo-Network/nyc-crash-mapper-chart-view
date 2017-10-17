@@ -295,6 +295,7 @@ class DotGridChartsContainer extends Component {
             startDate={group1.startDate}
             endDate={group1.endDate}
             radius={this.circleRadius}
+            strokeWidth={2}
             title={'Period One'}
           />
           <DotGridChart
@@ -303,6 +304,7 @@ class DotGridChartsContainer extends Component {
             startDate={group2.startDate}
             endDate={group2.endDate}
             radius={this.circleRadius}
+            strokeWidth={2}
             title={'Period Two'}
           />
         </div>
@@ -316,6 +318,7 @@ class DotGridChartsContainer extends Component {
             startDate={group1.startDate}
             endDate={group1.endDate}
             radius={this.circleRadius}
+            strokeWidth={2}
             title={'Period One'}
           />
           <DotGridChart
@@ -324,6 +327,7 @@ class DotGridChartsContainer extends Component {
             startDate={group2.startDate}
             endDate={group2.endDate}
             radius={this.circleRadius}
+            strokeWidth={2}
             title={'Period Two'}
           />
         </div>

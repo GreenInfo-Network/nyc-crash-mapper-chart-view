@@ -15,6 +15,7 @@ class DotGridChart extends Component {
     startDate: pt.date.isRequired,
     endDate: pt.date.isRequired,
     radius: PropTypes.number,
+    strokeWidth: PropTypes.number,
     title: PropTypes.string,
   };
 
@@ -22,6 +23,7 @@ class DotGridChart extends Component {
     data: [],
     subheadHeights: {},
     radius: 3,
+    strokeWidth: 1,
     title: '',
   };
 
@@ -37,9 +39,6 @@ class DotGridChart extends Component {
       .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
       .domain(['pedestrian', 'cyclist', 'motorist']);
 
-    // radius of circles
-    // TO DO: make it a prop
-    this.radius = props.radius;
     this.formatTime = d3.timeFormat('%b %Y');
     this.formatNumber = d3.format(',.2r');
   }
@@ -57,12 +56,12 @@ class DotGridChart extends Component {
   }
 
   renderGrids() {
-    const { data, subheadHeights } = this.props;
+    const { data, radius, strokeWidth, subheadHeights } = this.props;
     if (!data.length) return null;
     const colorScale = this.colorScale;
     const formatNumber = this.formatNumber;
-    const radius = this.radius;
     const { width } = this.getContainerSize();
+    const translateFactor = radius + strokeWidth;
 
     return data.map(datum => {
       const { grid, key, killed, injured, killedTotal, injuredTotal } = datum;
@@ -74,7 +73,7 @@ class DotGridChart extends Component {
           {killed.length > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
           {injured.length > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
           <svg width={width} height={subheadHeights[personType]}>
-            <g transform={`translate(6,6)`}>
+            <g transform={`translate(${translateFactor}, ${translateFactor})`}>
               {grid.map((d, i) => (
                 <circle
                   key={i}
@@ -82,6 +81,7 @@ class DotGridChart extends Component {
                   cy={d.y}
                   r={radius}
                   stroke={colorScale(personType)}
+                  strokeWidth={strokeWidth}
                   fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
                 />
               ))}
