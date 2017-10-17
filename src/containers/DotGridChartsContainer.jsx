@@ -62,7 +62,7 @@ class DotGridChartsContainer extends Component {
       },
     };
 
-    this.circleRadius = 3; // the size in pixels of each circle's radius
+    this.circleRadius = 5; // the size in pixels of each circle's radius
     this.width = 500; // tmp variable for width of the chart
     this.dotGridChart = null; // to store react ref to component
   }
