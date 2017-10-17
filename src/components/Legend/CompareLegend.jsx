@@ -18,6 +18,7 @@ export default () => {
           r={radius}
           fill={harmType === harms[0] ? colorScale(person) : 'none'}
           stroke={harmType === harms[1] ? colorScale(person) : 'none'}
+          strokeWidth={2}
         />
         <text x={10} y={5}>{`${person} ${harmType}`}</text>
       </g>
