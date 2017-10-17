@@ -40,7 +40,7 @@ class DotGridChart extends Component {
       .domain(['pedestrian', 'cyclist', 'motorist']);
 
     this.formatTime = d3.timeFormat('%b %Y');
-    this.formatNumber = d3.format(',.2r');
+    this.formatNumber = d3.format(',');
   }
 
   getContainerSize() {
