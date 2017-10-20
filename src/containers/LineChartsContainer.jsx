@@ -72,24 +72,6 @@ class LineChartsContainer extends Component {
     return (
       <div className="LineChartsContainer" style={style}>
         <div className="chart-container">
-          <h6>Period Two</h6>
-          <h6>
-            {formatDate(dateRangeTwo.startDate)} — {formatDate(dateRangeTwo.endDate)}
-          </h6>
-          <LineChart
-            appHeight={appHeight}
-            appWidth={appWidth}
-            citywide={citywidePeriod2}
-            yMax={entitiesMax}
-            y2Max={citywideMax}
-            nested={nested}
-            keyPrimary={primary.key}
-            keySecondary={secondary.key}
-            {...dateRangeTwo}
-            valuesByDateRange={valuesDateRange2}
-          />
-        </div>
-        <div className="chart-container">
           <h6>Period One</h6>
           <h6>
             {formatDate(dateRangeOne.startDate)} — {formatDate(dateRangeOne.endDate)}
@@ -105,6 +87,24 @@ class LineChartsContainer extends Component {
             keySecondary={secondary.key}
             {...dateRangeOne}
             valuesByDateRange={valuesDateRange1}
+          />
+        </div>
+        <div className="chart-container">
+          <h6>Period Two</h6>
+          <h6>
+            {formatDate(dateRangeTwo.startDate)} — {formatDate(dateRangeTwo.endDate)}
+          </h6>
+          <LineChart
+            appHeight={appHeight}
+            appWidth={appWidth}
+            citywide={citywidePeriod2}
+            yMax={entitiesMax}
+            y2Max={citywideMax}
+            nested={nested}
+            keyPrimary={primary.key}
+            keySecondary={secondary.key}
+            {...dateRangeTwo}
+            valuesByDateRange={valuesDateRange2}
           />
         </div>
       </div>
