@@ -3,8 +3,19 @@
   height: 100%;
   overflow-y: auto;
 
+  .dot-grid-entity-one {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .dot-grid-entity-two {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
   h5 {
     text-transform: capitalize;
+    padding: 20px 20px 0;
 
     &.select-entity {
       text-align: center;

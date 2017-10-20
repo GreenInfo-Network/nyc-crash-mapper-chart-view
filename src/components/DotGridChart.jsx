@@ -33,7 +33,7 @@ class DotGridChart extends Component {
     this.svg = null; // ref to svg
 
     // chart margins
-    this.margin = { top: 10, bottom: 25, left: 0, right: 0 };
+    this.margin = { top: 10, bottom: 25, left: 0, right: 10 };
     // color scale
     this.colorScale = d3
       .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
@@ -45,9 +45,8 @@ class DotGridChart extends Component {
 
   getContainerSize() {
     // returns the width and height for the svg element based on the parent div's width height, which is set via CSS
-    const bcr = this.container.getBoundingClientRect();
-    const cWidth = Math.floor(bcr.width) - this.margin.right - this.margin.left;
-    const cHeight = Math.floor(bcr.height) - this.margin.top - this.margin.bottom;
+    const cWidth = this.container.clientWidth;
+    const cHeight = this.container.clientHeight;
 
     return {
       height: cHeight,
@@ -61,6 +60,7 @@ class DotGridChart extends Component {
     const colorScale = this.colorScale;
     const formatNumber = this.formatNumber;
     const { width } = this.getContainerSize();
+    const svgWidth = width - 10; // account for padding
     const translateFactor = radius + strokeWidth;
 
     return data.map(datum => {
@@ -72,7 +72,7 @@ class DotGridChart extends Component {
         <div className="person-type-grids" key={personType}>
           {killed.length > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
           {injured.length > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
-          <svg width={width} height={subheadHeights[personType]}>
+          <svg width={svgWidth} height={subheadHeights[personType]}>
             <g transform={`translate(${translateFactor}, ${translateFactor})`}>
               {grid.map((d, i) => (
                 <circle

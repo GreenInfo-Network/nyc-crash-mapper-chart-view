@@ -4,6 +4,14 @@
   display: inline-block;
   vertical-align: top;
 
+  &:first-child {
+    padding-right: 10px;
+  }
+
+  &:last-child {
+    padding-left: 10px;
+  }
+
   h6 {
     text-transform: capitalize;
     padding: 0;

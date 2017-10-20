@@ -65,8 +65,7 @@ class DotGridChartsContainer extends Component {
     };
 
     this.circleRadius = 5; // the size in pixels of each circle's radius
-    this.width = 500; // tmp variable for width of the chart
-    this.dotGridChart = null; // to store react ref to component
+    this.chartsContainer = null; // to store react ref to component
   }
 
   componentDidMount() {
@@ -160,9 +159,8 @@ class DotGridChartsContainer extends Component {
   }
 
   getContainerSize() {
-    const bcr = this.dotGridChart.getBoundingClientRect();
-    const cWidth = Math.floor(bcr.width) - 20; // account for inner padding
-    const cHeight = Math.floor(bcr.height) - 20; // account for inner padding
+    const cWidth = this.chartsContainer.clientWidth - 40; // account for padding
+    const cHeight = this.chartsContainer.clientHeight - 40; // account for padding
 
     return {
       height: cHeight,
@@ -205,8 +203,9 @@ class DotGridChartsContainer extends Component {
     // computes grid height so that person type sub headings can be vertically aligned in the UI
     const { fatality, injury } = filterType;
     const values = valuesByDateRange[entity].values;
-    const width = this.getContainerSize().width / 2; // half the container width
+    const width = this.getContainerSize().width;
     const circleRadius = this.circleRadius;
+    const chartWidth = width / 2 - 10; // single dot grid chart is 1/2 container width minus padding
 
     // group the data by crash type
     const grouped = [];
@@ -255,7 +254,7 @@ class DotGridChartsContainer extends Component {
       const injuredTotal = injured.length ? injured[0].total : 0;
       const killedTotal = killed.length ? killed[0].total : 0;
       const totalHarmed = injuredTotal + killedTotal;
-      const columns = Math.floor(width / (circleRadius * 3));
+      const columns = Math.floor(chartWidth / (circleRadius * 3));
       const rows = Math.floor(totalHarmed / columns);
 
       group.killed = killed;
@@ -286,7 +285,7 @@ class DotGridChartsContainer extends Component {
       <div
         className="DotGridChartsContainer"
         ref={_ => {
-          this.dotGridChart = _;
+          this.chartsContainer = _;
         }}
       >
         {valuesDateRange1.primary.key && (
