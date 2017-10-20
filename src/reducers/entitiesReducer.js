@@ -4,6 +4,7 @@ import {
   DESELECT_PRIMARY_ENTITY,
   SELECT_SECONDARY_ENTITY,
   DESELECT_SECONDARY_ENTITY,
+  REFERENCE_ENTITY_SELECT,
 } from '../common/actionTypes';
 
 const defaultState = {
@@ -18,6 +19,7 @@ const defaultState = {
     values: [],
   },
   entityType: 'city_council', // matches properties in store.data
+  referece: 'citywide',
 };
 
 export default function(state = defaultState, action) {
@@ -64,6 +66,12 @@ export default function(state = defaultState, action) {
           key: action.key,
           values: [],
         },
+      };
+
+    case REFERENCE_ENTITY_SELECT:
+      return {
+        ...state,
+        referece: action.key,
       };
 
     default:

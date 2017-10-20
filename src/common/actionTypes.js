@@ -29,4 +29,7 @@ export const RANK_DATA_REQUEST = 'RANK_DATA_REQUEST';
 export const RANK_DATA_SUCCESS = 'RANK_DATA_SUCCESS';
 export const RANK_DATA_ERROR = 'RANK_DATA_ERROR';
 
+// select the entity used for the line chart reference line
+export const REFERENCE_ENTITY_SELECT = 'REFERENCE_ENTITY_SELECT';
+
 export const TREND_COMPARE_TOGGLE = 'TREND_COMPARE_TOGGLE';

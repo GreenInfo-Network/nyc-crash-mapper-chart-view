@@ -4,6 +4,7 @@ import {
   DESELECT_PRIMARY_ENTITY,
   SELECT_SECONDARY_ENTITY,
   DESELECT_SECONDARY_ENTITY,
+  REFERENCE_ENTITY_SELECT,
 } from '../common/actionTypes';
 
 // set the geography type
@@ -31,4 +32,8 @@ export const selectSecondaryEntity = entity => ({
 
 export const deselectSecondaryEntity = () => ({
   type: DESELECT_SECONDARY_ENTITY,
+});
+
+export const selectReferenceEntity = () => ({
+  type: REFERENCE_ENTITY_SELECT,
 });
