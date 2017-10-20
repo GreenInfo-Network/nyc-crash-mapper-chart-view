@@ -293,15 +293,6 @@ class DotGridChartsContainer extends Component {
         )}
         <div className="dot-grid-entity-one">
           <DotGridChart
-            data={primary.period1}
-            subheadHeights={primary.subheadHeights}
-            startDate={period1.startDate}
-            endDate={period1.endDate}
-            radius={this.circleRadius}
-            strokeWidth={2}
-            title={'Period One'}
-          />
-          <DotGridChart
             data={primary.period2}
             subheadHeights={primary.subheadHeights}
             startDate={period2.startDate}
@@ -310,20 +301,20 @@ class DotGridChartsContainer extends Component {
             strokeWidth={2}
             title={'Period Two'}
           />
-        </div>
-        {valuesDateRange1.secondary.key && (
-          <h5>{`${entityLabel} ${valuesDateRange1.secondary.key}`}</h5>
-        )}
-        <div className="dot-grid-entity-two">
           <DotGridChart
-            data={secondary.period1}
-            subheadHeights={secondary.subheadHeights}
+            data={primary.period1}
+            subheadHeights={primary.subheadHeights}
             startDate={period1.startDate}
             endDate={period1.endDate}
             radius={this.circleRadius}
             strokeWidth={2}
             title={'Period One'}
           />
+        </div>
+        {valuesDateRange1.secondary.key && (
+          <h5>{`${entityLabel} ${valuesDateRange1.secondary.key}`}</h5>
+        )}
+        <div className="dot-grid-entity-two">
           <DotGridChart
             data={secondary.period2}
             subheadHeights={secondary.subheadHeights}
@@ -332,6 +323,15 @@ class DotGridChartsContainer extends Component {
             radius={this.circleRadius}
             strokeWidth={2}
             title={'Period Two'}
+          />
+          <DotGridChart
+            data={secondary.period1}
+            subheadHeights={secondary.subheadHeights}
+            startDate={period1.startDate}
+            endDate={period1.endDate}
+            radius={this.circleRadius}
+            strokeWidth={2}
+            title={'Period One'}
           />
         </div>
         {!valuesDateRange1.primary.key && !valuesDateRange1.secondary.key ? (
