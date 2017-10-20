@@ -1,20 +1,19 @@
 .LineChartsContainer {
+  width: 100%;
+  height: auto;
+  overflow-y: auto;
+
   .chart-container {
-    width: 50%;
+    width: 100%;
     height: 100%;
-    display: inline-block;
-    padding-left: 20px;
-    vertical-align: top;
+    max-height: 500px;
+    padding: 20px;
 
     h6 {
       margin: 0;
       padding: 0;
       text-transform: uppercase;
       font-weight: bold;
-    }
-
-    &:first-of-type {
-      padding-left: 0;
     }
   }
 }
