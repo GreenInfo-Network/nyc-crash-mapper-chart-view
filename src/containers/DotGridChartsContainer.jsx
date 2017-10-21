@@ -159,7 +159,7 @@ class DotGridChartsContainer extends Component {
   }
 
   getContainerSize() {
-    const cWidth = this.chartsContainer.clientWidth - 40; // account for padding
+    const cWidth = this.chartsContainer.clientWidth - 40 - 10; // account for padding & scrollbar
     const cHeight = this.chartsContainer.clientHeight - 40; // account for padding
 
     return {
@@ -283,7 +283,7 @@ class DotGridChartsContainer extends Component {
 
     return (
       <div
-        className="DotGridChartsContainer"
+        className="DotGridChartsContainer scroll"
         ref={_ => {
           this.chartsContainer = _;
         }}

@@ -72,7 +72,7 @@ class LineChartsContainer extends Component {
     const citywideMax = max(y2, d => d.count);
 
     return (
-      <div className="LineChartsContainer" style={style}>
+      <div className="LineChartsContainer scroll" style={style}>
         <div className="chart-container">
           <LineChartTitle
             title={'Period One'}
