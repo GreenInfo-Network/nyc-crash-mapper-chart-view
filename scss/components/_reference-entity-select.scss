@@ -1,3 +1,12 @@
 .ReferenceEntitySelect {
   display: inline-block;
+
+  p,
+  select {
+    display: inline-block;
+  }
+
+  p {
+    margin-right: 10px;
+  }
 }
