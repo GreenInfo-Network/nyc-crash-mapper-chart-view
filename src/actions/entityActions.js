@@ -34,6 +34,7 @@ export const deselectSecondaryEntity = () => ({
   type: DESELECT_SECONDARY_ENTITY,
 });
 
-export const selectReferenceEntity = () => ({
+export const setReferenceEntity = key => ({
   type: REFERENCE_ENTITY_SELECT,
+  key,
 });

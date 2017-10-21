@@ -6,7 +6,7 @@ export {
   deselectPrimaryEntity,
   selectSecondaryEntity,
   deselectSecondaryEntity,
-  selectReferenceEntity,
+  setReferenceEntity,
 } from './entityActions';
 
 export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
