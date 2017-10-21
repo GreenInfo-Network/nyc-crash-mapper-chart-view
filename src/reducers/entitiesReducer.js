@@ -19,7 +19,7 @@ const defaultState = {
     values: [],
   },
   entityType: 'city_council', // matches properties in store.data
-  referece: 'citywide',
+  reference: 'citywide',
 };
 
 export default function(state = defaultState, action) {
@@ -71,7 +71,7 @@ export default function(state = defaultState, action) {
     case REFERENCE_ENTITY_SELECT:
       return {
         ...state,
-        referece: action.key,
+        reference: action.key,
       };
 
     default:
