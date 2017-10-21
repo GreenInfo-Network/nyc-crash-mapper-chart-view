@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import { max } from 'd3';
 
 import * as pt from '../common/reactPropTypeDefs';
-import { formatDate } from '../common/d3Utils';
 import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
 import { filterEntitiesValues } from '../reducers';
+
 import LineChart from '../components/LineChart';
+import LineChartTitle from '../components/LineChartTitle';
+import ReferenceEntitySelect from './ReferenceEntitySelect';
 
 /**
  * Connected Component that houses the D3 Line Charts
@@ -72,10 +74,13 @@ class LineChartsContainer extends Component {
     return (
       <div className="LineChartsContainer" style={style}>
         <div className="chart-container">
-          <h6>Period One</h6>
-          <h6>
-            {formatDate(dateRangeOne.startDate)} — {formatDate(dateRangeOne.endDate)}
-          </h6>
+          <LineChartTitle
+            title={'Period One'}
+            startDate={dateRangeOne.startDate}
+            endDate={dateRangeOne.endDate}
+          >
+            <ReferenceEntitySelect />
+          </LineChartTitle>
           <LineChart
             appHeight={appHeight}
             appWidth={appWidth}
@@ -90,10 +95,11 @@ class LineChartsContainer extends Component {
           />
         </div>
         <div className="chart-container">
-          <h6>Period Two</h6>
-          <h6>
-            {formatDate(dateRangeTwo.startDate)} — {formatDate(dateRangeTwo.endDate)}
-          </h6>
+          <LineChartTitle
+            title={'Period Two'}
+            startDate={dateRangeTwo.startDate}
+            endDate={dateRangeTwo.endDate}
+          />
           <LineChart
             appHeight={appHeight}
             appWidth={appWidth}
