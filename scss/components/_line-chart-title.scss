@@ -1,4 +1,11 @@
 .LineChartTitle {
   display: flex;
   justify-content: space-between;
+
+  h6 {
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
 }
