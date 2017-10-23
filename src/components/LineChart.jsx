@@ -13,10 +13,16 @@ class LineChart extends Component {
     appWidth: PropTypes.number.isRequired,
     keyPrimary: pt.key,
     keySecondary: pt.key,
-    citywide: PropTypes.arrayOf(PropTypes.object),
+    keyReference: pt.key,
+    citywide: PropTypes.arrayOf(PropTypes.object), // should be called something else now
+    primaryValues: PropTypes.arrayOf(PropTypes.object),
+    secondaryValues: PropTypes.arrayOf(PropTypes.object),
+    referenceValues: PropTypes.arrayOf(PropTypes.object),
     startDate: pt.dateRange,
     endDate: pt.dateRange,
-    valuesByDateRange: pt.valuesByDateRange.isRequired,
+    primaryColor: PropTypes.string.isRequired,
+    secondaryColor: PropTypes.string.isRequired,
+    referenceColor: PropTypes.string.isRequired,
     yMax: PropTypes.number,
     y2Max: PropTypes.number,
   };
@@ -24,6 +30,10 @@ class LineChart extends Component {
   static defaultProps = {
     keyPrimary: '',
     keySecondary: '',
+    keyReference: '',
+    primaryValues: [],
+    secondaryValues: [],
+    referenceValues: [],
     citywide: [],
     startDate: {},
     endDate: {},
@@ -65,11 +75,11 @@ class LineChart extends Component {
   }
 
   componentDidMount() {
-    const { citywide } = this.props;
+    const { referenceValues } = this.props;
 
     // if the app loaded with pre-fetched data OR if the user toggled between "trend" and "compare"
     // make sure to create and update the chart
-    if (citywide && citywide.length) {
+    if (referenceValues && referenceValues.length) {
       this.initChart();
       this.updateChart();
     }
@@ -81,9 +91,10 @@ class LineChart extends Component {
     const {
       appHeight,
       appWidth,
-      citywide,
       keyPrimary,
       keySecondary,
+      keyReference,
+      referenceValues,
       startDate,
       endDate,
       yMax,
@@ -99,14 +110,18 @@ class LineChart extends Component {
 
     if (!chartExists) {
       // citywide data is always loaded regardless of other entities, so set up the chart if it exists
-      if (citywide.length && !prevProps.citywide.length) {
+      if (referenceValues.length && !prevProps.referenceValues.length) {
         this.initChart();
       }
     }
 
     if (chartExists) {
       // if keys in our component state differ, update the chart
-      if (keyPrimary !== prevProps.keyPrimary || keySecondary !== prevProps.keySecondary) {
+      if (
+        keyPrimary !== prevProps.keyPrimary ||
+        keySecondary !== prevProps.keySecondary ||
+        (referenceValues.length && keyReference !== prevProps.keyReference)
+      ) {
         this.updateChart();
       }
 
@@ -221,10 +236,30 @@ class LineChart extends Component {
 
   updateChart() {
     // adds or removes data to / from the chart
-    const { valuesByDateRange, citywide, yMax, y2Max } = this.props;
+    const {
+      primaryValues,
+      secondaryValues,
+      referenceValues,
+      keyPrimary,
+      keySecondary,
+      primaryColor,
+      secondaryColor,
+      yMax,
+      y2Max,
+    } = this.props;
     const { width, height } = this.getContainerSize();
-    const { primary, secondary } = valuesByDateRange;
-    const entities = [primary, secondary];
+    const entities = [
+      {
+        values: primaryValues,
+        key: keyPrimary,
+        color: primaryColor,
+      },
+      {
+        values: secondaryValues,
+        key: keySecondary,
+        color: secondaryColor,
+      },
+    ];
     const xScale = this.xScale;
     const yScale = this.yScale;
     const yScale2 = this.yScale2;
@@ -238,7 +273,7 @@ class LineChart extends Component {
     const t = g.transition().duration(750); // transition for updates
 
     // update xScale domain
-    xScale.domain(d3.extent(citywide, d => d.year_month));
+    xScale.domain(d3.extent(referenceValues, d => d.year_month));
 
     // update yScale domain
     yScale.domain([0, yMax]);
@@ -274,7 +309,7 @@ class LineChart extends Component {
     // transition the citywide line
     g
       .selectAll('.line-citywide')
-      .data([citywide])
+      .data([referenceValues])
       .transition(t)
       // eslint-disable-next-line
       .attrTween('d', function(d) {
@@ -282,7 +317,6 @@ class LineChart extends Component {
         const current = lineGenerator2(d);
         return d3.interpolatePath(previous, current);
       });
-    // .attr('d', d => lineGenerator2(d));
 
     // update the svg main group element's data binding
     g.datum(entities, d => d.key);
@@ -320,7 +354,7 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { citywide, y2Max } = this.props;
+    const { referenceValues, y2Max } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -339,7 +373,7 @@ class LineChart extends Component {
     // set scale domains and ranges
     yScale.range([height, 0]).domain([0, 0]);
     yScale2.range([height, 0]).domain([0, y2Max]);
-    xScale.range([0, width]).domain(d3.extent(citywide, d => d.year_month));
+    xScale.range([0, width]).domain(d3.extent(referenceValues, d => d.year_month));
 
     // set scales for axises
     xAxis.scale(xScale);
@@ -393,7 +427,7 @@ class LineChart extends Component {
     // draw the citywide line
     g
       .selectAll('.line-citywide')
-      .data([citywide])
+      .data([referenceValues])
       .enter()
       .append('path')
       .attr('class', 'line-citywide')

@@ -22,7 +22,7 @@ export const entityDataSelector = createSelector(
 );
 
 // returns the start and end dates for a time period
-const dateRangesSelector = (state, props) =>
+export const dateRangesSelector = (state, props) =>
   props.period === 'period1' ? state.dateRanges.period1 : state.dateRanges.period2;
 
 // returns the store.filterType
