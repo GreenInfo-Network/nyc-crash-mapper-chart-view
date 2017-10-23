@@ -36,7 +36,7 @@ class ReferenceEntitySelect extends Component {
     const { reference, boroughData } = nextProps;
 
     // if user selected a borough, and we don't have borough data yet, make an async request for it
-    if (reference !== 'citywide') {
+    if (reference !== 'Citywide') {
       if (!boroughData.response) {
         this.props.fetchEntityData('borough');
       }
@@ -49,6 +49,8 @@ class ReferenceEntitySelect extends Component {
   }
 
   handleChange(event) {
+    // eslint-disable-next-line
+    console.log(event.target.value);
     this.props.setReferenceEntity(event.target.value);
   }
 
@@ -56,18 +58,22 @@ class ReferenceEntitySelect extends Component {
     const { reference } = this.props;
     const options = [
       { value: 'citywide', label: 'Citywide' },
-      { value: 1, label: 'Manhattan' },
-      { value: 2, label: 'The Bronx' },
-      { value: 3, label: 'Brooklyn' },
-      { value: 4, label: 'Queens' },
-      { value: 5, label: 'Staten Island' },
+      { value: 'manhattan', label: 'Manhattan' },
+      { value: 'bronx', label: 'The Bronx' },
+      { value: 'brooklyn', label: 'Brooklyn' },
+      { value: 'queens', label: 'Queens' },
+      { value: 'staten island', label: 'Staten Island' },
     ];
 
     return (
       <div className="ReferenceEntitySelect">
         <p>Choose a reference geography:</p>
         <select value={reference} onChange={this.handleChange}>
-          {options.map(o => <option key={o.value}>{o.label}</option>)}
+          {options.map(o => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
         </select>
       </div>
     );
