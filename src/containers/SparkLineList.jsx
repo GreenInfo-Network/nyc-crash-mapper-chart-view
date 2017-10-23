@@ -11,7 +11,7 @@ import {
   deselectSecondaryEntity,
 } from '../actions';
 
-import { allEntityData } from '../reducers';
+import { entityDataSelector } from '../reducers';
 import * as pt from '../common/reactPropTypeDefs';
 
 // TO DO: move these into the SparkLineList class?
@@ -22,7 +22,7 @@ const height = 45 - margin.top - margin.bottom;
 const mapStateToProps = state => {
   const { entities, filterType } = state;
   const { entityType } = entities;
-  const { ranked, response } = allEntityData(state);
+  const { ranked, response } = entityDataSelector(state);
   let nested = [];
 
   // only nest data if we have it after the async request

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { createResponsiveStateReducer } from 'redux-responsive';
+import { createSelector } from 'reselect';
 
 import mapFilterTypesToProps, { filterValuesByDateRange } from '../common/utils';
 
@@ -35,28 +36,24 @@ const rootReducer = combineReducers({
   trendCompare,
 });
 
+const entityAllDataSelector = state => state.data;
+const entityTypeSelector = state => state.entities.entityType;
+
 /**
- * Selector function that returns response & nested data for a given geographic entity
+ * Memoized Selector function that returns response & nested data for a given geographic entity
  * @param {object} state: redux state / store
  * @returns {object} part of redux store.data for the current geographic entity
  */
-export const allEntityData = state => {
-  // eslint-disable-next-line
-  const { entities, data } = state;
-  const { entityType } = entities;
-
-  if (!data[entityType]) {
-    // no data has been cached for the current geography, hit the API to grab data
-    // the empty arrays will be diffed by the App component which will then call the
-    // appropriate action to request new data
-    return {
-      response: [],
-      ranked: [],
-    };
+export const entityDataSelector = createSelector(
+  entityAllDataSelector,
+  entityTypeSelector,
+  (allData, entityType) => {
+    if (!allData[entityType]) {
+      return { response: [], ranked: [] };
+    }
+    return allData[entityType];
   }
-
-  return data[entityType];
-};
+);
 
 /**
  * Returns values for primary and secondary entities filtered by both date range groups

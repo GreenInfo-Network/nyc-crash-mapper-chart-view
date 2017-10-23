@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
-import { allEntityData } from '../reducers';
+import { entityDataSelector } from '../reducers';
 import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';
@@ -104,7 +104,7 @@ class App extends Component {
 const mapStateToProps = state => {
   const { browser, entities, data, filterType, trendCompare } = state;
   const { isFetchingCharts, isFetchingRanked } = data;
-  const entityData = allEntityData(state);
+  const entityData = entityDataSelector(state);
 
   return {
     width: browser.width,
