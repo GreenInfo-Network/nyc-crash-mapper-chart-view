@@ -1,4 +1,4 @@
-// This module contains memoized selectors that return a computed part of the redux state
+// This module contains memoized selector functions that return a computed part of the redux state
 // refer to reselect docs for more info: https://github.com/reactjs/reselect
 import { createSelector } from 'reselect';
 
@@ -25,38 +25,57 @@ export const entityDataSelector = createSelector(
 const dateRangesSelector = (state, props) =>
   props.period === 'period1' ? state.dateRanges.period1 : state.dateRanges.period2;
 
-// returns the array of objects for a geographic entity
-const entityValuesSelector = (state, props) =>
-  props.entity === 'primary' ? state.entities.primary.values : state.entities.secondary.values;
-
-/**
-  * Memoized Selector that returns a geo entity's values filtered by start and end date for a given time period
-  * @param {object} state: redux state / store
-  * @param {object} props: react props passed to the component instance
-  * @returns {object} filtered version of store.entities.<entity>.values
-*/
-export const valuesByDateRangeSelector = createSelector(
-  entityValuesSelector,
-  dateRangesSelector,
-  (values, dates) => {
-    const { startDate, endDate } = dates;
-    return values.filter(d => +d.year_month >= +startDate && +d.year_month <= +endDate);
-  }
-);
-
 // returns the store.filterType
 const filterTypeSelector = state => state.filterType;
 
+// returns the array of objects for a primary entity
+const primaryEntityValuesSelector = state => state.entities.primary.values;
+// returns the array of objects for a secondary entity
+const secondaryEntityValuesSelector = state => state.entities.secondary.values;
+// returns array of objects for the reference entity
+const referenceEntityValuesSelector = state => {
+  const { reference } = state.entities;
+  if (reference === 'Citywide') {
+    return state.data.citywide.response;
+  }
+  return state.data.borough.response.filter(d => d.borough === reference);
+};
+
+const entityValuesSelector = entity => {
+  if (entity === 'reference') {
+    return referenceEntityValuesSelector;
+  }
+
+  if (entity === 'primary') {
+    return primaryEntityValuesSelector;
+  }
+
+  if (entity === 'secondary') {
+    return secondaryEntityValuesSelector;
+  }
+
+  return () => {};
+};
+
 /**
-  * Memoized Selector maps selected crash type filters to filter pre-filtered entity data values
-  * @param {object} state: redux state / store
-  * @param {object} props: react props passed to the component instance
-  * @returns {array}: filtered version of store.entities.<entity>.values
+  * Factory function that creates a Memoized Selector that returns a geo entity's values filtered
+    by start and end date for a given time period
+  * @param {string} entity: type of geographic entity, see accessor functions above
+  * @returns {func} Memoized Selector function
 */
-export const valuesFilteredByDateTypeSelector = createSelector(
-  filterTypeSelector,
-  valuesByDateRangeSelector,
-  (filterType, values) => {
+const valuesByDateRangeSelector = entity =>
+  createSelector(dateRangesSelector, entityValuesSelector(entity), (dates, values) => {
+    const { startDate, endDate } = dates;
+    return values.filter(d => +d.year_month >= +startDate && +d.year_month <= +endDate);
+  });
+
+/**
+  * Factory function that returns a Memoized Selector that filters an entity values by crash types and date range
+  * @param {string} entity: type of geographic entity to filter for
+  * @returns {function}: memoized selector
+*/
+const valuesFilteredByDateTypeSelector = entity =>
+  createSelector(filterTypeSelector, valuesByDateRangeSelector(entity), (filterType, values) => {
     // look up hash that maps each filterType value to a field name in the data
     const lookup = {
       injury: {
@@ -98,5 +117,14 @@ export const valuesFilteredByDateTypeSelector = createSelector(
 
       return acc;
     }, []);
-  }
-);
+  });
+
+/**
+  * Memoized Selectors that filters an entity values by crash types and date range
+  * @param {object} state: redux state / store
+  * @param {object} props: react props passed to the component instance
+  * @returns {array}: filtered version of store.entities.<entity>.values
+*/
+export const primaryValuesFilteredSelector = valuesFilteredByDateTypeSelector('primary');
+export const secondaryEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('secondary');
+export const referenceEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('reference');
