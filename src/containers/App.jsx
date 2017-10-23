@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
-import { entityDataSelector } from '../reducers';
+import { entityDataSelector } from '../common/reduxSelectors';
 import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';

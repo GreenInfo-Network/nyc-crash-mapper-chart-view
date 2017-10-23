@@ -11,7 +11,7 @@ import {
   deselectSecondaryEntity,
 } from '../actions';
 
-import { entityDataSelector } from '../reducers';
+import { entityDataSelector } from '../common/reduxSelectors';
 import * as pt from '../common/reactPropTypeDefs';
 
 // TO DO: move these into the SparkLineList class?
