@@ -44,6 +44,7 @@
     "redux-logger": "^3.0.6",
     "redux-responsive": "^4.3.2",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "single-line-string": "^0.0.2"
   },
   "devDependencies": {
