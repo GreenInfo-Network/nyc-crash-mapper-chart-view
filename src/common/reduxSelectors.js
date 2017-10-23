@@ -34,11 +34,17 @@ const primaryEntityValuesSelector = state => state.entities.primary.values;
 const secondaryEntityValuesSelector = state => state.entities.secondary.values;
 // returns array of objects for the reference entity
 const referenceEntityValuesSelector = state => {
-  const { reference } = state.entities;
-  if (reference === 'Citywide') {
+  const { entities } = state;
+  const { reference } = entities;
+  if (reference === 'citywide' && state.data.citywide.response) {
     return state.data.citywide.response;
   }
-  return state.data.borough.response.filter(d => d.borough === reference);
+
+  if (state.data.borough.response) {
+    return state.data.borough.response.filter(d => d.borough.toLowerCase() === reference);
+  }
+
+  return [];
 };
 
 const entityValuesSelector = entity => {
@@ -125,6 +131,6 @@ const valuesFilteredByDateTypeSelector = entity =>
   * @param {object} props: react props passed to the component instance
   * @returns {array}: filtered version of store.entities.<entity>.values
 */
-export const primaryValuesFilteredSelector = valuesFilteredByDateTypeSelector('primary');
+export const primaryEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('primary');
 export const secondaryEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('secondary');
 export const referenceEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('reference');
