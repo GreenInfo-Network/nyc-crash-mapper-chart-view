@@ -51,6 +51,7 @@ class DotGridWrapper extends Component {
     radius: PropTypes.number,
     strokeWidth: PropTypes.number,
     title: PropTypes.string,
+    setSubheadingHeights: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -91,6 +92,15 @@ class DotGridWrapper extends Component {
       this.setState({
         valuesGrouped: [],
       });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { valuesGrouped } = prevState;
+    const { period, entityType, setSubheadingHeights } = this.props;
+
+    if (!valuesGrouped.length && this.state.valuesGrouped.length) {
+      setSubheadingHeights(this.state.valuesGrouped, period, entityType);
     }
   }
 

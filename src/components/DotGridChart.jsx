@@ -56,7 +56,7 @@ class DotGridChart extends Component {
 
   renderGrids() {
     const { data, radius, strokeWidth, subheadHeights } = this.props;
-    if (!data.length) return null;
+    if (!data.length || !subheadHeights) return null;
     const colorScale = this.colorScale;
     const formatNumber = this.formatNumber;
     const { width } = this.getContainerSize();
