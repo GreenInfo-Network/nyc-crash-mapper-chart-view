@@ -28,6 +28,39 @@ export const dateRangesSelector = (state, props) =>
 // returns the store.filterType
 const filterTypeSelector = state => state.filterType;
 
+/*
+ * Memoized Selector that returns mapping to field columns based on active crash filter types
+*/
+export const filterTypeFieldsSelector = createSelector(filterTypeSelector, filterType => {
+  // look up hash that maps each filterType value to a field name in the data
+  const lookup = {
+    injury: {
+      cyclist: 'cyclist_injured',
+      motorist: 'motorist_injured',
+      pedestrian: 'pedestrian_injured',
+    },
+    fatality: {
+      cyclist: 'cyclist_killed',
+      motorist: 'motorist_killed',
+      pedestrian: 'pedestrian_killed',
+    },
+  };
+
+  // array to contain the desired field names from above inner properties
+  const fields = [];
+
+  // populate above with desired field names
+  Object.keys(filterType).forEach(type => {
+    Object.keys(filterType[type]).forEach(subtype => {
+      if (filterType[type][subtype]) {
+        fields.push(lookup[type][subtype]);
+      }
+    });
+  });
+
+  return fields;
+});
+
 // returns the array of objects for a primary entity
 const primaryEntityValuesSelector = state => state.entities.primary.values;
 // returns the array of objects for a secondary entity
@@ -81,35 +114,9 @@ const valuesByDateRangeSelector = entity =>
   * @returns {function}: memoized selector
 */
 const valuesFilteredByDateTypeSelector = entity =>
-  createSelector(filterTypeSelector, valuesByDateRangeSelector(entity), (filterType, values) => {
-    // look up hash that maps each filterType value to a field name in the data
-    const lookup = {
-      injury: {
-        cyclist: 'cyclist_injured',
-        motorist: 'motorist_injured',
-        pedestrian: 'pedestrian_injured',
-      },
-      fatality: {
-        cyclist: 'cyclist_killed',
-        motorist: 'motorist_killed',
-        pedestrian: 'pedestrian_killed',
-      },
-    };
-
-    // array to contain the desired field names from above
-    const fields = [];
-
-    // populate above with desired field names
-    Object.keys(filterType).forEach(type => {
-      Object.keys(filterType[type]).forEach(subtype => {
-        if (filterType[type][subtype]) {
-          fields.push(lookup[type][subtype]);
-        }
-      });
-    });
-
+  createSelector(valuesByDateRangeSelector(entity), filterTypeFieldsSelector, (values, fields) =>
     // return an array with computed total of each selected crash type
-    return values.reduce((acc, cur) => {
+    values.reduce((acc, cur) => {
       const o = { ...cur }; // need to keep "year_month" and "<entity_type>" properties
       o.count = 0;
 
@@ -122,8 +129,8 @@ const valuesFilteredByDateTypeSelector = entity =>
       acc.push(o);
 
       return acc;
-    }, []);
-  });
+    }, [])
+  );
 
 /**
   * Memoized Selectors that filters an entity values by crash types and date range
