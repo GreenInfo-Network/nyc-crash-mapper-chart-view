@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-import * as pt from '../common/reactPropTypeDefs';
+import * as pt from '../../common/reactPropTypeDefs';
 
 class DotGridChart extends Component {
   static propTypes = {

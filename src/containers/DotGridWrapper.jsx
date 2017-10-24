@@ -10,7 +10,7 @@ import {
   secondaryEntityValuesFilteredSelector,
 } from '../common/reduxSelectors';
 
-import DotGridChart from '../components/DotGridChart';
+import DotGridChart from '../components/DotGridCharts/DotGridChart';
 
 const mapStateToProps = (state, props) => {
   const { filterType } = state;

@@ -10,7 +10,7 @@ import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from '../components/LineCharts/LineChartsContainer';
-import DotGridChartsContainer from './DotGridChartsContainer';
+import DotGridChartsContainer from '../components/DotGridCharts/DotGridChartsContainer';
 import TimeLine from './TimeLine';
 import Legend from '../containers/Legend';
 
@@ -25,22 +25,28 @@ window.d3 = d3;
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
+    dateRanges: pt.dateRanges.isRequired,
     isFetchingCharts: PropTypes.bool.isRequired,
     isFetchingRanked: PropTypes.bool.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
     fetchRankData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
+    keyPrimary: pt.key,
+    keySecondary: pt.key,
     filterType: pt.filterType.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
     trendCompare: pt.trendCompare.isRequired,
+    width: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
     entityData: [],
     entitiesNested: [],
     entityType: '',
+    keyPrimary: '',
+    keySecondary: '',
   };
 
   componentDidMount() {
@@ -76,7 +82,15 @@ class App extends Component {
   }
 
   render() {
-    const { entityType, isFetchingRanked, trendCompare } = this.props;
+    const {
+      dateRanges,
+      entityType,
+      isFetchingRanked,
+      trendCompare,
+      width,
+      keyPrimary,
+      keySecondary,
+    } = this.props;
     const { trend } = trendCompare;
 
     return (
@@ -91,7 +105,13 @@ class App extends Component {
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
-          {trend ? <LineChartsContainer /> : <DotGridChartsContainer />}
+          {trend ? (
+            <LineChartsContainer />
+          ) : (
+            <DotGridChartsContainer
+              {...{ dateRanges, entityType, keyPrimary, keySecondary, width }}
+            />
+          )}
         </div>
         <div className="grid-area legend">
           <Legend />
@@ -102,17 +122,20 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, entities, data, filterType, trendCompare } = state;
+  const { browser, dateRanges, entities, data, filterType, trendCompare } = state;
   const { isFetchingCharts, isFetchingRanked } = data;
   const entityData = entityDataSelector(state);
 
   return {
     width: browser.width,
     height: browser.height,
+    dateRanges,
     isFetchingCharts,
     isFetchingRanked,
     entityData: entityData.response,
     entityType: entities.entityType,
+    keyPrimary: entities.primary.key,
+    keySecondary: entities.secondary.key,
     filterType,
     trendCompare,
   };

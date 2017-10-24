@@ -1,23 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import * as d3 from 'd3';
 
-import * as pt from '../common/reactPropTypeDefs';
-import DotGridWrapper from './DotGridWrapper';
-
-const mapStateToProps = state => {
-  const { browser, dateRanges, entities } = state;
-  const { entityType } = entities;
-
-  return {
-    dateRanges,
-    entityType,
-    keyPrimary: entities.primary.key,
-    keySecondary: entities.secondary.key,
-    width: browser.width,
-  };
-};
+import * as pt from '../../common/reactPropTypeDefs';
+import DotGridWrapper from '../../containers/DotGridWrapper';
 
 /**
   * Class that houses the Dot Grid Wrapper components.
@@ -184,4 +170,4 @@ class DotGridChartsContainer extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(DotGridChartsContainer);
+export default DotGridChartsContainer;

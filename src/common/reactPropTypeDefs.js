@@ -50,6 +50,12 @@ export const dateRange = PropTypes.shape({
   startDate: date,
 });
 
+// corresponds to store.dateRanges; both date ranges (periods 1 & 2)
+export const dateRanges = PropTypes.shape({
+  period1: dateRange.isRequired,
+  period2: dateRange.isRequired,
+});
+
 // booleans representing whether compare (dot chart) or trend (line chart) is selected
 export const trendCompare = PropTypes.shape({
   trend: PropTypes.bool,
