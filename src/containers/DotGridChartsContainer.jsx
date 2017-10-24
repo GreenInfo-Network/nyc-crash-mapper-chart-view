@@ -25,10 +25,7 @@ const mapStateToProps = state => {
 
 class DotGridChartsContainer extends Component {
   static propTypes = {
-    dateRanges: PropTypes.shape({
-      period1: pt.dateRange,
-      period2: pt.dateRange,
-    }).isRequired,
+    dateRanges: pt.dateRange.isRequired,
     entityType: PropTypes.string.isRequired,
     filterType: pt.filterType.isRequired,
     valuesDateRange1: pt.valuesByDateRange.isRequired,
