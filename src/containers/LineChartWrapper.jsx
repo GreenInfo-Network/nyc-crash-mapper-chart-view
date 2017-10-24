@@ -10,7 +10,8 @@ import {
   referenceEntityValuesFilteredSelector,
 } from '../common/reduxSelectors';
 
-import LineChart from '../components/LineChart';
+import LineChart from '../components/LineCharts/LineChart';
+import LineChartTitle from '../components/LineCharts/LineChartTitle';
 
 const mapStateToProps = (state, props) => {
   const { browser, entities } = state;
@@ -101,6 +102,7 @@ class LineChartWrapper extends Component {
     const {
       appHeight,
       appWidth,
+      children,
       primaryValues,
       secondaryValues,
       referenceValues,
@@ -115,7 +117,9 @@ class LineChartWrapper extends Component {
 
     return (
       <div className="LineChartWrapper">
-        {this.props.children}
+        <LineChartTitle title={'Period One'} startDate={startDate} endDate={endDate}>
+          {children}
+        </LineChartTitle>
         <LineChart
           appHeight={appHeight}
           appWidth={appWidth}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import * as pt from '../common/reactPropTypeDefs';
+import * as pt from '../../common/reactPropTypeDefs';
 
 const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 

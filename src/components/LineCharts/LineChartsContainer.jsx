@@ -1,23 +1,15 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { max } from 'd3';
 
-import * as pt from '../common/reactPropTypeDefs';
-
-import LineChartWrapper from './LineChartWrapper';
-import LineChartTitle from '../components/LineChartTitle';
-import ReferenceEntitySelect from './ReferenceEntitySelect';
+import LineChartWrapper from '../../containers/LineChartWrapper';
+import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
 
 /**
- * Class that is a connected component which houses the the Line Charts
- * Uses internal state to track entity values & compute max y so that both charts share the same y domains
+ * Class that houses the the Line Charts
+ * Uses internal state to track entity values & compute max y values for primary & secondary entities
+   and reference entity, so that both charts share the same y domains
  */
 class LineChartsContainer extends Component {
-  static propTypes = {
-    dateRangeTwo: pt.dateRange.isRequired,
-    dateRangeOne: pt.dateRange.isRequired,
-  };
-
   constructor() {
     super();
     this.state = {
@@ -39,7 +31,6 @@ class LineChartsContainer extends Component {
 
   render() {
     const { period1Y, period2Y, period1Y2, period2Y2 } = this.state;
-    const { dateRangeOne, dateRangeTwo } = this.props;
 
     const style = {
       height: '100%',
@@ -62,39 +53,17 @@ class LineChartsContainer extends Component {
           y2Max={citywideMax}
           setMaxY={this.setPeriodYValue}
         >
-          <LineChartTitle
-            title={'Period One'}
-            startDate={dateRangeOne.startDate}
-            endDate={dateRangeOne.endDate}
-          >
-            <ReferenceEntitySelect />
-          </LineChartTitle>
+          <ReferenceEntitySelect />
         </LineChartWrapper>
         <LineChartWrapper
           period="period2"
           yMax={entitiesMax}
           y2Max={citywideMax}
           setMaxY={this.setPeriodYValue}
-        >
-          <LineChartTitle
-            title={'Period One'}
-            startDate={dateRangeTwo.startDate}
-            endDate={dateRangeTwo.endDate}
-          />
-        </LineChartWrapper>
+        />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
-  const { dateRanges } = state;
-  const { period1, period2 } = dateRanges;
-
-  return {
-    dateRangeOne: period1,
-    dateRangeTwo: period2,
-  };
-};
-
-export default connect(mapStateToProps, null)(LineChartsContainer);
+export default LineChartsContainer;

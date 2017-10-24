@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as pt from '../common/reactPropTypeDefs';
-import { formatDate } from '../common/d3Utils';
+import * as pt from '../../common/reactPropTypeDefs';
+import { formatDate } from '../../common/d3Utils';
 
 const LineChartTitle = props => {
   const { title, startDate, endDate, children } = props;

@@ -9,7 +9,7 @@ import { entityDataSelector } from '../common/reduxSelectors';
 import * as pt from '../common/reactPropTypeDefs';
 
 import Sidebar from '../components/Sidebar/';
-import LineChartsContainer from './LineChartsContainer';
+import LineChartsContainer from '../components/LineCharts/LineChartsContainer';
 import DotGridChartsContainer from './DotGridChartsContainer';
 import TimeLine from './TimeLine';
 import Legend from '../containers/Legend';
