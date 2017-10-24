@@ -11,7 +11,7 @@ export default () => {
 
   function renderLegendRow(personType, harmType) {
     return personType.map((person, i) => (
-      <g transform={`translate(${i * offset}, 0)`}>
+      <g key={`${person}-${harmType}`} transform={`translate(${i * offset}, 0)`}>
         <circle
           cx={0}
           cy={0}
