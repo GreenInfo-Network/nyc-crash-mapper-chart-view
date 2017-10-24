@@ -6,7 +6,7 @@ import isEqual from 'lodash.isequal';
 
 import * as pt from '../common/reactPropTypeDefs';
 import { filterEntitiesValues } from '../reducers';
-import DotGridChart from '../components/DotGridChart';
+import DotGridWrapper from './DotGridWrapper';
 
 const mapStateToProps = state => {
   const { browser, filterType, dateRanges, entities } = state;
@@ -273,9 +273,8 @@ class DotGridChartsContainer extends Component {
   }
 
   render() {
-    const { dateRanges, valuesDateRange1, entityType } = this.props;
-    const { period1, period2 } = dateRanges;
-    const { primary, secondary } = this.state;
+    const { valuesDateRange1, entityType } = this.props;
+    const { primary } = this.state;
     const entityLabel = entityType.replace(/_/, ' ');
 
     return (
@@ -289,46 +288,38 @@ class DotGridChartsContainer extends Component {
           <h5>{`${entityLabel} ${valuesDateRange1.primary.key}`}</h5>
         )}
         <div className="dot-grid-entity-one">
-          <DotGridChart
-            data={primary.period2}
+          <DotGridWrapper
+            entityType={'primary'}
+            period={'period2'}
             subheadHeights={primary.subheadHeights}
-            startDate={period2.startDate}
-            endDate={period2.endDate}
-            radius={this.circleRadius}
-            strokeWidth={2}
             title={'Period Two'}
-          />
-          <DotGridChart
-            data={primary.period1}
-            subheadHeights={primary.subheadHeights}
-            startDate={period1.startDate}
-            endDate={period1.endDate}
             radius={this.circleRadius}
-            strokeWidth={2}
+          />
+          <DotGridWrapper
+            entityType={'primary'}
+            period={'period1'}
+            subheadHeights={primary.subheadHeights}
             title={'Period One'}
+            radius={this.circleRadius}
           />
         </div>
         {valuesDateRange1.secondary.key && (
           <h5>{`${entityLabel} ${valuesDateRange1.secondary.key}`}</h5>
         )}
         <div className="dot-grid-entity-two">
-          <DotGridChart
-            data={secondary.period2}
-            subheadHeights={secondary.subheadHeights}
-            startDate={period2.startDate}
-            endDate={period2.endDate}
-            radius={this.circleRadius}
-            strokeWidth={2}
+          <DotGridWrapper
+            entityType={'secondary'}
+            period={'period2'}
+            subheadHeights={primary.subheadHeights}
             title={'Period Two'}
-          />
-          <DotGridChart
-            data={secondary.period1}
-            subheadHeights={secondary.subheadHeights}
-            startDate={period1.startDate}
-            endDate={period1.endDate}
             radius={this.circleRadius}
-            strokeWidth={2}
+          />
+          <DotGridWrapper
+            entityType={'secondary'}
+            period={'period1'}
+            subheadHeights={primary.subheadHeights}
             title={'Period One'}
+            radius={this.circleRadius}
           />
         </div>
         {!valuesDateRange1.primary.key && !valuesDateRange1.secondary.key ? (

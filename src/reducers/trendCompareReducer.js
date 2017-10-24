@@ -1,8 +1,8 @@
 import { TREND_COMPARE_TOGGLE } from '../common/actionTypes';
 
 const defaultState = {
-  trend: true,
-  compare: false,
+  trend: false,
+  compare: true,
 };
 
 export default (state = defaultState, action) => {

@@ -72,7 +72,7 @@ class DotGridChart extends Component {
         <div className="person-type-grids" key={personType}>
           {killed.length > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
           {injured.length > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
-          <svg width={svgWidth} height={subheadHeights[personType]}>
+          <svg width={svgWidth} height={subheadHeights[personType] + 10}>
             <g transform={`translate(${translateFactor}, ${translateFactor})`}>
               {grid.map((d, i) => (
                 <circle
