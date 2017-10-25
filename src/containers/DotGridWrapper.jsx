@@ -105,7 +105,7 @@ class DotGridWrapper extends Component {
   }
 
   getContainerSize() {
-    const cWidth = this.chartContainer.clientWidth - 40 - 10; // account for padding & scrollbar
+    const cWidth = this.chartContainer.clientWidth - 10; // account for padding
     const cHeight = this.chartContainer.clientHeight - 40; // account for padding
 
     return {
@@ -178,6 +178,7 @@ class DotGridWrapper extends Component {
 
       // the fixed height of this group of circles
       group.gridHeight = rows * radius * 3;
+      group.gridWidth = chartWidth;
       // x, y positions for each circle
       group.grid = d3.range(totalHarmed).map(d => ({
         x: (d % columns) * radius * 3,

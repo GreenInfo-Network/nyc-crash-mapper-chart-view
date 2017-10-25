@@ -29,29 +29,15 @@ class DotGridChart extends Component {
 
   constructor(props) {
     super(props);
-    this.container = null; // ref to chart container
     this.svg = null; // ref to svg
-
     // chart margins
     this.margin = { top: 10, bottom: 25, left: 0, right: 10 };
     // color scale
     this.colorScale = d3
       .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
       .domain(['pedestrian', 'cyclist', 'motorist']);
-
     this.formatTime = d3.timeFormat('%b %Y');
     this.formatNumber = d3.format(',');
-  }
-
-  getContainerSize() {
-    // returns the width and height for the svg element based on the parent div's width height, which is set via CSS
-    const cWidth = this.container.clientWidth;
-    const cHeight = this.container.clientHeight;
-
-    return {
-      height: cHeight,
-      width: cWidth,
-    };
   }
 
   renderGrids() {
@@ -59,12 +45,10 @@ class DotGridChart extends Component {
     if (!data.length || !subheadHeights) return null;
     const colorScale = this.colorScale;
     const formatNumber = this.formatNumber;
-    const { width } = this.getContainerSize();
-    const svgWidth = width - 10; // account for padding
     const translateFactor = radius + strokeWidth;
 
     return data.map(datum => {
-      const { grid, key, killed, injured, killedTotal, injuredTotal } = datum;
+      const { grid, gridWidth, key, killed, injured, killedTotal, injuredTotal } = datum;
       const personType = key;
 
       // TO DO: replace SVG with Canvas? Boroughs take a while to render...
@@ -72,7 +56,7 @@ class DotGridChart extends Component {
         <div className="person-type-grids" key={personType}>
           {killed.length > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
           {injured.length > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
-          <svg width={svgWidth} height={subheadHeights[personType] + 10}>
+          <svg width={gridWidth} height={subheadHeights[personType]}>
             <g transform={`translate(${translateFactor}, ${translateFactor})`}>
               {grid.map((d, i) => (
                 <circle
@@ -97,12 +81,7 @@ class DotGridChart extends Component {
     const { startDate, endDate, title } = this.props;
 
     return (
-      <div
-        className="DotGridChart"
-        ref={_ => {
-          this.container = _;
-        }}
-      >
+      <div className="DotGridChart">
         {data.length > 0 && (
           <div className="dot-grid-title">
             <h6 className="period">{title}</h6>
