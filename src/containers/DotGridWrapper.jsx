@@ -13,7 +13,7 @@ import {
 import DotGridChart from '../components/DotGridCharts/DotGridChart';
 
 const mapStateToProps = (state, props) => {
-  const { filterType } = state;
+  const { browser, filterType } = state;
   const { entityType, period } = props;
   const dateRange = dateRangesSelector(state, props);
   const values =
@@ -22,6 +22,7 @@ const mapStateToProps = (state, props) => {
       : secondaryEntityValuesFilteredSelector(state, props);
 
   return {
+    appWidth: browser.width,
     filterType,
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
@@ -37,6 +38,7 @@ const mapStateToProps = (state, props) => {
 */
 class DotGridWrapper extends Component {
   static propTypes = {
+    appWidth: PropTypes.number.isRequired,
     entityType: pt.key.isRequired,
     filterType: pt.filterType.isRequired,
     period: PropTypes.string.isRequired,
@@ -51,7 +53,7 @@ class DotGridWrapper extends Component {
     radius: PropTypes.number,
     strokeWidth: PropTypes.number,
     title: PropTypes.string,
-    setSubheadingHeights: PropTypes.func.isRequired,
+    setEntityPeriodValues: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -80,11 +82,20 @@ class DotGridWrapper extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { values, filterType } = nextProps;
+    const { appWidth, values, filterType, startDate, endDate } = nextProps;
 
-    // if we receive filtered values, group them so the chart can be drawn
-    if (values.length && !this.props.values.length) {
-      this.groupEntityData(filterType, values);
+    // if we receive filtered values
+    if (values.length) {
+      // and we didn't have filtered values before
+      // or either start or end date changed
+      if (
+        !this.props.values.length ||
+        startDate !== this.props.startDate ||
+        endDate !== this.props.endDate
+      ) {
+        // group them so the chart can be drawn
+        this.groupEntityData(filterType, values);
+      }
     }
 
     // if an entity is deselected, clear the component state
@@ -93,14 +104,24 @@ class DotGridWrapper extends Component {
         valuesGrouped: [],
       });
     }
+
+    // if app was resized, recalculate grid
+    if (values.length && appWidth !== this.props.appWidth) {
+      this.groupEntityData(filterType, values);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { valuesGrouped } = prevState;
-    const { period, entityType, setSubheadingHeights } = this.props;
+    const { period, entityType, setEntityPeriodValues } = this.props;
 
-    if (!valuesGrouped.length && this.state.valuesGrouped.length) {
-      setSubheadingHeights(this.state.valuesGrouped, period, entityType);
+    // send the grouped data to the parent component so it can calculate subheading heights between adjacent charts
+    if (
+      (!valuesGrouped.length && this.state.valuesGrouped.length) ||
+      (this.state.valuesGrouped.length &&
+        valuesGrouped[0].gridWidth !== this.state.valuesGrouped[0].gridWidth)
+    ) {
+      setEntityPeriodValues(this.state.valuesGrouped, period, entityType);
     }
   }
 
@@ -115,7 +136,9 @@ class DotGridWrapper extends Component {
   }
 
   groupEntityData(filterType, values) {
-    const { radius } = this.props;
+    // groups the data by ped, cyclist, motorist (if either injury or fatality is selected for any)
+    // creates the grid used by the chart to draw & position svg circle elements
+    const { radius, strokeWidth } = this.props;
     const { injury, fatality } = filterType;
     const width = this.getContainerSize().width;
     const chartWidth = width; // minus padding
@@ -177,7 +200,7 @@ class DotGridWrapper extends Component {
       group.totalHarmed = totalHarmed;
 
       // the fixed height of this group of circles
-      group.gridHeight = rows * radius * 3;
+      group.gridHeight = rows * radius * 3 + (radius + strokeWidth) * 2;
       group.gridWidth = chartWidth;
       // x, y positions for each circle
       group.grid = d3.range(totalHarmed).map(d => ({

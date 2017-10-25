@@ -49,8 +49,6 @@ class ReferenceEntitySelect extends Component {
   }
 
   handleChange(event) {
-    // eslint-disable-next-line
-    console.log(event.target.value);
     this.props.setReferenceEntity(event.target.value);
   }
 

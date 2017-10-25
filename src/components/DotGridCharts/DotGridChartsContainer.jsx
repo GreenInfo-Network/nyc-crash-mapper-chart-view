@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import isEqual from 'lodash/isEqual';
 
 import * as pt from '../../common/reactPropTypeDefs';
 import DotGridWrapper from '../../containers/DotGridWrapper';
@@ -32,7 +33,7 @@ class DotGridChartsContainer extends Component {
     // Internal Component state for storing:
     // - the fixed y position of each subheading (ped, cyclist, motorist – depends on what is selected in crash filters)
     // - the grouped/nested data for each entity's time period
-    this.state = {
+    this.defaultState = {
       primary: {
         subheadHeights: null,
         period1: [],
@@ -45,22 +46,67 @@ class DotGridChartsContainer extends Component {
       },
     };
 
-    this.circleRadius = 5; // the size in pixels of each circle's radius
+    this.state = { ...this.defaultState };
+
+    this.circleRadius = 5; // the size in pixels of each svg circle radius
+    this.strokeWidth = 2; // width of circle svg element stroke
     this.chartsContainer = null; // to store react ref to component
     this.setEntityPeriodValues = this.setEntityPeriodValues.bind(this);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    const { entityType, dateRanges } = this.props;
     const { primary, secondary } = this.state;
 
-    // if we have values for both primary time periods, we can now compute the sub heading heights for each person type
-    if (primary.period1.length && primary.period2.length && !primary.subheadHeights) {
+    // if we have values for both primary time periods
+    if (primary.period1.length && primary.period2.length) {
+      // and don't have subhead heights computed
+      // or periods 1 or 2 changed
+      if (
+        !primary.subheadHeights ||
+        !isEqual(dateRanges.period1, prevProps.dateRanges.period1) ||
+        !isEqual(dateRanges.period2, prevProps.dateRanges.period2)
+      ) {
+        // compute subheading heights for each person type
+        this.setSubheadingHeights('primary');
+      }
+    }
+
+    // same as above but for secondary entity
+    if (secondary.period1.length && secondary.period2.length) {
+      if (
+        !secondary.subheadHeights ||
+        !isEqual(dateRanges.period1, prevProps.dateRanges.period1) ||
+        !isEqual(dateRanges.period2, prevProps.dateRanges.period2)
+      ) {
+        this.setSubheadingHeights('secondary');
+      }
+    }
+
+    // this is a really annoying way of telling if the sub heading heights should be recalculated
+    // because the width of the app changed (from a browser resize)...
+    if (
+      primary.period1.length &&
+      primary.period2.length &&
+      prevState.primary.period1.length &&
+      primary.period1[0].gridWidth !== prevState.primary.period1[0].gridWidth
+    ) {
       this.setSubheadingHeights('primary');
     }
 
-    // if we have values for both secondary time periods, we can now compute the sub heading heights for each person type
-    if (secondary.period1.length && secondary.period2.length && !secondary.subheadHeights) {
+    // ditto the above for secondary...
+    if (
+      secondary.period1.length &&
+      secondary.period2.length &&
+      prevState.secondary.period1.length &&
+      secondary.period1[0].gridWidth !== prevState.secondary.period1[0].gridWidth
+    ) {
       this.setSubheadingHeights('secondary');
+    }
+
+    // if the geographic entity type was changed make sure to reset component level state
+    if (entityType !== prevProps.entityType) {
+      this.resetSubheadingHeights();
     }
   }
 
@@ -97,7 +143,7 @@ class DotGridChartsContainer extends Component {
       const h2 = period2[i].gridHeight;
       const height = h1 > h2 ? h1 : h2;
       const personType = period1[i].key; // same for both periods
-      yPositions[personType] = height + 20;
+      yPositions[personType] = height;
     });
 
     // store y positions for subheadings (ped, cyclist, motorist)
@@ -110,6 +156,10 @@ class DotGridChartsContainer extends Component {
         subheadHeights: yPositions,
       },
     }));
+  }
+
+  resetSubheadingHeights() {
+    this.setState(this.defaultState);
   }
 
   render() {
@@ -132,7 +182,8 @@ class DotGridChartsContainer extends Component {
             subheadHeights={primary.subheadHeights}
             title={'Period Two'}
             radius={this.circleRadius}
-            setSubheadingHeights={this.setEntityPeriodValues}
+            strokeWidth={this.strokeWidth}
+            setEntityPeriodValues={this.setEntityPeriodValues}
           />
           <DotGridWrapper
             entityType={'primary'}
@@ -140,7 +191,8 @@ class DotGridChartsContainer extends Component {
             subheadHeights={primary.subheadHeights}
             title={'Period One'}
             radius={this.circleRadius}
-            setSubheadingHeights={this.setEntityPeriodValues}
+            strokeWidth={this.strokeWidth}
+            setEntityPeriodValues={this.setEntityPeriodValues}
           />
         </div>
         {keySecondary && <h5>{`${entityLabel} ${keySecondary}`}</h5>}
@@ -151,7 +203,8 @@ class DotGridChartsContainer extends Component {
             subheadHeights={secondary.subheadHeights}
             title={'Period Two'}
             radius={this.circleRadius}
-            setSubheadingHeights={this.setEntityPeriodValues}
+            strokeWidth={this.strokeWidth}
+            setEntityPeriodValues={this.setEntityPeriodValues}
           />
           <DotGridWrapper
             entityType={'secondary'}
@@ -159,7 +212,8 @@ class DotGridChartsContainer extends Component {
             subheadHeights={secondary.subheadHeights}
             title={'Period One'}
             radius={this.circleRadius}
-            setSubheadingHeights={this.setEntityPeriodValues}
+            strokeWidth={this.strokeWidth}
+            setEntityPeriodValues={this.setEntityPeriodValues}
           />
         </div>
         {!keyPrimary && !keySecondary ? (
