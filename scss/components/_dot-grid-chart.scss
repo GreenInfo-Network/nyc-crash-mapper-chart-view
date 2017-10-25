@@ -1,16 +1,6 @@
 .DotGridChart {
   width: 100%;
   height: 100%;
-  display: inline-block;
-  vertical-align: top;
-
-  &:first-child {
-    padding-right: 10px;
-  }
-
-  &:last-child {
-    padding-left: 10px;
-  }
 
   h6 {
     margin: 0;

@@ -3,4 +3,11 @@
   height: auto;
   display: inline-block;
   vertical-align: top;
+  padding-right: 0;
+  padding-left: 10px;
+
+  &:first-child {
+    padding-right: 10px;
+    padding-left: 0;
+  }
 }
