@@ -1,99 +1,58 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-import * as pt from '../../common/reactPropTypeDefs';
+const DotGridChart = props => {
+  const { personType, radius, strokeWidth, data } = props;
 
-class DotGridChart extends Component {
-  static propTypes = {
-    data: PropTypes.arrayOf(PropTypes.object),
-    subheadHeights: PropTypes.shape({
-      cyclist: PropTypes.number,
-      motorist: PropTypes.number,
-      pedestrian: PropTypes.number,
-    }),
-    startDate: pt.date.isRequired,
-    endDate: pt.date.isRequired,
-    radius: PropTypes.number,
-    strokeWidth: PropTypes.number,
-    title: PropTypes.string,
-  };
+  if (!data || !data.grid) return null;
 
-  static defaultProps = {
-    data: [],
-    subheadHeights: {},
-    radius: 3,
-    strokeWidth: 1,
-    title: '',
-  };
+  const { grid, gridWidth, gridHeight, killedTotal, injuredTotal } = data;
 
-  constructor(props) {
-    super(props);
-    this.svg = null; // ref to svg
-    // chart margins
-    this.margin = { top: 10, bottom: 25, left: 0, right: 10 };
-    // color scale
-    this.colorScale = d3
-      .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
-      .domain(['pedestrian', 'cyclist', 'motorist']);
-    this.formatTime = d3.timeFormat('%b %Y');
-    this.formatNumber = d3.format(',');
-  }
+  // number formatter
+  const formatNumber = d3.format(',');
+  // color scale
+  const colorScale = d3
+    .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
+    .domain(['pedestrian', 'cyclist', 'motorist']);
+  // offset of SVG group element
+  const translateFactor = radius + strokeWidth;
 
-  renderGrids() {
-    const { data, radius, strokeWidth, subheadHeights } = this.props;
-    if (!data.length || !subheadHeights) return null;
-    const colorScale = this.colorScale;
-    const formatNumber = this.formatNumber;
-    const translateFactor = radius + strokeWidth;
+  // TO DO: replace SVG with Canvas? Boroughs take a while to render...
+  return (
+    <div className="DotGridChart">
+      {killedTotal > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
+      {injuredTotal > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
+      <svg width={gridWidth} height={gridHeight + 10}>
+        <g transform={`translate(${translateFactor}, ${translateFactor})`}>
+          {grid.map((d, i) => (
+            <circle
+              key={i}
+              cx={d.x}
+              cy={d.y}
+              r={radius}
+              stroke={colorScale(personType)}
+              strokeWidth={strokeWidth}
+              fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
+            />
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
+};
 
-    return data.map(datum => {
-      const { grid, gridWidth, key, killed, injured, killedTotal, injuredTotal } = datum;
-      const personType = key;
+DotGridChart.propTypes = {
+  personType: PropTypes.string.isRequired,
+  radius: PropTypes.number,
+  strokeWidth: PropTypes.number,
+  data: PropTypes.shape({}),
+};
 
-      // TO DO: replace SVG with Canvas? Boroughs take a while to render...
-      return (
-        <div className="person-type-grids" key={personType}>
-          {killed.length > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
-          {injured.length > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
-          <svg width={gridWidth} height={subheadHeights[personType] + 10}>
-            <g transform={`translate(${translateFactor}, ${translateFactor})`}>
-              {grid.map((d, i) => (
-                <circle
-                  key={i}
-                  cx={d.x}
-                  cy={d.y}
-                  r={radius}
-                  stroke={colorScale(personType)}
-                  strokeWidth={strokeWidth}
-                  fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
-                />
-              ))}
-            </g>
-          </svg>
-        </div>
-      );
-    });
-  }
-
-  render() {
-    const { data } = this.props;
-    const { startDate, endDate, title } = this.props;
-
-    return (
-      <div className="DotGridChart">
-        {data.length > 0 && (
-          <div className="dot-grid-title">
-            <h6 className="period">{title}</h6>
-            <h6 className="date-range">
-              {`${this.formatTime(startDate)} – ${this.formatTime(endDate)}`}
-            </h6>
-          </div>
-        )}
-        {this.renderGrids()}
-      </div>
-    );
-  }
-}
+DotGridChart.defaultProps = {
+  radius: 5,
+  strokeWidth: 2,
+  data: {},
+};
 
 export default DotGridChart;

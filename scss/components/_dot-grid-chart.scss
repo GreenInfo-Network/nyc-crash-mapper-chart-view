@@ -6,12 +6,6 @@
     margin: 0;
     padding: 0;
     text-transform: capitalize;
-
-    &.period,
-    &.date-range {
-      text-transform: uppercase;
-      font-weight: bold;
-    }
   }
 
   svg {
