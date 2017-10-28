@@ -1,0 +1,21 @@
+.DotGridTitle {
+  h6 {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .date-ranges {
+    padding: 0 20px;
+
+    div {
+      width: 50%;
+      display: inline-block;
+
+      &:last-child {
+        padding-left: 10px;
+      }
+    }
+  }
+}
