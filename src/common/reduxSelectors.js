@@ -117,17 +117,21 @@ const valuesFilteredByDateTypeSelector = entity =>
   createSelector(valuesByDateRangeSelector(entity), filterTypeFieldsSelector, (values, fields) =>
     // return an array with computed total of each selected crash type
     values.reduce((acc, cur) => {
-      const o = { ...cur }; // need to keep "year_month" and "<entity_type>" properties
+      const { year_month } = cur; // need to keep year_month for line charts, or do we?
+      const o = {};
       o.count = 0;
+      o.year_month = year_month;
 
-      Object.keys(cur).forEach(key => {
-        if (fields.indexOf(key) !== -1) {
+      // sum the total of each selected crash type
+      // keep only the selected crash types
+      Object.keys(cur)
+        .filter(key => fields.includes(key))
+        .forEach(key => {
           o.count += cur[key];
-        }
-      });
+          o[key] = cur[key];
+        });
 
       acc.push(o);
-
       return acc;
     }, [])
   );
