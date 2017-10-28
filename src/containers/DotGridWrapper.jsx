@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import isEqual from 'lodash/isEqual';
 
 import * as pt from '../common/reactPropTypeDefs';
 import {
@@ -14,7 +15,7 @@ import DotGridChart from '../components/DotGridCharts/DotGridChart';
 
 const mapStateToProps = (state, props) => {
   const { browser, filterType } = state;
-  const { entityType, period } = props;
+  const { entityType, period, personType } = props;
   const dateRange = dateRangesSelector(state, props);
   const values =
     entityType === 'primary'
@@ -27,6 +28,7 @@ const mapStateToProps = (state, props) => {
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
     period,
+    personType,
     entityType,
     values,
   };
@@ -53,7 +55,7 @@ class DotGridWrapper extends Component {
     radius: PropTypes.number,
     strokeWidth: PropTypes.number,
     title: PropTypes.string,
-    setEntityPeriodValues: PropTypes.func.isRequired,
+    personType: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -67,7 +69,7 @@ class DotGridWrapper extends Component {
   constructor() {
     super();
     this.state = {
-      valuesGrouped: [],
+      valuesTransformed: {},
     };
     this.chartContainer = null;
   }
@@ -88,10 +90,13 @@ class DotGridWrapper extends Component {
     if (values.length) {
       // and we didn't have filtered values before
       // or either start or end date changed
+      // or crash filter types changed
       if (
         !this.props.values.length ||
         startDate !== this.props.startDate ||
-        endDate !== this.props.endDate
+        endDate !== this.props.endDate ||
+        !isEqual(filterType, this.props.filterType) ||
+        appWidth !== this.props.appWidth
       ) {
         // group them so the chart can be drawn
         this.groupEntityData(filterType, values);
@@ -101,27 +106,8 @@ class DotGridWrapper extends Component {
     // if an entity is deselected, clear the component state
     if (!values.length && this.props.values.length) {
       this.setState({
-        valuesGrouped: [],
+        valuesTransformed: {},
       });
-    }
-
-    // if app was resized, recalculate grid
-    if (values.length && appWidth !== this.props.appWidth) {
-      this.groupEntityData(filterType, values);
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { valuesGrouped } = prevState;
-    const { period, entityType, setEntityPeriodValues } = this.props;
-
-    // send the grouped data to the parent component so it can calculate subheading heights between adjacent charts
-    if (
-      (!valuesGrouped.length && this.state.valuesGrouped.length) ||
-      (this.state.valuesGrouped.length &&
-        valuesGrouped[0].gridWidth !== this.state.valuesGrouped[0].gridWidth)
-    ) {
-      setEntityPeriodValues(this.state.valuesGrouped, period, entityType);
     }
   }
 
@@ -136,87 +122,79 @@ class DotGridWrapper extends Component {
   }
 
   groupEntityData(filterType, values) {
-    // groups the data by ped, cyclist, motorist (if either injury or fatality is selected for any)
     // creates the grid used by the chart to draw & position svg circle elements
-    const { radius, strokeWidth } = this.props;
-    const { injury, fatality } = filterType;
+    const { radius, strokeWidth, personType } = this.props;
     const width = this.getContainerSize().width;
-    const chartWidth = width; // minus padding
+    const chartWidth = width;
+    const personInjuredStr = `${personType}_injured`; // map person type to field name injured
+    const personKilledStr = `${personType}_killed`; // map person type to field name killed
 
-    // group the data by crash type
-    const grouped = [];
+    // allowed keys in values object
+    const allowed = [personInjuredStr, personKilledStr];
 
-    Object.keys(fatality).forEach(type => {
-      if (fatality[type]) {
-        grouped.push({
-          personType: type,
-          harmType: 'fatality',
-          total: d3.sum(values, d => d[`${type}_killed`]),
-        });
+    // make sure there will be data before transforming it
+    const test = Object.keys(values[0]).filter(key => allowed.includes(key));
+
+    if (!test.length) {
+      this.setState({
+        valuesTransformed: {},
+      });
+    } else {
+      // filter data by person type (e.g. 'pedestrian' or 'motorist' or 'cyclist')
+      // but if no injury or fatality was selected for one of the above, this will be an array of empty objects
+      const filtered = values.map(item =>
+        Object.keys(item)
+          .filter(key => allowed.includes(key))
+          .reduce((obj, key) => {
+            obj[key] = item[key];
+            return obj;
+          }, {})
+      );
+
+      // total up injuries and fatalities if they were included in crash type filters
+      const injuredTotal = test.includes(personInjuredStr)
+        ? d3.sum(filtered, d => d[personInjuredStr])
+        : null;
+      const killedTotal = test.includes(personKilledStr)
+        ? d3.sum(filtered, d => d[personKilledStr])
+        : null;
+      // use the total of both injury & fatality totals for a "grand total" to calculate the grid
+      let harmedTotal = 0;
+      if (injuredTotal && killedTotal) {
+        harmedTotal = injuredTotal + killedTotal;
+      } else if (injuredTotal && !killedTotal) {
+        harmedTotal = injuredTotal;
+      } else {
+        harmedTotal = killedTotal;
       }
-    });
-
-    Object.keys(injury).forEach(type => {
-      if (injury[type]) {
-        grouped.push({
-          personType: type,
-          harmType: 'injury',
-          total: d3.sum(values, d => d[`${type}_injured`]),
-        });
-      }
-    });
-
-    const nested = d3
-      .nest()
-      .key(d => d.personType)
-      .entries(grouped);
-
-    // make sure the order is always 1 pedestrian, 2 cyclist, 3 motorist
-    const order = ['pedestrian', 'cyclist', 'motorist'];
-    const reordered = [];
-    order.forEach(ptype => {
-      const o = nested.find(group => group.key === ptype);
-      if (o) {
-        reordered.push(o);
-      }
-    });
-
-    // create a grid (array of objects) with values for x,y positions for each circle
-    reordered.forEach(group => {
-      // eslint-disable-next-line
-      const values = group.values;
-      const injured = values.filter(d => d.harmType === 'injury');
-      const killed = values.filter(d => d.harmType === 'fatality');
-      const injuredTotal = injured.length ? injured[0].total : 0;
-      const killedTotal = killed.length ? killed[0].total : 0;
-      const totalHarmed = injuredTotal + killedTotal;
       const columns = Math.floor(chartWidth / (radius * 3));
-      const rows = Math.floor(totalHarmed / columns);
-
-      group.killed = killed;
-      group.injured = injured;
-      group.killedTotal = killedTotal;
-      group.injuredTotal = injuredTotal;
-      group.totalHarmed = totalHarmed;
-
-      // the fixed height of this group of circles
-      group.gridHeight = rows * radius * 3 + (radius + strokeWidth) * 2;
-      group.gridWidth = chartWidth;
-      // x, y positions for each circle
-      group.grid = d3.range(totalHarmed).map(d => ({
+      const rows = Math.floor(harmedTotal / columns);
+      const gridHeight = rows * radius * 3 + (radius + strokeWidth) * 2;
+      const gridWidth = chartWidth;
+      const grid = d3.range(harmedTotal).map(d => ({
         x: (d % columns) * radius * 3,
         y: Math.floor(d / columns) * radius * 3,
       }));
-    });
 
-    this.setState({
-      valuesGrouped: reordered,
-    });
+      this.setState({
+        valuesTransformed: {
+          filtered,
+          injuredTotal,
+          killedTotal,
+          harmedTotal,
+          columns,
+          rows,
+          gridHeight,
+          gridWidth,
+          grid,
+        },
+      });
+    }
   }
 
   render() {
-    const { startDate, endDate, radius, strokeWidth, title, subheadHeights } = this.props;
-    const { valuesGrouped } = this.state;
+    const { radius, strokeWidth, personType } = this.props;
+    const { valuesTransformed } = this.state;
 
     return (
       <div
@@ -225,10 +203,7 @@ class DotGridWrapper extends Component {
           this.chartContainer = _;
         }}
       >
-        <DotGridChart
-          data={valuesGrouped}
-          {...{ startDate, endDate, subheadHeights, radius, strokeWidth, title }}
-        />
+        <DotGridChart data={valuesTransformed} {...{ radius, strokeWidth, personType }} />
       </div>
     );
   }
