@@ -36,7 +36,7 @@ const mapStateToProps = (state, props) => {
 
 /*
  * Class that wraps the Dot Grid Chart connecting it to parts of the Redux Store
- * Unlike the Line Charts, each Dot Grid Chart gets a single geo entity and time period
+ * Unlike the Line Charts, each Dot Grid Chart gets a single geo entity, time period, and person type
 */
 class DotGridWrapper extends Component {
   static propTypes = {
@@ -68,6 +68,8 @@ class DotGridWrapper extends Component {
 
   constructor() {
     super();
+    // state stores a "transformed" view of the data,
+    // this contains values necessary for the grid of circles drawn by the DotGridChart
     this.state = {
       valuesTransformed: {},
     };
@@ -88,9 +90,11 @@ class DotGridWrapper extends Component {
 
     // if we receive filtered values
     if (values.length) {
-      // and we didn't have filtered values before
+      // and
+      // we didn't have filtered values before
       // or either start or end date changed
       // or crash filter types changed
+      // or the viewport was resized
       if (
         !this.props.values.length ||
         startDate !== this.props.startDate ||
@@ -135,11 +139,7 @@ class DotGridWrapper extends Component {
     // make sure there will be data before transforming it
     const test = Object.keys(values[0]).filter(key => allowed.includes(key));
 
-    if (!test.length) {
-      this.setState({
-        valuesTransformed: {},
-      });
-    } else {
+    if (test.length) {
       // filter data by person type (e.g. 'pedestrian' or 'motorist' or 'cyclist')
       // but if no injury or fatality was selected for one of the above, this will be an array of empty objects
       const filtered = values.map(item =>
@@ -158,8 +158,10 @@ class DotGridWrapper extends Component {
       const killedTotal = test.includes(personKilledStr)
         ? d3.sum(filtered, d => d[personKilledStr])
         : null;
+
       // use the total of both injury & fatality totals for a "grand total" to calculate the grid
       let harmedTotal = 0;
+
       if (injuredTotal && killedTotal) {
         harmedTotal = injuredTotal + killedTotal;
       } else if (injuredTotal && !killedTotal) {
@@ -167,6 +169,8 @@ class DotGridWrapper extends Component {
       } else {
         harmedTotal = killedTotal;
       }
+
+      // compute the grid for the circles
       const columns = Math.floor(chartWidth / (radius * 3));
       const rows = Math.floor(harmedTotal / columns);
       const gridHeight = rows * radius * 3 + (radius + strokeWidth) * 2;
@@ -176,6 +180,7 @@ class DotGridWrapper extends Component {
         y: Math.floor(d / columns) * radius * 3,
       }));
 
+      // set state with the new data which will cause a re-render and pass the data to the chart
       this.setState({
         valuesTransformed: {
           filtered,
