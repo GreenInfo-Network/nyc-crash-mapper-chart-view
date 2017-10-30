@@ -32,14 +32,14 @@ class FilterByType extends Component {
 
   handleInjuryFilter(id) {
     // eslint-disable-next-line
-    const { isFetchingRanked, filterByTypeInjury } = this.props;
-    if (!isFetchingRanked) filterByTypeInjury(id);
+    const { filterByTypeInjury } = this.props;
+    filterByTypeInjury(id);
   }
 
   handleFatalityFilter(id) {
     // eslint-disable-next-line
-    const { isFetchingRanked, filterByTypeFatality } = this.props;
-    if (!isFetchingRanked) filterByTypeFatality(id);
+    const { filterByTypeFatality } = this.props;
+    filterByTypeFatality(id);
   }
 
   render() {
