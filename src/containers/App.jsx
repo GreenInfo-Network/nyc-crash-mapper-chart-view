@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
 import { entityDataSelector } from '../common/reduxSelectors';
@@ -29,7 +28,6 @@ class App extends Component {
     isFetchingCharts: PropTypes.bool.isRequired,
     isFetchingRanked: PropTypes.bool.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
-    fetchRankData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
     keyPrimary: pt.key,
@@ -50,17 +48,16 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const { entityType, filterType } = this.props;
+    const { entityType } = this.props;
     // DOM content loaded, make async data requests
     this.props.fetchEntityData(entityType);
-    this.props.fetchRankData(entityType, filterType);
 
     // always request citywide data for the line charts, regardless of current entityType
     this.props.fetchEntityData('citywide');
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, entityType, filterType, isFetchingCharts, isFetchingRanked } = nextProps;
+    const { entityData, entityType, isFetchingCharts, isFetchingRanked } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -72,12 +69,6 @@ class App extends Component {
       !isFetchingRanked
     ) {
       this.props.fetchEntityData(entityType);
-      this.props.fetchRankData(entityType, filterType);
-    }
-
-    if (!isEqual(filterType, this.props.filterType)) {
-      // if selected crash filters change, update the sparklines list
-      this.props.fetchRankData(entityType, filterType);
     }
   }
 
