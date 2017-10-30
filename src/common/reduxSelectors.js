@@ -2,8 +2,8 @@
 // refer to reselect docs for more info: https://github.com/reactjs/reselect
 import { createSelector } from 'reselect';
 
-const entityAllDataSelector = state => state.data;
-const entityTypeSelector = state => state.entities.entityType;
+export const entityAllDataSelector = state => state.data;
+export const entityTypeSelector = state => state.entities.entityType;
 
 /**
  * Memoized Selector function that returns response & nested data for a given geographic entity
@@ -66,6 +66,7 @@ const primaryEntityValuesSelector = state => state.entities.primary.values;
 // returns the array of objects for a secondary entity
 const secondaryEntityValuesSelector = state => state.entities.secondary.values;
 // returns array of objects for the reference entity
+// reference entity is used for the line chart only and may be either "citywide" or a borough name
 const referenceEntityValuesSelector = state => {
   const { entities } = state;
   const { reference } = entities;
