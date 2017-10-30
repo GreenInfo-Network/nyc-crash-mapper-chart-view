@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 import * as pt from '../common/reactPropTypeDefs';
 import {
@@ -14,7 +15,7 @@ import LineChart from '../components/LineCharts/LineChart';
 import LineChartTitle from '../components/LineCharts/LineChartTitle';
 
 const mapStateToProps = (state, props) => {
-  const { browser, entities } = state;
+  const { browser, entities, filterType } = state;
   const { height, width } = browser;
   const dateRange = dateRangesSelector(state, props);
 
@@ -30,7 +31,8 @@ const mapStateToProps = (state, props) => {
     secondaryValues: secondaryEntityValuesFilteredSelector(state, props),
     referenceValues: referenceEntityValuesFilteredSelector(state, props),
     yMax: props.yMax, // this is created on the component instance (see LineChartsContainer)
-    y2Max: props.y2Max, // this is created on the component instance (see LineChartsContainer)
+    y2Max: props.y2Max, // this is created on the component instance (see LineChartsContainer),
+    filterType,
   };
 };
 
@@ -72,6 +74,7 @@ class LineChartWrapper extends Component {
       referenceValues,
       startDate,
       endDate,
+      filterType,
     } = nextProps;
     const { period, setMaxY } = this.props; // these remain consistent so don't need to be diff'd
 
@@ -81,6 +84,7 @@ class LineChartWrapper extends Component {
       keySecondary !== this.props.keySecondary ||
       startDate !== this.props.startDate ||
       endDate !== this.props.endDate ||
+      !isEqual(filterType, this.props.filterType) ||
       (primaryValues.length && !this.props.primaryValues.length) ||
       (secondaryValues.length && !this.props.secondaryValues.length)
     ) {
@@ -92,6 +96,7 @@ class LineChartWrapper extends Component {
       keyReference !== this.props.keyReference ||
       startDate !== this.props.startDate ||
       endDate !== this.props.endDate ||
+      !isEqual(filterType, this.props.filterType) ||
       (referenceValues.length && !this.props.referenceValues.length)
     ) {
       setMaxY(`${period}Y2`, referenceValues);
@@ -158,6 +163,7 @@ LineChartWrapper.propTypes = {
   yMax: PropTypes.number,
   y2Max: PropTypes.number,
   setMaxY: PropTypes.func.isRequired,
+  filterType: pt.filterType.isRequired,
 };
 
 LineChartWrapper.defaultProps = {
