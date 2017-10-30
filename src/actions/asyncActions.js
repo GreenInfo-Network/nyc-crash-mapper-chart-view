@@ -1,16 +1,9 @@
 import axios from 'axios';
-import { sqlByGeo, sqlCitywide, sqlSparklinesRanked } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
-import {
-  ENTITY_DATA_REQUEST,
-  ENTITY_DATA_SUCCESS,
-  ENTITY_DATA_ERROR,
-  RANK_DATA_REQUEST,
-  RANK_DATA_SUCCESS,
-  RANK_DATA_ERROR,
-} from '../common/actionTypes';
+import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
 // CARTO SQL API endpoint
 const url = `https://${cartoUser}.carto.com/api/v2/sql`;
@@ -96,54 +89,3 @@ export default function fetchEntityData(entityType) {
       .catch(error => dispatch(handleError(ENTITY_DATA_ERROR, error)));
   };
 }
-
-const requestRankData = () => ({
-  type: RANK_DATA_REQUEST,
-});
-
-const receiveRankData = (geo, ranked) => ({
-  type: RANK_DATA_SUCCESS,
-  geo,
-  ranked,
-});
-
-export const fetchRankData = (entityType, filterType) => {
-  const sql = sqlSparklinesRanked(entityType, filterType);
-
-  if (!sql.length) {
-    // TO DO: user has no crash type filters selected, prevent them from doing so?
-    const error = Error({
-      message: 'No crash types selected',
-    });
-    return dispatch => dispatch(handleError(RANK_DATA_ERROR, error));
-  }
-
-  return dispatch => {
-    dispatch(requestRankData());
-
-    return axios({
-      method: 'get',
-      params: {
-        q: sql,
-      },
-    })
-      .then(result => {
-        if (!result || !result.data || !result.data.rows) {
-          const error = Error({
-            message: 'error loading data',
-          });
-          dispatch(handleError(RANK_DATA_ERROR, error));
-        }
-
-        const response = result.data.rows;
-
-        // parse date string into a date object
-        response.forEach(d => {
-          d.year_month = parseDate(d.year_month);
-        });
-
-        dispatch(receiveRankData(entityType, response));
-      })
-      .catch(error => dispatch(handleError(RANK_DATA_ERROR, error)));
-  };
-};

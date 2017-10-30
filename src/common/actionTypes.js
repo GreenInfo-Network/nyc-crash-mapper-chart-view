@@ -25,10 +25,6 @@ export const ENTITY_DATA_REQUEST = 'ENTITY_DATA_REQUEST';
 export const ENTITY_DATA_SUCCESS = 'ENTITY_DATA_SUCCESS';
 export const ENTITY_DATA_ERROR = 'ENTITY_DATA_ERROR';
 
-export const RANK_DATA_REQUEST = 'RANK_DATA_REQUEST';
-export const RANK_DATA_SUCCESS = 'RANK_DATA_SUCCESS';
-export const RANK_DATA_ERROR = 'RANK_DATA_ERROR';
-
 // select the entity used for the line chart reference line
 export const REFERENCE_ENTITY_SELECT = 'REFERENCE_ENTITY_SELECT';
 

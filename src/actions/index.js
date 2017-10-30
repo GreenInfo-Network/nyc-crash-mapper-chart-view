@@ -11,6 +11,6 @@ export {
 
 export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
 
-export fetchEntityData, { fetchRankData } from './asyncActions';
+export fetchEntityData from './asyncActions';
 
 export toggleTrendCompare from './trendCompareActions';
