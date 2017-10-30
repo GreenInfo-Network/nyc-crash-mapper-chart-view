@@ -7,7 +7,7 @@ import {
   REFERENCE_ENTITY_SELECT,
 } from '../common/actionTypes';
 
-const defaultState = {
+export const entitiesInitalState = {
   primary: {
     color: '#393B79',
     key: null,
@@ -22,11 +22,11 @@ const defaultState = {
   reference: 'citywide',
 };
 
-export default function(state = defaultState, action) {
+export default function(state = entitiesInitalState, action) {
   switch (action.type) {
     case SET_ENTITY_TYPE:
       return {
-        ...defaultState,
+        ...entitiesInitalState,
         entityType: action.entityType,
       };
 
