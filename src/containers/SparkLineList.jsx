@@ -217,15 +217,32 @@ class SparkLineList extends Component {
           <h6
             style={{ padding: 0 }}
           >{`${entityTypeDisplay} ${label} – Rank: ${rank} / ${ranked.length}`}</h6>
-          <svg width={width} height={height} style={{ border: '1px solid #999' }}>
-            <path fill="#e7e7e7" className="area spark" d={this.area(values)} />
-            <path
-              fill="none"
-              strokeWidth="1.5px"
-              stroke="#666"
-              className="line spark"
-              d={this.line(values)}
-            />
+          <svg width={width} height={height}>
+            <defs>
+              <linearGradient id={`gradient-${key}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#f03b20" />
+                <stop offset="50%" stopColor="#feb24c" />
+                <stop offset="100%" stopColor="#ffeda0" />
+              </linearGradient>
+              <mask id={`mask-${key}`} x="0" y="0" width={width} height={height}>
+                <path
+                  fill="transparent"
+                  strokeWidth="2"
+                  stroke="#ffeda0"
+                  className="line spark"
+                  d={this.line(values)}
+                />
+              </mask>
+            </defs>
+            <g transform="translate(0, 2.0)">
+              <rect
+                x="0"
+                y="-2"
+                width={width}
+                height={height}
+                style={{ stroke: 'none', fill: `url(#gradient-${key})`, mask: `url(#mask-${key})` }}
+              />
+            </g>
           </svg>
         </li>
       );
