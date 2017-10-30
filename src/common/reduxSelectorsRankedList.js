@@ -78,7 +78,7 @@ const rankedListSelector = createSelector(
     // sum each entity's totalInjured and totalKilled
     nested.forEach(entity => {
       // if the entity key should be a number, coerce it to one
-      entity.key = typeof +entity.key === 'number' ? +entity.key : entity.key;
+      entity.key = !isNaN(+entity.key) ? +entity.key : entity.key;
       entity.totalKilled = d3.sum(entity.values, d => d.totalKilled);
       entity.totalInjured = d3.sum(entity.values, d => d.totalInjured);
       entity.maxTotal = d3.max(entity.values, d => d.total);
