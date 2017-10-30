@@ -12,6 +12,7 @@ import {
 } from '../actions';
 
 import { entityDataSelector } from '../common/reduxSelectors';
+import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
 
 // TO DO: move these into the SparkLineList class?
@@ -22,31 +23,14 @@ const height = 45 - margin.top - margin.bottom;
 const mapStateToProps = state => {
   const { entities, filterType } = state;
   const { entityType } = entities;
-  const { ranked, response } = entityDataSelector(state);
-  let nested = [];
-
-  // only nest data if we have it after the async request
-  if (ranked && ranked.length) {
-    nested = d3
-      .nest()
-      .key(d => d[entityType])
-      .entries(ranked);
-
-    // compute max(d.count) for setting y scale domain later
-    nested.forEach(entity => {
-      if (!isNaN(+entity.key)) {
-        entity.key = parseInt(entity.key, 10);
-      }
-      entity.rank = entity.values[0].rank;
-      entity.maxTotal = d3.max(entity.values, d => d.total);
-    });
-  }
+  const { response } = entityDataSelector(state);
+  const ranked = response && response.length ? rankedListSelector(state) : null;
 
   return {
     entityType,
     filterType,
     response,
-    nested,
+    ranked: ranked || [],
     primary: entities.primary,
     secondary: entities.secondary,
   };
@@ -60,7 +44,7 @@ class SparkLineList extends Component {
     filterType: pt.filterType.isRequired,
     primary: pt.entity.isRequired,
     secondary: pt.entity.isRequired,
-    nested: PropTypes.arrayOf(PropTypes.object),
+    ranked: PropTypes.arrayOf(PropTypes.object).isRequired,
     response: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
     sortName: PropTypes.bool.isRequired,
@@ -75,7 +59,6 @@ class SparkLineList extends Component {
 
   static defaultProps = {
     entityType: '',
-    nested: [],
     response: [],
     filterTerm: '',
     sparkLineListHeight: null,
@@ -189,23 +172,29 @@ class SparkLineList extends Component {
 
   renderSparkLines() {
     // eslint-disable-next-line
-    const { entityType, primary, secondary, nested, response } = this.props;
+    const { entityType, primary, secondary, ranked, response } = this.props;
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
 
-    if (!nested.length) return null;
+    if (!ranked.length) return null;
 
     // set x-scale domain, assumes data is sorted by date
     this.xScale.domain([
-      d3.min(nested, d => d.values[0].year_month),
-      d3.max(nested, d => d.values[d.values.length - 1].year_month),
+      d3.min(ranked, d => d.values[0].year_month),
+      d3.max(ranked, d => d.values[d.values.length - 1].year_month),
     ]);
 
     // set y-scale domain
-    this.yScale.domain([0, d3.max(nested, d => d.maxTotal)]);
+    this.yScale.domain([0, d3.max(ranked, d => d.maxTotal)]);
 
-    return nested.map(entity => {
+    return ranked.map(entity => {
       const { key, values, rank } = entity;
-      const label = +key < 10 ? `0${key}` : key;
+      let label;
+
+      if (typeof +key === 'number') {
+        label = +key < 10 ? `0${key}` : key;
+      } else {
+        label = key;
+      }
 
       // class names for list items
       const listItemClass = classNames({
@@ -220,14 +209,14 @@ class SparkLineList extends Component {
         <li
           key={key}
           data-rank-sort={rank}
-          data-name-sort={+key}
+          data-name-sort={key}
           data-search={`city council ${label}`}
           className={listItemClass}
           onClick={() => this.handleSparkLineClick(key)}
         >
           <h6
             style={{ padding: 0 }}
-          >{`${entityTypeDisplay} ${label} – Rank: ${rank} / ${nested.length}`}</h6>
+          >{`${entityTypeDisplay} ${label} – Rank: ${rank} / ${ranked.length}`}</h6>
           <svg width={width} height={height} style={{ border: '1px solid #999' }}>
             <path fill="#e7e7e7" className="area spark" d={this.area(values)} />
             <path
