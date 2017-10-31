@@ -14,3 +14,4 @@ export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
 export fetchEntityData from './asyncActions';
 
 export toggleTrendCompare from './trendCompareActions';
+export toggleChartView from './chartViewActions';
