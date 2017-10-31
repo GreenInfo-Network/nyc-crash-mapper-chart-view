@@ -36,7 +36,9 @@ const mapStateToProps = state => {
   };
 };
 
-/** Connected Component that renders a list of SVG sparkLines
+/**
+  * Connected Component that renders a list of SVG sparkLines
+  * This component is also responsible for setting the primary and secondary geographic entities
 */
 class SparkLineList extends Component {
   static propTypes = {
@@ -87,6 +89,28 @@ class SparkLineList extends Component {
       .x(d => this.xScale(d.year_month))
       .y(d => this.yScale(d.total))
       .curve(d3.curveMonotoneX);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { secondary, primary, response, entityType } = nextProps;
+
+    // if the app loads with a primary or secondary key specfied, and we receive an async response
+    // make sure to populate state.entities[type].values
+    if (response.length && !this.props.response.length) {
+      const entity = {};
+
+      if (primary.key) {
+        entity.key = primary.key;
+        entity.values = response.filter(d => d[entityType] === primary.key);
+        this.props.selectPrimaryEntity(entity);
+      }
+
+      if (secondary.key) {
+        entity.key = secondary.key;
+        entity.values = response.filter(d => d[entityType] === secondary.key);
+        this.props.selectSecondaryEntity(entity);
+      }
+    }
   }
 
   filterListItems(listItems) {
