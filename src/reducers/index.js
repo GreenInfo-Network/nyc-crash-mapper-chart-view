@@ -5,7 +5,6 @@ import filterType from './filterByTypeReducer';
 import entities from './entitiesReducer';
 import data from './dataReducer';
 import dateRanges from './dateRangeReducer';
-import trendCompare from './trendCompareReducer';
 import chartView from './chartViewReducer';
 
 // breakpoints to match Skeleton CSS's
@@ -32,7 +31,6 @@ const rootReducer = combineReducers({
   dateRanges,
   entities,
   filterType,
-  trendCompare,
 });
 
 export default rootReducer;

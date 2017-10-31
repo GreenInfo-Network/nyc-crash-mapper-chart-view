@@ -8,7 +8,7 @@ import { formatDateYM } from './d3Utils';
   * Parses the redux store to update browser history & url query params for stateful URLs
 */
 export default function(state) {
-  const { dateRanges, entities, trendCompare, filterType } = state;
+  const { dateRanges, chartView, entities, filterType } = state;
   const { period1, period2 } = dateRanges;
   const { entityType, primary, secondary, reference } = entities;
   const { injury, fatality } = filterType;
@@ -29,7 +29,7 @@ export default function(state) {
     cfat: fatality.cyclist,
     mfat: fatality.motorist,
     pfat: fatality.pedestrian,
-    view: trendCompare,
+    view: chartView,
   };
 
   // stringify the history state so that it can be added to the URL query params

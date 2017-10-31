@@ -28,6 +28,5 @@ export const ENTITY_DATA_ERROR = 'ENTITY_DATA_ERROR';
 // select the entity used for the line chart reference line
 export const REFERENCE_ENTITY_SELECT = 'REFERENCE_ENTITY_SELECT';
 
-export const TREND_COMPARE_TOGGLE = 'TREND_COMPARE_TOGGLE';
-
+// toggle chart view (trend, compare, rank)
 export const CHART_VIEW_TOGGLE = 'CHART_VIEW_TOGGLE';
