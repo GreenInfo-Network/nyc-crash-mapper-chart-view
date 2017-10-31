@@ -1,7 +1,7 @@
 import thunkMiddleware from 'redux-thunk';
 import logger from 'redux-logger';
 
-import updateQueryParams from './common/updateQueryParams';
+import updateQueryParams from './common/updateBrowserHistory';
 
 const middleware = [thunkMiddleware];
 
