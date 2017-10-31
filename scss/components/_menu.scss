@@ -1,0 +1,35 @@
+.Menu {
+  width: 100%;
+  display: inline-flex;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 0;
+    margin: 0;
+    margin-left: 20px;
+  }
+
+  button,
+  a {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: $marine;
+  }
+
+  button {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border-radius: 0;
+    border: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

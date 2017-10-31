@@ -7,6 +7,7 @@ import * as actions from '../actions';
 import { entityDataSelector } from '../common/reduxSelectors';
 import * as pt from '../common/reactPropTypeDefs';
 
+import Header from '../components/Header';
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from '../components/LineCharts/LineChartsContainer';
 import DotGridChartsContainer from '../components/DotGridCharts/DotGridChartsContainer';
@@ -35,6 +36,7 @@ class App extends Component {
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
     trendCompare: pt.trendCompare.isRequired,
+    toggleTrendCompare: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
   };
 
@@ -68,13 +70,21 @@ class App extends Component {
   }
 
   render() {
-    const { dateRanges, entityType, trendCompare, width, keyPrimary, keySecondary } = this.props;
+    const {
+      dateRanges,
+      entityType,
+      trendCompare,
+      toggleTrendCompare,
+      width,
+      keyPrimary,
+      keySecondary,
+    } = this.props;
     const { trend } = trendCompare;
 
     return (
       <div className="App grid-container">
         <div className="grid-area header">
-          <h3 style={{ textTransform: 'uppercase', display: 'inline-block' }}>nyc crash mapper</h3>
+          <Header {...{ toggleTrendCompare, trendCompare }} />
         </div>
         <div className="grid-area sparklines">
           <Sidebar {...{ entityType }} />
