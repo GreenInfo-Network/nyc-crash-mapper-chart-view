@@ -1,17 +1,30 @@
-// This module contains the logic for parsing and setting query params to track:
-// - geographic type
-// - primary & secondary selected entities
-// - reference entity
-// - crash fitler types
-// - date ranges
+// This module contains the logic for parsing URL query params that are used to set initial app state:
+// Query params exist for:
+// - geographic type (entityType)
+// - primary & secondary entity keys
+// - reference entity (citywide or 1 of 5 boroughs)
+// - crash fitler types (filterType)
+// - date ranges (both start and end for periods 1 and 2)
 // - chart view: trend, compare, rank
 import qs from 'query-string';
 
 import { parseDate } from './d3Utils';
 import { entitiesInitalState } from '../reducers/entitiesReducer';
 
+// valid strings for various parts of app state
 const validGeographies = ['borough', 'city_council', 'community_board', 'nta', 'nypd'];
 const validRefGeos = ['citywide', 'manhattan', 'bronx', 'queens', 'brooklyn', 'staten island'];
+const validViews = ['trend', 'compare'];
+
+// set up some default / fallback dates
+const p1EndDefault = new Date();
+p1EndDefault.setDate(1);
+const p1StartDefault = new Date(p1EndDefault);
+p1StartDefault.setFullYear(p1StartDefault.getFullYear() - 1);
+
+const p2EndDefault = new Date(p1StartDefault);
+const p2StartDefault = new Date(p2EndDefault);
+p2StartDefault.setFullYear(p2StartDefault.getFullYear() - 1);
 
 // test if a value is JSON parseable
 const isJsonString = _ => {
@@ -23,15 +36,10 @@ const isJsonString = _ => {
   return true;
 };
 
-// test if something is a boolean value
-const isBool = _ => {
-  if (_ && typeof _ === 'boolean') {
-    return _;
-  }
-  return false;
-};
+// test if a date is valid
+const isValidDate = (val, fallback) => parseDate(val) || fallback;
 
-// test if geo is valid
+// test if geo / entity type is valid
 const isValidGeo = _ => {
   if (_ && validGeographies.includes(_)) {
     return _;
@@ -47,7 +55,65 @@ const isValidRefGeo = _ => {
   return validRefGeos[0];
 };
 
+// test if chart view is valid
+const isValidView = _ => _ && validViews.includes(_);
+
+// create the chart view state
+// TO DO: trend compare will be refactored to trend, compare, rank; so leaving alone for now...
+const setValidView = _ => {
+  if (!isValidView(_)) {
+    return {
+      trend: true,
+      compare: false,
+    };
+  }
+  return {
+    trend: _ === 'trend',
+    compare: _ === 'compare',
+  };
+};
+
+// test if something is a boolean value
+const isBool = _ => typeof _ === 'boolean';
+
+// make sure crash type values are booleans
+const setValidFilterTypes = types => {
+  const { cinj, minj, pinj, cfat, mfat, pfat } = types;
+  const allTypesValid = [cinj, minj, pinj, cfat, mfat, pfat].every(type => isBool(type));
+
+  if (allTypesValid) {
+    return {
+      injury: {
+        cyclist: cinj,
+        motorist: minj,
+        pedestrian: pinj,
+      },
+      fatality: {
+        cyclist: cfat,
+        motorist: mfat,
+        pedestrian: pfat,
+      },
+      noInjuryFatality: false,
+    };
+  }
+  // default is just injury crash types selected
+  return {
+    injury: {
+      cyclist: true,
+      motorist: true,
+      pedestrian: true,
+    },
+    fatality: {
+      cyclist: false,
+      motorist: false,
+      pedestrian: false,
+    },
+    noInjuryFatality: false,
+  };
+};
+
 // parses the URL query params
+// returns an object for key values of each param
 const parseQueryParams = () => {
   const q = qs.parse(location.search);
 
@@ -62,60 +128,36 @@ const parseQueryParams = () => {
   }, {});
 };
 
-// uses URL query params to return an object that may be used to "hydrate" the Redux store (app state)
+// @param {object} p Parsed query params object
+// @returns {object} that may be used to "hydrate" the Redux store (app state)
+const createInitialState = p => ({
+  dateRanges: {
+    period1: {
+      startDate: isValidDate(p.p1start, p1StartDefault),
+      endDate: isValidDate(p.p1end, p1EndDefault),
+    },
+    period2: {
+      startDate: isValidDate(p.p2start, p2StartDefault),
+      endDate: isValidDate(p.p2end, p2EndDefault),
+    },
+  },
+  entities: {
+    entityType: isValidGeo(p.geo),
+    primary: {
+      ...entitiesInitalState.primary, // keep other props (values, color, etc.)
+      key: p.primary, // okay if left undefined and too difficult to validate
+    },
+    secondary: {
+      ...entitiesInitalState.secondary, // keep other props (values, color, etc.)
+      key: p.secondary, // okay if left undefined and too difficult to validate
+    },
+    reference: isValidRefGeo(p.reference),
+  },
+  trendCompare: setValidView(p.view),
+  filterType: setValidFilterTypes(p),
+});
+
 export default function() {
-  const p = parseQueryParams();
-
-  // set up some default dates
-  const p1EndDefault = new Date();
-  p1EndDefault.setDate(1);
-  const p1StartDefault = new Date(p1EndDefault);
-  p1StartDefault.setFullYear(p1StartDefault.getFullYear() - 1);
-
-  const p2EndDefault = new Date(p1StartDefault);
-  const p2StartDefault = new Date(p2EndDefault);
-  p2StartDefault.setFullYear(p2StartDefault.getFullYear() - 1);
-
-  return {
-    dateRanges: {
-      period1: {
-        startDate: parseDate(p.p1start) || p1StartDefault,
-        endDate: parseDate(p.p1end) || p1EndDefault,
-      },
-      period2: {
-        startDate: parseDate(p.p2start) || p2StartDefault,
-        endDate: parseDate(p.p2end) || p2EndDefault,
-      },
-    },
-    entities: {
-      entityType: isValidGeo(p.geo),
-      primary: {
-        ...entitiesInitalState.primary,
-        key: p.primary, // okay if left undefined
-      },
-      secondary: {
-        ...entitiesInitalState.secondary,
-        key: p.secondary, // okay if left undefined
-      },
-      reference: isValidRefGeo(p.reference),
-    },
-    // TO DO: trend compare will be refactored to trend, compare, rank; so leaving alone for now...
-    trendCompare: {
-      trend: p.view === 'trend',
-      compare: p.view === 'compare',
-    },
-    filterType: {
-      injury: {
-        cyclist: isBool(p.cinj),
-        motorist: isBool(p.minj),
-        pedestrian: isBool(p.pinj),
-      },
-      fatality: {
-        cyclist: isBool(p.cfat),
-        motorist: isBool(p.mfat),
-        pedestrian: isBool(p.pfat),
-      },
-      noInjuryFatality: false,
-    },
-  };
+  const params = parseQueryParams();
+  return createInitialState(params);
 }
