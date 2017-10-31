@@ -2,29 +2,42 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 
-const items = [
-  { type: 'link', value: 'http://crashmapper.org', label: 'Map' },
-  { type: 'view', value: 'trend', label: 'Trend' },
-  { type: 'view', value: 'compare', label: 'Compare' },
-  { type: 'view', value: 'rank', label: 'Rank' },
-  { type: 'meta', value: 'about', label: 'About' },
-];
-
+// Renders the nav menu items in the header
 const Menu = props => {
   const { chartView, toggleChartView } = props;
+  const items = [
+    { type: 'link', value: 'http://crashmapper.org', label: 'Map' },
+    { type: 'view', value: 'trend', label: 'Trend' },
+    { type: 'view', value: 'compare', label: 'Compare' },
+    { type: 'view', value: 'rank', label: 'Rank' },
+    { type: 'meta', value: 'about', label: 'About' },
+  ];
+
+  const handleViewClick = value => {
+    // prevent unnecessary action creator from being triggered
+    if (value !== chartView) {
+      toggleChartView(value);
+    }
+  };
 
   const mapTypeToElement = item => {
     const { type } = item;
+    const className = chartView === item.value ? 'active' : null;
+
     switch (type) {
       case 'link':
         return (
-          <a target="_blank" rel="noopener noreferrer" href={item.value}>
+          <a target="_blank" rel="noopener noreferrer" href={item.value} className={className}>
             {item.label}
           </a>
         );
 
       case 'view':
-        return <button onClick={() => toggleChartView(item.value)}>{item.label}</button>;
+        return (
+          <button className={className} onClick={() => handleViewClick(item.value)}>
+            {item.label}
+          </button>
+        );
 
       // TO DO: implement "About"
       default:
@@ -34,11 +47,7 @@ const Menu = props => {
 
   return (
     <ul className="Menu">
-      {items.map(item => (
-        <li key={item.label} className={chartView === item.value ? 'active' : null}>
-          {mapTypeToElement(item)}
-        </li>
-      ))}
+      {items.map(item => <li key={item.label}>{mapTypeToElement(item)}</li>)}
     </ul>
   );
 };
