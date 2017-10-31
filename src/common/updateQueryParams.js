@@ -2,13 +2,20 @@
 import qs from 'query-string';
 import { formatDateYM } from './d3Utils';
 
+/**
+  * @function updateQueryParams
+  * @param {object} state Redux state object
+  * Parses the redux store to update browser history & url query params for stateful URLs
+*/
 export default function(state) {
   const { dateRanges, entities, trendCompare, filterType } = state;
   const { period1, period2 } = dateRanges;
   const { entityType, primary, secondary } = entities;
   const { injury, fatality } = filterType;
+  const { trend } = trendCompare;
 
-  const stringified = qs.stringify({
+  // format the part of state we want to save in browser history state
+  const historyState = {
     p1start: formatDateYM(period1.startDate),
     p1end: formatDateYM(period1.endDate),
     p2start: formatDateYM(period2.startDate),
@@ -22,9 +29,12 @@ export default function(state) {
     cfat: fatality.cyclist,
     mfat: fatality.motorist,
     pfat: fatality.pedestrian,
-    view: trendCompare.trend ? 'trend' : 'compare',
-  });
+    view: trend ? 'trend' : 'compare',
+  };
 
-  const url = window.location.origin;
-  window.history.replaceState('', '', `${url}?${stringified}`);
+  // stringify the history state so that it can be added to the URL query params
+  const stringified = qs.stringify(historyState);
+
+  // update the browser history
+  window.history.replaceState(historyState, '', `?${stringified}`);
 }
