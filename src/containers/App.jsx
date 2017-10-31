@@ -79,7 +79,6 @@ class App extends Component {
       keyPrimary,
       keySecondary,
     } = this.props;
-    const { trend } = trendCompare;
 
     return (
       <div className="App grid-container">
@@ -93,7 +92,7 @@ class App extends Component {
           <TimeLine />
         </div>
         <div className="grid-area detailchart">
-          {trend ? (
+          {trendCompare === 'trend' ? (
             <LineChartsContainer />
           ) : (
             <DotGridChartsContainer

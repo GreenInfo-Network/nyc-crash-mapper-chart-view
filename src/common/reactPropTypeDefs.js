@@ -57,10 +57,7 @@ export const dateRanges = PropTypes.shape({
 });
 
 // booleans representing whether compare (dot chart) or trend (line chart) is selected
-export const trendCompare = PropTypes.shape({
-  trend: PropTypes.bool,
-  compare: PropTypes.bool,
-});
+export const trendCompare = PropTypes.string;
 
 // data for a geographic entity type
 export const data = PropTypes.shape({

@@ -12,7 +12,6 @@ export default function(state) {
   const { period1, period2 } = dateRanges;
   const { entityType, primary, secondary, reference } = entities;
   const { injury, fatality } = filterType;
-  const { trend } = trendCompare;
 
   // format the part of state we want to save in browser history state
   const historyState = {
@@ -30,7 +29,7 @@ export default function(state) {
     cfat: fatality.cyclist,
     mfat: fatality.motorist,
     pfat: fatality.pedestrian,
-    view: trend ? 'trend' : 'compare',
+    view: trendCompare,
   };
 
   // stringify the history state so that it can be added to the URL query params

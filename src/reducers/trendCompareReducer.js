@@ -1,17 +1,9 @@
 import { TREND_COMPARE_TOGGLE } from '../common/actionTypes';
 
-const defaultState = {
-  trend: false,
-  compare: true,
-};
-
-export default (state = defaultState, action) => {
+export default (state = 'trend', action) => {
   switch (action.type) {
     case TREND_COMPARE_TOGGLE:
-      return {
-        trend: !state.trend,
-        compare: !state.compare,
-      };
+      return action.view;
 
     default:
       return state;

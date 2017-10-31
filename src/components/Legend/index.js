@@ -12,7 +12,7 @@ const Legend = props => {
 
   return (
     <div className="Legend">
-      {trendCompare.compare ? (
+      {trendCompare === 'compare' ? (
         <CompareLegend />
       ) : (
         <EntitySelections

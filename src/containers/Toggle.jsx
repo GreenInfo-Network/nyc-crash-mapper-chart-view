@@ -10,18 +10,17 @@ const mapStateToProps = ({ trendCompare }) => ({ trendCompare });
 const Toggle = props => {
   // eslint-disable-next-line
   const { toggleTrendCompare, trendCompare } = props;
-  const { trend, compare } = trendCompare;
   return (
     <div className="Toggle">
       <button
-        className={trend ? 'active' : null}
-        onClick={() => (!trend ? toggleTrendCompare() : null)}
+        className={trendCompare === 'trend' ? 'active' : null}
+        onClick={() => (trendCompare !== 'trend' ? toggleTrendCompare('trend') : null)}
       >
         Trend
       </button>
       <button
-        className={compare ? 'active' : null}
-        onClick={() => (!compare ? toggleTrendCompare() : null)}
+        className={trendCompare === 'compare' ? 'active' : null}
+        onClick={() => (trendCompare !== 'compare' ? toggleTrendCompare('compare') : null)}
       >
         Compare
       </button>

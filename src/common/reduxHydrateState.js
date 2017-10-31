@@ -61,16 +61,10 @@ const isValidView = _ => _ && validViews.includes(_);
 // create the chart view state
 // TO DO: trend compare will be refactored to trend, compare, rank; so leaving alone for now...
 const setValidView = _ => {
-  if (!isValidView(_)) {
-    return {
-      trend: true,
-      compare: false,
-    };
+  if (isValidView(_)) {
+    return _;
   }
-  return {
-    trend: _ === 'trend',
-    compare: _ === 'compare',
-  };
+  return 'trend';
 };
 
 // test if something is a boolean value
