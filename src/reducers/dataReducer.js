@@ -2,9 +2,7 @@ import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../
 
 const defaultState = {
   errorCharts: null, // any error from the charts data request
-  errorRanked: null, // any error from the ranked list data request
   isFetchingCharts: false, // is the app waiting on a chart data request?
-  isFetchingRanked: false, // is the app waiting on ranked list data request?
   borough: {}, // hash to store borough data
   city_council: {}, // ... city council district data
   citywide: {}, // ... citywide data

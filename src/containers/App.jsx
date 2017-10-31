@@ -26,7 +26,6 @@ class App extends Component {
     entityData: PropTypes.arrayOf(PropTypes.object),
     dateRanges: pt.dateRanges.isRequired,
     isFetchingCharts: PropTypes.bool.isRequired,
-    isFetchingRanked: PropTypes.bool.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
@@ -54,7 +53,7 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, entityType, isFetchingCharts, isFetchingRanked } = nextProps;
+    const { entityData, entityType, isFetchingCharts } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -62,23 +61,14 @@ class App extends Component {
       entityType !== this.props.entityType &&
       this.props.entityData.length &&
       !entityData.length &&
-      !isFetchingCharts &&
-      !isFetchingRanked
+      !isFetchingCharts
     ) {
       this.props.fetchEntityData(entityType);
     }
   }
 
   render() {
-    const {
-      dateRanges,
-      entityType,
-      isFetchingRanked,
-      trendCompare,
-      width,
-      keyPrimary,
-      keySecondary,
-    } = this.props;
+    const { dateRanges, entityType, trendCompare, width, keyPrimary, keySecondary } = this.props;
     const { trend } = trendCompare;
 
     return (
@@ -87,7 +77,7 @@ class App extends Component {
           <h3 style={{ textTransform: 'uppercase', display: 'inline-block' }}>nyc crash mapper</h3>
         </div>
         <div className="grid-area sparklines">
-          <Sidebar {...{ entityType, isFetchingRanked }} />
+          <Sidebar {...{ entityType }} />
         </div>
         <div className="grid-area timeline">
           <TimeLine />
@@ -111,7 +101,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   const { browser, dateRanges, entities, data, filterType, trendCompare } = state;
-  const { isFetchingCharts, isFetchingRanked } = data;
+  const { isFetchingCharts } = data;
   const entityData = entityDataSelector(state);
 
   return {
@@ -119,7 +109,6 @@ const mapStateToProps = state => {
     height: browser.height,
     dateRanges,
     isFetchingCharts,
-    isFetchingRanked,
     entityData: entityData.response,
     entityType: entities.entityType,
     keyPrimary: entities.primary.key,

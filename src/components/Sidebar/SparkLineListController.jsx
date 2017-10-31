@@ -8,7 +8,6 @@ import SparkLineList from '../../containers/SparkLineList';
 class SparkLineContainer extends Component {
   static propTypes = {
     entityType: PropTypes.string,
-    isFetchingRanked: PropTypes.bool.isRequired,
     sparkLineListHeight: PropTypes.number,
   };
 

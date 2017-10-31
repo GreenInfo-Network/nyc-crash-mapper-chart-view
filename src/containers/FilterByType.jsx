@@ -7,17 +7,13 @@ import * as pt from '../common/reactPropTypeDefs';
 
 import FilterButton from '../components/FilterButton';
 
-const mapStateToProps = ({ filterType, data }) => ({
-  filterType,
-  isFetchingRanked: data.isFetchingRanked,
-});
+const mapStateToProps = ({ filterType }) => ({ filterType });
 
 /**
  * Class that handles toggling crash filter types
  */
 class FilterByType extends Component {
   static propTypes = {
-    isFetchingRanked: PropTypes.bool.isRequired,
     filterByTypeInjury: PropTypes.func.isRequired,
     filterByTypeFatality: PropTypes.func.isRequired,
     filterByNoInjFat: PropTypes.func.isRequired,
