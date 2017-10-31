@@ -8,6 +8,7 @@ import { setReferenceEntity, fetchEntityData } from '../actions';
 const mapStateToProps = ({ entities, data }) => ({
   reference: entities.reference,
   boroughData: data.borough,
+  citywideData: data.citywide,
 });
 
 /*
@@ -18,6 +19,7 @@ const mapStateToProps = ({ entities, data }) => ({
 class ReferenceEntitySelect extends Component {
   static propTypes = {
     boroughData: pt.data,
+    citywideData: pt.data,
     reference: PropTypes.string.isRequired,
     setReferenceEntity: PropTypes.func.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
@@ -25,6 +27,7 @@ class ReferenceEntitySelect extends Component {
 
   static defaultProps = {
     boroughData: {},
+    citywideData: {},
   };
 
   constructor() {
@@ -32,19 +35,31 @@ class ReferenceEntitySelect extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    const { reference, boroughData, citywideData } = this.props;
+
+    // if the app loaded with a reference entity other than citywide make sure to fetch it
+    if (reference !== 'citywide' && !boroughData.response) {
+      this.props.fetchEntityData('borough');
+    }
+
+    // vice versa for above
+    if (reference === 'citywide' && !citywideData.response) {
+      this.props.fetchEntityData('citywide');
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
-    const { reference, boroughData } = nextProps;
+    const { reference, boroughData, citywideData } = nextProps;
 
     // if user selected a borough, and we don't have borough data yet, make an async request for it
-    if (reference !== 'Citywide') {
-      if (!boroughData.response) {
-        this.props.fetchEntityData('borough');
-      }
+    if (reference !== 'citywide' && !boroughData.response) {
+      this.props.fetchEntityData('borough');
+    }
 
-      if (boroughData.response) {
-        // update the reference line in the line chart
-        // do this elsewhere
-      }
+    // vice versa for above
+    if (reference === 'citywide' && !citywideData.response) {
+      this.props.fetchEntityData('citywide');
     }
   }
 

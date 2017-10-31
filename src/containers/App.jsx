@@ -51,9 +51,6 @@ class App extends Component {
     const { entityType } = this.props;
     // DOM content loaded, make async data requests
     this.props.fetchEntityData(entityType);
-
-    // always request citywide data for the line charts, regardless of current entityType
-    this.props.fetchEntityData('citywide');
   }
 
   componentWillReceiveProps(nextProps) {
