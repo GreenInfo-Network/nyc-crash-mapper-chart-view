@@ -10,7 +10,7 @@ import { formatDateYM } from './d3Utils';
 export default function(state) {
   const { dateRanges, entities, trendCompare, filterType } = state;
   const { period1, period2 } = dateRanges;
-  const { entityType, primary, secondary } = entities;
+  const { entityType, primary, secondary, reference } = entities;
   const { injury, fatality } = filterType;
   const { trend } = trendCompare;
 
@@ -22,6 +22,7 @@ export default function(state) {
     p2end: formatDateYM(period2.endDate),
     primary: primary.key,
     secondary: secondary.key,
+    reference,
     geo: entityType,
     cinj: injury.cyclist,
     minj: injury.motorist,
