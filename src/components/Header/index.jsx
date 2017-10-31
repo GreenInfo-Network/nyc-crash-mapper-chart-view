@@ -13,8 +13,8 @@ const Header = props => (
 );
 
 Header.propTypes = {
-  toggleTrendCompare: PropTypes.func.isRequired,
-  trendCompare: pt.trendCompare.isRequired,
+  toggleChartView: PropTypes.func.isRequired,
+  chartView: pt.chartView.isRequired,
 };
 
 export default Header;

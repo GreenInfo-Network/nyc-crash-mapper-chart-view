@@ -5,14 +5,13 @@ import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 import EntitySelections from './EntitySelections';
 import CompareLegend from './CompareLegend';
-import Toggle from '../../containers/Toggle';
 
 const Legend = props => {
-  const { entities, deselectPrimaryEntity, deselectSecondaryEntity, trendCompare } = props;
+  const { entities, deselectPrimaryEntity, deselectSecondaryEntity, chartView } = props;
 
   return (
     <div className="Legend">
-      {trendCompare === 'compare' ? (
+      {chartView === 'compare' ? (
         <CompareLegend />
       ) : (
         <EntitySelections
@@ -21,7 +20,6 @@ const Legend = props => {
           deselectSecondaryEntity={deselectSecondaryEntity}
         />
       )}
-      <Toggle />
     </div>
   );
 };
@@ -29,7 +27,7 @@ const Legend = props => {
 Legend.propTypes = {
   entities: pt.entities.isRequired,
   filterType: pt.filterType.isRequired,
-  trendCompare: pt.trendCompare.isRequired,
+  chartView: pt.chartView.isRequired,
   deselectPrimaryEntity: PropTypes.func.isRequired,
   deselectSecondaryEntity: PropTypes.func.isRequired,
 };

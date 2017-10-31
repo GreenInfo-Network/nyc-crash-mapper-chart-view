@@ -11,7 +11,7 @@ const items = [
 ];
 
 const Menu = props => {
-  const { trendCompare, toggleTrendCompare } = props;
+  const { chartView, toggleChartView } = props;
 
   const mapTypeToElement = item => {
     const { type } = item;
@@ -24,7 +24,7 @@ const Menu = props => {
         );
 
       case 'view':
-        return <button onClick={() => toggleTrendCompare(item.value)}>{item.label}</button>;
+        return <button onClick={() => toggleChartView(item.value)}>{item.label}</button>;
 
       // TO DO: implement "About"
       default:
@@ -35,7 +35,7 @@ const Menu = props => {
   return (
     <ul className="Menu">
       {items.map(item => (
-        <li key={item.label} className={trendCompare === item.value ? 'active' : null}>
+        <li key={item.label} className={chartView === item.value ? 'active' : null}>
           {mapTypeToElement(item)}
         </li>
       ))}
@@ -44,8 +44,8 @@ const Menu = props => {
 };
 
 Menu.propTypes = {
-  toggleTrendCompare: PropTypes.func.isRequired,
-  trendCompare: pt.trendCompare.isRequired,
+  toggleChartView: PropTypes.func.isRequired,
+  chartView: pt.chartView.isRequired,
 };
 
 export default Menu;

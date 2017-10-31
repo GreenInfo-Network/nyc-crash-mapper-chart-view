@@ -147,7 +147,7 @@ const createInitialState = p => ({
     },
     reference: isValidRefGeo(p.reference),
   },
-  trendCompare: setValidView(p.view),
+  chartView: setValidView(p.view),
   filterType: setValidFilterTypes(p),
 });
 

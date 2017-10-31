@@ -25,6 +25,7 @@ window.d3 = d3;
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
+    chartView: pt.chartView.isRequired,
     dateRanges: pt.dateRanges.isRequired,
     isFetchingCharts: PropTypes.bool.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
@@ -35,8 +36,7 @@ class App extends Component {
     filterType: pt.filterType.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
-    trendCompare: pt.trendCompare.isRequired,
-    toggleTrendCompare: PropTypes.func.isRequired,
+    toggleChartView: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
   };
 
@@ -69,21 +69,36 @@ class App extends Component {
     }
   }
 
+  renderChartView() {
+    const { chartView, dateRanges, entityType, keyPrimary, keySecondary, width } = this.props;
+
+    switch (chartView) {
+      case 'trend':
+        return <LineChartsContainer />;
+
+      case 'compare':
+        return (
+          <DotGridChartsContainer
+            {...{ dateRanges, entityType, keyPrimary, keySecondary, width }}
+          />
+        );
+
+      case 'rank':
+        // TO DO: implement "rank" view
+        return null;
+
+      default:
+        return null;
+    }
+  }
+
   render() {
-    const {
-      dateRanges,
-      entityType,
-      trendCompare,
-      toggleTrendCompare,
-      width,
-      keyPrimary,
-      keySecondary,
-    } = this.props;
+    const { chartView, entityType, toggleChartView } = this.props;
 
     return (
       <div className="App grid-container">
         <div className="grid-area header">
-          <Header {...{ toggleTrendCompare, trendCompare }} />
+          <Header {...{ toggleChartView, chartView }} />
         </div>
         <div className="grid-area sparklines">
           <Sidebar {...{ entityType }} />
@@ -91,15 +106,7 @@ class App extends Component {
         <div className="grid-area timeline">
           <TimeLine />
         </div>
-        <div className="grid-area detailchart">
-          {trendCompare === 'trend' ? (
-            <LineChartsContainer />
-          ) : (
-            <DotGridChartsContainer
-              {...{ dateRanges, entityType, keyPrimary, keySecondary, width }}
-            />
-          )}
-        </div>
+        <div className="grid-area detailchart">{this.renderChartView()}</div>
         <div className="grid-area legend">
           <Legend />
         </div>
@@ -109,7 +116,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, dateRanges, entities, data, filterType, trendCompare } = state;
+  const { browser, chartView, dateRanges, entities, data, filterType } = state;
   const { isFetchingCharts } = data;
   const entityData = entityDataSelector(state);
 
@@ -123,7 +130,7 @@ const mapStateToProps = state => {
     keyPrimary: entities.primary.key,
     keySecondary: entities.secondary.key,
     filterType,
-    trendCompare,
+    chartView,
   };
 };
 

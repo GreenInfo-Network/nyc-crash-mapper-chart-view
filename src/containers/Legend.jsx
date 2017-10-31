@@ -5,11 +5,11 @@ import { deselectPrimaryEntity, deselectSecondaryEntity } from '../actions';
 import Legend from '../components/Legend/';
 
 const mapStateToProps = state => {
-  const { filterType, trendCompare, entities } = state;
+  const { filterType, chartView, entities } = state;
   return {
     entities,
     filterType,
-    trendCompare,
+    chartView,
   };
 };
 
