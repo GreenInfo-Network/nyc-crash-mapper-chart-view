@@ -14,7 +14,7 @@ const Menu = props => {
   ];
 
   const handleViewClick = value => {
-    // prevent unnecessary action creator from being triggered
+    // prevent action creator from being triggered unnecessary
     if (value !== chartView) {
       toggleChartView(value);
     }

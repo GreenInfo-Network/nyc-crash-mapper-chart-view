@@ -7,29 +7,46 @@
   list-style: none;
 
   li {
-    padding: 0;
+    position: relative;
+    padding: 0 10px;
     margin: 0;
-    margin-left: 20px;
+    margin-left: 10px;
     font-weight: normal;
+    cursor: pointer;
+    transition: all .3s;
+
+    &::before {
+      content: '';
+      height: 1px;
+      width: 0;
+      background-color: $marine-light;
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transition: all .3s;
+    }
+
+    &:hover::before {
+      left: 0;
+      width: 100%;
+    }
   }
 
   button,
   a {
     margin: 0;
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: normal;
-    color: $marine;
+    color: $marine-light;
 
     &.active {
+      color: $marine;
       font-weight: bold;
     }
 
     &:hover {
-      color: $marine-light;
-    }
-
-    &.active:hover {
       color: $marine;
     }
   }
