@@ -14,7 +14,7 @@ import { entitiesInitalState } from '../reducers/entitiesReducer';
 // valid strings for various parts of app state
 const validGeographies = ['borough', 'city_council', 'community_board', 'nta', 'nypd'];
 const validRefGeos = ['citywide', 'manhattan', 'bronx', 'queens', 'brooklyn', 'staten island'];
-const validViews = ['trend', 'compare'];
+const validViews = ['trend', 'compare', 'rank'];
 
 // set up some default / fallback dates
 const p1EndDefault = new Date();
