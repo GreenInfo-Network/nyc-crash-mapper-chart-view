@@ -11,7 +11,7 @@ export const date = PropTypes.instanceOf(Date);
 
 // a unique geographic entity which resides in store.entities.primary and store.entities.secondary
 export const entity = PropTypes.shape({
-  color: PropTypes.string.isRequired,
+  color: PropTypes.string,
   key,
   values: PropTypes.arrayOf(PropTypes.object),
 });

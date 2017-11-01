@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar/';
 import LineChartsContainer from '../components/LineCharts/LineChartsContainer';
 import DotGridChartsContainer from '../components/DotGridCharts/DotGridChartsContainer';
+import RankCards from '../components/RankCards/';
 import TimeLine from './TimeLine';
 import Legend from '../containers/Legend';
 
@@ -84,8 +85,7 @@ class App extends Component {
         );
 
       case 'rank':
-        // TO DO: implement "rank" view
-        return null;
+        return <RankCards {...{ entityType }} />;
 
       default:
         return null;
