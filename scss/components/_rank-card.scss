@@ -2,11 +2,21 @@
   display: inline-block;
   width: calc(25% - 10px);
   height: auto;
+  max-height: 150px;
   padding: 10px 10px 5px;
   margin: 5px;
   border: 1px solid $medium-grey;
 
   h6 {
     padding: 0;
+    text-transform: capitalize;
+  }
+
+  &.primary-active {
+    border: 3px solid $entity-primary;
+  }
+
+  &.secondary-active {
+    border: 3px solid $entity-secondary;
   }
 }
