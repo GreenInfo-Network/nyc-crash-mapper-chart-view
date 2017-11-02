@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default () => (
+const RankCardsControls = ({ handleRankClick, handleNameClick }) => (
   <div className="RankCardsControls">
     <div className="rank-controls-copy">
       <p>
@@ -14,9 +15,16 @@ export default () => (
       </div>
       <div className="rank-controls-btns">
         <h6>SORT</h6>
-        <button onClick={() => {}}>Name</button>
-        <button onClick={() => {}}>Rank</button>
+        <button onClick={() => handleNameClick()}>Name</button>
+        <button onClick={() => handleRankClick()}>Rank</button>
       </div>
     </div>
   </div>
 );
+
+RankCardsControls.propTypes = {
+  handleRankClick: PropTypes.func.isRequired,
+  handleNameClick: PropTypes.func.isRequired,
+};
+
+export default RankCardsControls;

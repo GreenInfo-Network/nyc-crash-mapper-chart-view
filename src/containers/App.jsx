@@ -39,6 +39,8 @@ class App extends Component {
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
     toggleChartView: PropTypes.func.isRequired,
+    sortEntitiesByName: PropTypes.func.isRequired,
+    sortEntitiesByRank: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
   };
 
@@ -94,7 +96,13 @@ class App extends Component {
   }
 
   render() {
-    const { chartView, entityType, toggleChartView } = this.props;
+    const {
+      chartView,
+      entityType,
+      toggleChartView,
+      sortEntitiesByRank,
+      sortEntitiesByName,
+    } = this.props;
 
     return (
       <div className="App grid-container">
@@ -105,7 +113,14 @@ class App extends Component {
           <Sidebar {...{ entityType }} />
         </div>
         <div className="grid-area timeline">
-          {chartView === 'rank' ? <RankCardsControls /> : <TimeLine />}
+          {chartView === 'rank' ? (
+            <RankCardsControls
+              handleNameClick={sortEntitiesByName}
+              handleRankClick={sortEntitiesByRank}
+            />
+          ) : (
+            <TimeLine />
+          )}
         </div>
         <div className="grid-area detailchart">{this.renderChartView()}</div>
         <div className="grid-area legend">
