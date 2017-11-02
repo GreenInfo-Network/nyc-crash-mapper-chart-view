@@ -20,34 +20,13 @@ class SparkLineContainer extends Component {
     super();
     this.state = {
       inputValue: '',
-      sortName: false,
-      sortRank: true,
-      sortAsc: false,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleBtnSortNameClick = this.handleBtnSortNameClick.bind(this);
-    this.handleBtnSortRankClick = this.handleBtnSortRankClick.bind(this);
   }
 
   handleChange(event) {
     this.setState({
       inputValue: event.target.value,
-    });
-  }
-
-  handleBtnSortNameClick() {
-    this.setState({
-      sortName: true,
-      sortAsc: !this.state.sortAsc,
-      sortRank: false,
-    });
-  }
-
-  handleBtnSortRankClick() {
-    this.setState({
-      sortRank: true,
-      sortAsc: !this.state.sortAsc,
-      sortName: false,
     });
   }
 
@@ -64,8 +43,6 @@ class SparkLineContainer extends Component {
             onChange={this.handleChange}
             type="text"
           />
-          <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
-          <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>
         <SparkLineList
           filterTerm={inputValue}

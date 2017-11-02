@@ -48,12 +48,11 @@ class Sidebar extends Component {
   computeSparkLineListHeight() {
     // the sparkline list & controller take up remaining sidebar height not used by the collapsable containers
     // as such its height needs to be calculated any time the 2 collapsable containers open/close
-    // but, those containers have headers at fixed heights which never close and 10px of padding-bottom
-    // hence the two extra 54
+    // but, those containers have headers at fixed heights which never close hence the two extra 43
     const { filterByTypeHeight, filterByBoundaryHeight } = this.state;
 
     if (this.sidebar) {
-      return this.sidebar.offsetHeight - filterByTypeHeight - filterByBoundaryHeight - 33 - 54 - 54;
+      return this.sidebar.offsetHeight - filterByTypeHeight - filterByBoundaryHeight - 43 - 43;
     }
     return null;
   }

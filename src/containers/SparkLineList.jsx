@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as d3 from 'd3';
 import classNames from 'classnames';
 
 import {
@@ -14,11 +13,6 @@ import {
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
-
-// TO DO: move these into the SparkLineList class?
-const margin = { top: 8, right: 10, bottom: 2, left: 10 };
-const width = 260 - margin.left - margin.right;
-const height = 45 - margin.top - margin.bottom;
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -68,27 +62,7 @@ class SparkLineList extends Component {
 
   constructor(props) {
     super(props);
-
     this.renderSparkLines = this.renderSparkLines.bind(this);
-
-    // x and y scales for drawing spark line paths
-    this.xScale = d3.scaleTime().range([0, width]);
-    this.yScale = d3.scaleLinear().range([height, 0]);
-
-    // svg path generator for drawing an area
-    this.area = d3
-      .area()
-      .x(d => this.xScale(d.year_month))
-      .y0(height)
-      .y1(d => this.yScale(d.total))
-      .curve(d3.curveMonotoneX);
-
-    // svg path generator for drawing a line
-    this.line = d3
-      .line()
-      .x(d => this.xScale(d.year_month))
-      .y(d => this.yScale(d.total))
-      .curve(d3.curveMonotoneX);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -128,47 +102,6 @@ class SparkLineList extends Component {
     return listItems;
   }
 
-  sortListItems(listItems) {
-    // Sort list items based on props relating to how things should be sorted
-    const { sortAsc, sortRank, sortName } = this.props;
-
-    // if sorting by rank and sort descending
-    if (sortRank && !sortAsc && listItems) {
-      listItems.sort((a, b) => {
-        if (a.props['data-rank-sort'] > b.props['data-rank-sort']) return 1;
-        if (a.props['data-rank-sort'] < b.props['data-rank-sort']) return -1;
-        return 0;
-      });
-    }
-
-    // if sorting by rank and sort ascending
-    if (sortRank && sortAsc && listItems) {
-      listItems.sort((a, b) => {
-        if (a.props['data-rank-sort'] > b.props['data-rank-sort']) return -1;
-        if (a.props['data-rank-sort'] < b.props['data-rank-sort']) return 1;
-        return 0;
-      });
-    }
-
-    // if sorting by name and sort descending
-    if (sortName && !sortAsc && listItems) {
-      listItems.sort((a, b) => {
-        if (a.props['data-name-sort'] > b.props['data-name-sort']) return 1;
-        if (a.props['data-name-sort'] < b.props['data-name-sort']) return -1;
-        return 0;
-      });
-    }
-
-    // if sorting by name and sort ascending
-    if (sortName && sortAsc && listItems) {
-      listItems.sort((a, b) => {
-        if (a.props['data-name-sort'] > b.props['data-name-sort']) return -1;
-        if (a.props['data-name-sort'] < b.props['data-name-sort']) return 1;
-        return 0;
-      });
-    }
-  }
-
   handleSparkLineClick(key) {
     // when a user clicks a sparkline list item, pass that entity's data off to the redux store
     // so that it may be used by the line and dot grid charts
@@ -200,15 +133,6 @@ class SparkLineList extends Component {
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
 
     if (!ranked.length) return null;
-
-    // set x-scale domain, assumes data is sorted by date
-    this.xScale.domain([
-      d3.min(ranked, d => d.values[0].year_month),
-      d3.max(ranked, d => d.values[d.values.length - 1].year_month),
-    ]);
-
-    // set y-scale domain
-    this.yScale.domain([0, d3.max(ranked, d => d.maxTotal)]);
 
     return ranked.map(entity => {
       const { key, rank } = entity;
@@ -250,7 +174,6 @@ class SparkLineList extends Component {
     const { sparkLineListHeight } = this.props;
     let listItems = this.renderSparkLines();
     listItems = this.filterListItems(listItems);
-    this.sortListItems(listItems);
 
     // NOTE: sparkLineListHeight is used to explicity set the height of the sparklines list so that it is scrollable if there are lots of list items
     // this value is calculated in the Sidebar parent component (Sidebar/index.jsx) and passed down
