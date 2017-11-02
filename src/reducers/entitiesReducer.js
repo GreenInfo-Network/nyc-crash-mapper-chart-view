@@ -5,6 +5,9 @@ import {
   SELECT_SECONDARY_ENTITY,
   DESELECT_SECONDARY_ENTITY,
   REFERENCE_ENTITY_SELECT,
+  ENTITIES_SORT_NAME,
+  ENTITIES_SORT_RANK,
+  ENTITIES_FILTER_NAME,
 } from '../common/actionTypes';
 
 export const entitiesInitalState = {
@@ -20,6 +23,9 @@ export const entitiesInitalState = {
   },
   entityType: 'city_council', // matches properties in store.data
   reference: 'citywide',
+  sortRank: true,
+  sortName: false,
+  sortAsc: false,
 };
 
 export default function(state = entitiesInitalState, action) {
@@ -72,6 +78,28 @@ export default function(state = entitiesInitalState, action) {
       return {
         ...state,
         reference: action.key,
+      };
+
+    case ENTITIES_SORT_RANK:
+      return {
+        ...state,
+        sortRank: true,
+        sortName: false,
+        sortAsc: !state.sortAsc,
+      };
+
+    case ENTITIES_SORT_NAME:
+      return {
+        ...state,
+        sortRank: false,
+        sortName: true,
+        sortAsc: !state.sortAsc,
+      };
+
+    case ENTITIES_FILTER_NAME:
+      return {
+        ...state,
+        filterTerm: action.term,
       };
 
     default:

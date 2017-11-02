@@ -7,6 +7,9 @@ export {
   selectSecondaryEntity,
   deselectSecondaryEntity,
   setReferenceEntity,
+  sortEntitiesByName,
+  sortEntitiesByRank,
+  filterEntitiesByName,
 } from './entityActions';
 
 export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';

@@ -5,6 +5,9 @@ import {
   SELECT_SECONDARY_ENTITY,
   DESELECT_SECONDARY_ENTITY,
   REFERENCE_ENTITY_SELECT,
+  ENTITIES_SORT_NAME,
+  ENTITIES_SORT_RANK,
+  ENTITIES_FILTER_NAME,
 } from '../common/actionTypes';
 
 // set the geography type
@@ -37,4 +40,17 @@ export const deselectSecondaryEntity = () => ({
 export const setReferenceEntity = key => ({
   type: REFERENCE_ENTITY_SELECT,
   key,
+});
+
+export const sortEntitiesByName = () => ({
+  type: ENTITIES_SORT_NAME,
+});
+
+export const sortEntitiesByRank = () => ({
+  type: ENTITIES_SORT_RANK,
+});
+
+export const filterEntitiesByName = term => ({
+  type: ENTITIES_FILTER_NAME,
+  term,
 });

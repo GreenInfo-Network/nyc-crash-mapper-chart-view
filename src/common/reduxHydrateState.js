@@ -136,6 +136,7 @@ const createInitialState = p => ({
     },
   },
   entities: {
+    ...entitiesInitalState,
     entityType: isValidGeo(p.geo),
     primary: {
       ...entitiesInitalState.primary, // keep other props (values, color, etc.)
