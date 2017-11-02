@@ -1,47 +1,22 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import * as pt from '../../common/reactPropTypeDefs';
 
-// Markup representing a "Card" that contains a rank, entity name, and sparkline
-const RankCard = props => {
-  const {
-    entity,
-    entityTypeDisplay,
-    rankTotal,
-    width,
-    height,
-    lineGenerator,
-    primaryKey,
-    secondaryKey,
-  } = props;
-  const { key, values, rank } = entity;
-  let label;
-
-  if (typeof +key === 'number') {
-    label = +key < 10 ? `0${key}` : key;
-  } else {
-    label = key;
+// Class a "Card" that contains a rank, entity name, and sparkline
+class RankCard extends Component {
+  constructor() {
+    super();
+    this.container = null; // ref to outter most div
   }
 
-  // class names for list items
-  const rankCardClassNames = classNames({
-    RankCard: true,
-    'primary-active': key === primaryKey,
-    'secondary-active': key === secondaryKey,
-  });
+  renderSVG() {
+    const { entity, lineGenerator, width } = this.props;
+    const { key, values } = entity;
+    const height = 50;
 
-  return (
-    <div
-      className={rankCardClassNames}
-      data-rank-sort={rank}
-      data-name-sort={key}
-      data-search={`city council ${label}`}
-    >
-      <h6
-        style={{ padding: 0 }}
-      >{`${entityTypeDisplay} ${label} – Rank: ${rank} / ${rankTotal}`}</h6>
+    return (
       <svg width={width} height={height}>
         <defs>
           <linearGradient id={`gradient-${key}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -69,9 +44,42 @@ const RankCard = props => {
           />
         </g>
       </svg>
-    </div>
-  );
-};
+    );
+  }
+
+  render() {
+    const { entity, entityTypeDisplay, rankTotal, primaryKey, secondaryKey } = this.props;
+    const { key, rank } = entity;
+    let label;
+
+    if (typeof +key === 'number') {
+      label = +key < 10 ? `0${key}` : key;
+    } else {
+      label = key;
+    }
+
+    // class names for list items
+    const rankCardClassNames = classNames({
+      RankCard: true,
+      'primary-active': key === primaryKey,
+      'secondary-active': key === secondaryKey,
+    });
+
+    return (
+      <div
+        className={rankCardClassNames}
+        ref={_ => {
+          this.container = _;
+        }}
+      >
+        <h6
+          style={{ padding: 0 }}
+        >{`${entityTypeDisplay} ${label} – Rank: ${rank} / ${rankTotal}`}</h6>
+        {this.renderSVG()}
+      </div>
+    );
+  }
+}
 
 RankCard.propTypes = {
   entity: pt.entity,

@@ -75,6 +75,19 @@ class RankCardsList extends Component {
       .curve(d3.curveMonotoneX);
 
     this.renderRankCards = this.renderRankCards.bind(this);
+    this.container = null;
+  }
+
+  getContainerSize() {
+    // set the width and height of the svg from the parent div's width height, which is set via CSS
+    const bcr = this.container ? this.container.getBoundingClientRect() : null;
+    const cWidth = bcr ? Math.floor(bcr.width) - 20 : 0;
+    const cHeight = bcr ? Math.floor(bcr.height) - 40 : 0;
+
+    return {
+      height: cHeight,
+      width: cWidth,
+    };
   }
 
   filterListItems(listItems) {
@@ -85,7 +98,9 @@ class RankCardsList extends Component {
     if (listItems && filterTerm !== '') {
       listItems = listItems.filter(li => {
         const { props } = li;
-        return props['data-search'].toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1;
+        const { entity, entityTypeDisplay } = props;
+        const searchTerm = `${entityTypeDisplay} ${entity.key}`;
+        return searchTerm.toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1;
       });
     }
 
@@ -96,11 +111,14 @@ class RankCardsList extends Component {
     // Sort list items based on props relating to how things should be sorted
     const { sortAsc, sortRank, sortName } = this.props;
 
+    // eslint-disable-next-line
+    // debugger;
+
     // if sorting by rank and sort descending
     if (sortRank && !sortAsc && listItems) {
       listItems.sort((a, b) => {
-        if (a.props['data-rank-sort'] > b.props['data-rank-sort']) return 1;
-        if (a.props['data-rank-sort'] < b.props['data-rank-sort']) return -1;
+        if (a.props.entity.rank > b.props.entity.rank) return 1;
+        if (a.props.entity.rank < b.props.entity.rank) return -1;
         return 0;
       });
     }
@@ -108,8 +126,8 @@ class RankCardsList extends Component {
     // if sorting by rank and sort ascending
     if (sortRank && sortAsc && listItems) {
       listItems.sort((a, b) => {
-        if (a.props['data-rank-sort'] > b.props['data-rank-sort']) return -1;
-        if (a.props['data-rank-sort'] < b.props['data-rank-sort']) return 1;
+        if (a.props.entity.rank > b.props.entity.rank) return -1;
+        if (a.props.entity.rank < b.props.entity.rank) return 1;
         return 0;
       });
     }
@@ -117,8 +135,8 @@ class RankCardsList extends Component {
     // if sorting by name and sort descending
     if (sortName && !sortAsc && listItems) {
       listItems.sort((a, b) => {
-        if (a.props['data-name-sort'] > b.props['data-name-sort']) return 1;
-        if (a.props['data-name-sort'] < b.props['data-name-sort']) return -1;
+        if (a.props.entity.key > b.props.entity.key) return 1;
+        if (a.props.entity.key < b.props.entity.key) return -1;
         return 0;
       });
     }
@@ -126,8 +144,8 @@ class RankCardsList extends Component {
     // if sorting by name and sort ascending
     if (sortName && sortAsc && listItems) {
       listItems.sort((a, b) => {
-        if (a.props['data-name-sort'] > b.props['data-name-sort']) return -1;
-        if (a.props['data-name-sort'] < b.props['data-name-sort']) return 1;
+        if (a.props.entity.key > b.props.entity.key) return -1;
+        if (a.props.entity.key < b.props.entity.key) return 1;
         return 0;
       });
     }
@@ -137,7 +155,7 @@ class RankCardsList extends Component {
     // eslint-disable-next-line
     const { entityType, primary, secondary, ranked, response } = this.props;
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
-    const width = this.width;
+    const { width } = this.getContainerSize();
     const height = this.height;
     const line = this.line;
 
@@ -159,7 +177,7 @@ class RankCardsList extends Component {
         entityTypeDisplay={entityTypeDisplay}
         rankTotal={ranked.length}
         lineGenerator={line}
-        width={width}
+        width={width / 4}
         height={height}
         primaryKey={primary.key}
         secondaryKey={secondary.key}
@@ -172,7 +190,16 @@ class RankCardsList extends Component {
     listItems = this.filterListItems(listItems);
     this.sortListItems(listItems);
 
-    return <div className="RankCardsList scroll">{listItems}</div>;
+    return (
+      <div
+        className="RankCardsList scroll"
+        ref={_ => {
+          this.container = _;
+        }}
+      >
+        {listItems}
+      </div>
+    );
   }
 }
 
