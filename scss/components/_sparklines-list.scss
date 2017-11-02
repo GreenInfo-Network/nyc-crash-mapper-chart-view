@@ -5,9 +5,15 @@
   padding-bottom: 25px;
 
   .sparkline-list-item {
-    display: inline-block;
-    padding: 0 5px;
+    display: block;
+    padding: 0 5px 5px 10px;
+    margin-right: 10px;
+    border-bottom: 1px solid $medium-grey;
     cursor: pointer;
+
+    &:last-child {
+      border-bottom: 0;
+    }
 
     h6 {
       text-transform: capitalize;
