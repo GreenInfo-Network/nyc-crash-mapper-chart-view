@@ -19,20 +19,12 @@ class RankCardsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: '',
       sortName: false,
       sortRank: true,
       sortAsc: false,
     };
-    this.handleChange = this.handleChange.bind(this);
     this.handleBtnSortNameClick = this.handleBtnSortNameClick.bind(this);
     this.handleBtnSortRankClick = this.handleBtnSortRankClick.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({
-      inputValue: event.target.value,
-    });
   }
 
   handleBtnSortNameClick() {
@@ -52,18 +44,11 @@ class RankCardsContainer extends Component {
   }
 
   render() {
-    const { entityType } = this.props;
     const { inputValue, sortName, sortRank, sortAsc } = this.state;
 
     return (
       <div className="RankCardsContainer">
         <div className="rankcards-controls">
-          <input
-            placeholder={`Search a ${entityType.replace(/_/, ' ')}`}
-            value={inputValue}
-            onChange={this.handleChange}
-            type="text"
-          />
           <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
           <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
         </div>
