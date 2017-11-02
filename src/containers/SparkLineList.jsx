@@ -43,9 +43,6 @@ class SparkLineList extends Component {
     ranked: PropTypes.arrayOf(PropTypes.object).isRequired,
     response: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
-    sortName: PropTypes.bool.isRequired,
-    sortRank: PropTypes.bool.isRequired,
-    sortAsc: PropTypes.bool.isRequired,
     selectPrimaryEntity: PropTypes.func.isRequired,
     deselectPrimaryEntity: PropTypes.func.isRequired,
     selectSecondaryEntity: PropTypes.func.isRequired,
@@ -134,40 +131,53 @@ class SparkLineList extends Component {
 
     if (!ranked.length) return null;
 
-    return ranked.map(entity => {
-      const { key, rank } = entity;
-      let label;
+    // resorting ranked here in case we decide to add sorting back later
+    return ranked
+      .sort((a, b) => {
+        if (typeof a.key === 'number') {
+          return a.key - b.key;
+        }
 
-      if (typeof +key === 'number') {
-        label = +key < 10 ? `0${key}` : key;
-      } else {
-        label = key;
-      }
+        if (a.key > b.key) {
+          return 1;
+        }
 
-      // class names for list items
-      const listItemClass = classNames({
-        'sparkline-list-item': true,
-        'primary-active': key === primary.key,
-        'secondary-active': key === secondary.key,
+        if (a.key < b.key) {
+          return -1;
+        }
+
+        return 0;
+      })
+      .map(entity => {
+        const { key } = entity;
+        let label;
+
+        if (typeof +key === 'number') {
+          label = +key < 10 ? `0${key}` : key;
+        } else {
+          label = key;
+        }
+
+        // class names for list items
+        const listItemClass = classNames({
+          'sparkline-list-item': true,
+          'primary-active': key === primary.key,
+          'secondary-active': key === secondary.key,
+        });
+
+        return (
+          // store some data-xxx properties so we can filter on them later
+          // eslint-disable-next-line
+          <li
+            key={label}
+            data-search={`city council ${label}`}
+            className={listItemClass}
+            onClick={() => this.handleSparkLineClick(key)}
+          >
+            <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label}`}</h6>
+          </li>
+        );
       });
-
-      return (
-        // store some data-xxx properties so we can filter on them later
-        // eslint-disable-next-line
-        <li
-          key={key}
-          data-rank-sort={rank}
-          data-name-sort={key}
-          data-search={`city council ${label}`}
-          className={listItemClass}
-          onClick={() => this.handleSparkLineClick(key)}
-        >
-          <h6 style={{ padding: 0 }}>
-            {`${entityTypeDisplay} ${label} – Rank: ${rank} / ${ranked.length}`}
-          </h6>
-        </li>
-      );
-    });
   }
 
   render() {
