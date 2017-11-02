@@ -6,16 +6,19 @@ import * as d3 from 'd3';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
+import styleVars from '../common/styleVars';
 
 import RankCard from '../components/RankCards/RankCard';
 
 const mapStateToProps = state => {
-  const { entities, filterType } = state;
+  const { browser, entities, filterType } = state;
+  const { width } = browser;
   const { entityType } = entities;
   const { response } = entityDataSelector(state);
   const ranked = response && response.length ? rankedListSelector(state) : null;
 
   return {
+    appWidth: width,
     entityType,
     filterType,
     response,
@@ -27,6 +30,7 @@ const mapStateToProps = state => {
 
 class RankCardsList extends Component {
   static propTypes = {
+    appWidth: PropTypes.number.isRequired,
     entityType: PropTypes.string,
     filterType: pt.filterType.isRequired,
     primary: pt.entity.isRequired,
@@ -49,31 +53,6 @@ class RankCardsList extends Component {
 
   constructor(props) {
     super(props);
-
-    // tmp margins & dimensions, will depend on card size
-    this.margin = { top: 8, right: 10, bottom: 2, left: 10 };
-    this.width = 260 - this.margin.left - this.margin.right;
-    this.height = 45 - this.margin.top - this.margin.bottom;
-
-    // x and y scales for drawing spark line paths
-    this.xScale = d3.scaleTime().range([0, this.width]);
-    this.yScale = d3.scaleLinear().range([this.height, 0]);
-
-    // svg path generator for drawing an area
-    this.area = d3
-      .area()
-      .x(d => this.xScale(d.year_month))
-      .y0(this.height)
-      .y1(d => this.yScale(d.total))
-      .curve(d3.curveMonotoneX);
-
-    // svg path generator for drawing a line
-    this.line = d3
-      .line()
-      .x(d => this.xScale(d.year_month))
-      .y(d => this.yScale(d.total))
-      .curve(d3.curveMonotoneX);
-
     this.renderRankCards = this.renderRankCards.bind(this);
     this.container = null;
   }
@@ -152,37 +131,60 @@ class RankCardsList extends Component {
   }
 
   renderRankCards() {
-    // eslint-disable-next-line
-    const { entityType, primary, secondary, ranked, response } = this.props;
+    const { appWidth, entityType, primary, secondary, ranked } = this.props;
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
-    const { width } = this.getContainerSize();
-    const height = this.height;
-    const line = this.line;
+    // we have to pass a width down to the cards because SVG features require dimensions in pixels, not percentages
+    // and the first render of the RankCard will not be able to compute it's own height
+    // account for padding-left, padding-right & scrollbar width
+    const cardWidth = (appWidth - styleVars['app-column-right'] - 40 - 10) / 4;
+    // account for card margins & padding & border
+    const svgWidth = Math.floor(cardWidth - 10 - 20 - 2);
+    const svgHeight = 50;
+    const strokeWidth = 2;
+    const chartHeight = svgHeight - strokeWidth * 2;
 
     if (!ranked.length) return null;
 
-    // set x-scale domain, assumes data is sorted by date
-    this.xScale.domain([
-      d3.min(ranked, d => d.values[0].year_month),
-      d3.max(ranked, d => d.values[d.values.length - 1].year_month),
-    ]);
+    // set x-scale domain & range, assumes values are sorted by date
+    const xScale = d3
+      .scaleTime()
+      .range([0, svgWidth])
+      .domain([
+        d3.min(ranked, d => d.values[0].year_month),
+        d3.max(ranked, d => d.values[d.values.length - 1].year_month),
+      ]);
 
-    // set y-scale domain
-    this.yScale.domain([0, d3.max(ranked, d => d.maxTotal)]);
+    // set y-scale domain & range
+    const yScale = d3
+      .scaleLinear()
+      .range([chartHeight, 0])
+      .domain([0, d3.max(ranked, d => d.maxTotal)]);
 
-    return ranked.map(entity => (
-      <RankCard
-        key={entity.key}
-        entity={entity}
-        entityTypeDisplay={entityTypeDisplay}
-        rankTotal={ranked.length}
-        lineGenerator={line}
-        width={width / 4}
-        height={height}
-        primaryKey={primary.key}
-        secondaryKey={secondary.key}
-      />
-    ));
+    const linePathGenerator = d3
+      .line()
+      .x(d => xScale(d.year_month))
+      .y(d => yScale(d.total))
+      .curve(d3.curveMonotoneX);
+
+    return ranked.map(entity => {
+      const path = linePathGenerator(entity.values);
+      return (
+        <RankCard
+          key={entity.key}
+          entity={entity}
+          entityTypeDisplay={entityTypeDisplay}
+          rankTotal={ranked.length}
+          lineGenerator={linePathGenerator}
+          svgWidth={svgWidth}
+          svgHeight={svgHeight}
+          chartHeight={chartHeight}
+          strokeWidth={strokeWidth}
+          primaryKey={primary.key}
+          secondaryKey={secondary.key}
+          path={path}
+        />
+      );
+    });
   }
 
   render() {

@@ -1,6 +1,12 @@
 .RankCard {
   display: inline-block;
-  width: 25%;
-  height: 100px;
-  padding: 10px;
+  width: calc(25% - 10px);
+  height: auto;
+  padding: 10px 10px 5px;
+  margin: 5px;
+  border: 1px solid $medium-grey;
+
+  h6 {
+    padding: 0;
+  }
 }
