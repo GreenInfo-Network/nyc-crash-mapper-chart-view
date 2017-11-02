@@ -90,9 +90,6 @@ class RankCardsList extends Component {
     // Sort list items based on props relating to how things should be sorted
     const { sortAsc, sortRank, sortName } = this.props;
 
-    // eslint-disable-next-line
-    // debugger;
-
     // if sorting by rank and sort descending
     if (sortRank && !sortAsc && listItems) {
       listItems.sort((a, b) => {

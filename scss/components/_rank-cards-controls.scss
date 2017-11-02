@@ -1,0 +1,22 @@
+.RankCardsControls {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  h6,
+  p {
+    padding: 0;
+    margin: 0;
+  }
+
+  .rank-controls-dates-sort {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rank-controls-btns {
+    * {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  }
+}

@@ -13,6 +13,7 @@ import LineChartsContainer from '../components/LineCharts/LineChartsContainer';
 import DotGridChartsContainer from '../components/DotGridCharts/DotGridChartsContainer';
 import RankCards from '../components/RankCards/';
 import TimeLine from './TimeLine';
+import RankCardsControls from '../components/RankCards/RankCardsControls';
 import Legend from '../containers/Legend';
 
 // for debugging & messing around
@@ -104,7 +105,7 @@ class App extends Component {
           <Sidebar {...{ entityType }} />
         </div>
         <div className="grid-area timeline">
-          <TimeLine />
+          {chartView === 'rank' ? <RankCardsControls /> : <TimeLine />}
         </div>
         <div className="grid-area detailchart">{this.renderChartView()}</div>
         <div className="grid-area legend">

@@ -48,10 +48,6 @@ class RankCardsContainer extends Component {
 
     return (
       <div className="RankCardsContainer">
-        <div className="rankcards-controls">
-          <button onClick={this.handleBtnSortNameClick}>Sort Name</button>
-          <button onClick={this.handleBtnSortRankClick}>Sort Rank</button>
-        </div>
         <RankCardsList filterTerm={inputValue} {...{ sortName, sortRank, sortAsc }} />
       </div>
     );
