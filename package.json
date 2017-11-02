@@ -49,6 +49,7 @@
     "single-line-string": "^0.0.2"
   },
   "devDependencies": {
+    "@epegzz/sass-vars-loader": "^2.0.2",
     "autoprefixer": "^7.1.2",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",

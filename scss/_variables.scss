@@ -32,6 +32,7 @@ $hr-border: $off-white !default;
 $border-radius: 4px !default;
 
 // Additional Breakpoints
+//––––––––––––––––––––––––––––––––––––––––––––––––––
 $bp-narrow-width: "max-width: 1000px" !default;
 
 // Typography
@@ -79,7 +80,7 @@ $legend-height: 65px !default;
 $line-chart-container-height: calc(100% - #{$header-height} - #{$timeline-height} - #{$legend-height});
 
 $options-filters-height: 100% !default;
-$options-filters-width: 300px !default;
+$options-filters-width: #{$app-column-right}px !default; // imported via styleVars.json
 
 $toggle-width: 130px !default; // width of the trend & compare toggle
 

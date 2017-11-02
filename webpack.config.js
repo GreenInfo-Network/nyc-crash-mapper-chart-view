@@ -66,6 +66,15 @@ module.exports = {
           {
             loader: 'sass-loader', // compiles Sass to CSS
           },
+          // allows for importing variables via JS or JSON files
+          {
+            loader: "@epegzz/sass-vars-loader",
+            options: {
+              files: [
+                path.resolve(__dirname, 'src/common/styleVars.js'),
+              ],
+            },
+          },
         ],
       },
       // allows for using ES6 import for JSON and GeoJSON files, no async loading!

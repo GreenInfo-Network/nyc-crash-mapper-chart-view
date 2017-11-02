@@ -63,6 +63,14 @@ module.exports = {
             {
               loader: 'sass-loader',
             },
+            {
+              loader: "@epegzz/sass-vars-loader",
+              options: {
+                files: [
+                  path.resolve(__dirname, 'src/common/styleVars.js'),
+                ],
+              },
+            },
           ],
           fallback: [
             {
