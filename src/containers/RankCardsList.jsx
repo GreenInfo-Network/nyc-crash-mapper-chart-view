@@ -13,7 +13,7 @@ import RankCard from '../components/RankCards/RankCard';
 const mapStateToProps = state => {
   const { browser, entities, filterType } = state;
   const { width } = browser;
-  const { entityType, sortName, sortRank, sortAsc } = entities;
+  const { entityType, sortName, sortRank, sortAsc, filterTerm } = entities;
   const { response } = entityDataSelector(state);
   const ranked = response && response.length ? rankedListSelector(state) : null;
 
@@ -24,6 +24,7 @@ const mapStateToProps = state => {
     sortRank,
     sortAsc,
     filterType,
+    filterTerm,
     response,
     ranked: ranked || [],
     primary: entities.primary,

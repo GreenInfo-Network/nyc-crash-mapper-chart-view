@@ -33,6 +33,7 @@ class App extends Component {
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
+    filterTerm: PropTypes.string,
     keyPrimary: pt.key,
     keySecondary: pt.key,
     filterType: pt.filterType.isRequired,
@@ -41,6 +42,7 @@ class App extends Component {
     toggleChartView: PropTypes.func.isRequired,
     sortEntitiesByName: PropTypes.func.isRequired,
     sortEntitiesByRank: PropTypes.func.isRequired,
+    filterEntitiesByName: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
   };
 
@@ -48,6 +50,7 @@ class App extends Component {
     entityData: [],
     entitiesNested: [],
     entityType: '',
+    filterTerm: '',
     keyPrimary: '',
     keySecondary: '',
   };
@@ -102,6 +105,8 @@ class App extends Component {
       toggleChartView,
       sortEntitiesByRank,
       sortEntitiesByName,
+      filterEntitiesByName,
+      filterTerm,
     } = this.props;
 
     return (
@@ -110,7 +115,7 @@ class App extends Component {
           <Header {...{ toggleChartView, chartView }} />
         </div>
         <div className="grid-area sparklines">
-          <Sidebar {...{ entityType }} />
+          <Sidebar {...{ entityType, filterTerm, filterEntitiesByName }} />
         </div>
         <div className="grid-area timeline">
           {chartView === 'rank' ? (
@@ -146,6 +151,7 @@ const mapStateToProps = state => {
     keyPrimary: entities.primary.key,
     keySecondary: entities.secondary.key,
     filterType,
+    filterTerm: entities.filterTerm,
     chartView,
   };
 };

@@ -9,10 +9,13 @@ import FilterByBoundary from '../../containers/FilterByBoundary';
 class Sidebar extends Component {
   static propTypes = {
     entityType: PropTypes.string,
+    filterTerm: PropTypes.string,
+    filterEntitiesByName: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     entityType: '',
+    filterTerm: '',
   };
 
   constructor() {
@@ -58,7 +61,7 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { entityType } = this.props;
+    const { entityType, filterTerm, filterEntitiesByName } = this.props;
     const sparkLineListHeight = this.computeSparkLineListHeight();
 
     return (
@@ -100,7 +103,9 @@ class Sidebar extends Component {
           optionsContainerHeight={sparkLineListHeight}
           collapseHeight={sparkLineListHeight}
         >
-          <SparkLineListController {...{ entityType, sparkLineListHeight }} />
+          <SparkLineListController
+            {...{ entityType, filterTerm, sparkLineListHeight, filterEntitiesByName }}
+          />
         </OptionsContainer>
       </div>
     );

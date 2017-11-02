@@ -16,13 +16,14 @@ import * as pt from '../common/reactPropTypeDefs';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
-  const { entityType } = entities;
+  const { entityType, filterTerm } = entities;
   const { response } = entityDataSelector(state);
   const ranked = response && response.length ? rankedListSelector(state) : null;
 
   return {
     entityType,
     filterType,
+    filterTerm,
     response,
     ranked: ranked || [],
     primary: entities.primary,
