@@ -145,6 +145,8 @@ class RankCardsList extends Component {
 
     if (!ranked.length) return null;
 
+    const total = ranked.length;
+
     // set x-scale domain & range, assumes values are sorted by date
     const xScale = d3
       .scaleTime()
@@ -173,8 +175,7 @@ class RankCardsList extends Component {
           key={entity.key}
           entity={entity}
           entityTypeDisplay={entityTypeDisplay}
-          rankTotal={ranked.length}
-          lineGenerator={linePathGenerator}
+          rankTotal={total}
           svgWidth={svgWidth}
           svgHeight={svgHeight}
           chartHeight={chartHeight}

@@ -77,7 +77,6 @@ RankCard.propTypes = {
   entity: pt.entity,
   entityTypeDisplay: PropTypes.string,
   rankTotal: PropTypes.number,
-  lineGenerator: PropTypes.func.isRequired,
   strokeWidth: PropTypes.number.isRequired,
   svgWidth: PropTypes.number,
   svgHeight: PropTypes.number,
