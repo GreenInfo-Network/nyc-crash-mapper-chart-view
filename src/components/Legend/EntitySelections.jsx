@@ -14,6 +14,7 @@ class EntitySelections extends Component {
     chartView: PropTypes.string.isRequired,
     entityType: pt.key,
     primary: pt.entity,
+    reference: PropTypes.string.isRequired,
     secondary: pt.entity,
     deselectPrimaryEntity: PropTypes.func.isRequired,
     deselectSecondaryEntity: PropTypes.func.isRequired,
@@ -31,6 +32,7 @@ class EntitySelections extends Component {
       entityType,
       primary,
       secondary,
+      reference,
       deselectPrimaryEntity,
       deselectSecondaryEntity,
     } = this.props;
@@ -40,7 +42,7 @@ class EntitySelections extends Component {
         {chartView !== 'rank' && (
           <EntitySelector
             color={styleVars['reference-color']}
-            entityType={'City Wide'}
+            entityType={reference}
             entity={' '}
           />
         )}
