@@ -160,7 +160,7 @@ class RankCardsList extends Component {
     // set y-scale domain & range
     const yScale = d3
       .scaleLinear()
-      .range([chartHeight, 0])
+      .range([chartHeight, strokeWidth])
       .domain([0, d3.max(ranked, d => d.maxTotal)]);
 
     const linePathGenerator = d3

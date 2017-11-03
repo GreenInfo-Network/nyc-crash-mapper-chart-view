@@ -12,7 +12,7 @@ class RankCard extends Component {
   }
 
   renderSVG() {
-    const { entity, svgWidth, svgHeight, chartHeight, strokeWidth, path } = this.props;
+    const { entity, svgWidth, svgHeight, strokeWidth, path } = this.props;
     const { key } = entity;
 
     return (
@@ -28,7 +28,7 @@ class RankCard extends Component {
             x="0"
             y="0"
             width={Math.floor(svgWidth + strokeWidth * 2)}
-            height={chartHeight}
+            height={svgHeight + strokeWidth * 2}
           >
             <path fill="none" strokeWidth={strokeWidth} stroke="#ffeda0" d={path} />
           </mask>
@@ -48,7 +48,7 @@ class RankCard extends Component {
 
   render() {
     const { entity, entityTypeDisplay, rankTotal, primaryKey, secondaryKey } = this.props;
-    const { key, rank } = entity;
+    const { key, rank, totalInjured, totalKilled } = entity;
     let label;
 
     if (typeof +key === 'number') {
@@ -71,8 +71,11 @@ class RankCard extends Component {
           this.container = _;
         }}
       >
-        <h6>{`${rank} / ${rankTotal}`}</h6>
-        <h6>{`${entityTypeDisplay} ${label}`}</h6>
+        <h6>
+          <span className="rank-pos">{rank}</span> / {rankTotal}
+        </h6>
+        <h6 className="rank-entity-type">{`${entityTypeDisplay} ${label}`}</h6>
+        <p>{`${totalInjured} injuries, ${totalKilled} fatalities`}</p>
         {this.renderSVG()}
       </div>
     );

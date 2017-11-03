@@ -2,7 +2,7 @@
   display: inline-block;
   width: calc(25% - 10px);
   height: auto;
-  max-height: 150px;
+  // max-height: 150px;
   padding: 10px 10px 5px;
   margin: 5px;
   border: 1px solid $medium-grey;
@@ -10,6 +10,19 @@
   h6 {
     padding: 0;
     text-transform: capitalize;
+
+    .rank-pos {
+      font-size: 2.2rem;
+      font-weight: bold;
+    }
+
+    &.rank-entity-type {
+      font-size: 1.8rem;
+    }
+  }
+
+  p {
+    font-size: 1.2rem;
   }
 
   &.primary-active {
