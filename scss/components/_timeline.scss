@@ -14,15 +14,17 @@
   .axis {
     text {
       font: 11px sans-serif;
+      fill: $light-grey;
     }
 
     path {
       display: none;
+      fill: none;
     }
 
     line {
       fill: none;
-      stroke: #000;
+      stroke: $ui-grey;
       shape-rendering: crispEdges;
     }
   }
@@ -31,27 +33,35 @@
     fill: #ddd;
   }
 
-  .grid line,
-  .grid path {
-    fill: none;
-    stroke: #fff;
-    shape-rendering: crispEdges;
+  .grid {
+    line,
+    path {
+      fill: none;
+      stroke: $ui-grey;
+      shape-rendering: crispEdges;
+    }
+
+    .tick line {
+      stroke: $ui-grey;
+    }
+
+    .minor.tick line {
+      stroke-opacity: .5;
+    }
   }
 
-  .grid .minor.tick line {
-    stroke-opacity: .5;
-  }
+  .brush {
+    .extent {
+      stroke: #000;
+      fill-opacity: .125;
+      shape-rendering: crispEdges;
+    }
 
-  .brush .extent {
-    stroke: #000;
-    fill-opacity: .125;
-    shape-rendering: crispEdges;
-  }
-
-  .brush .brush-label {
-    font-size: 1.3rem;
-    font-weight: bold;
-    fill: #333;
-    text-transform: uppercase;
+    .brush-label {
+      font-size: 1.3rem;
+      font-weight: bold;
+      fill: $marine;
+      text-transform: uppercase;
+    }
   }
 }
