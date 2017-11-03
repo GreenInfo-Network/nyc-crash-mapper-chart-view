@@ -23,7 +23,13 @@ class RankCard extends Component {
             <stop offset="50%" stopColor="#feb24c" />
             <stop offset="100%" stopColor="#ffeda0" />
           </linearGradient>
-          <mask id={`mask-${key}`} x="0" y="0" width={Math.floor(svgWidth)} height={chartHeight}>
+          <mask
+            id={`mask-${key}`}
+            x="0"
+            y="0"
+            width={Math.floor(svgWidth + strokeWidth * 2)}
+            height={chartHeight}
+          >
             <path fill="none" strokeWidth={strokeWidth} stroke="#ffeda0" d={path} />
           </mask>
         </defs>
@@ -32,7 +38,7 @@ class RankCard extends Component {
             x="0"
             y={-strokeWidth}
             width={svgWidth}
-            height={chartHeight}
+            height={svgHeight}
             style={{ stroke: 'none', fill: `url("#gradient-${key}")`, mask: `url("#mask-${key}")` }}
           />
         </g>
