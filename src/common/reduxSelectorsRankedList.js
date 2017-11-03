@@ -9,8 +9,8 @@ import { createSelector } from 'reselect';
 import * as d3 from 'd3';
 import { entityDataSelector, filterTypeFieldsSelector, entityTypeSelector } from './reduxSelectors';
 
-// memoized selector that filters entity data by last 3 years, using previous month of latest date in dataset
-const lastThreeYearsSelector = createSelector(entityDataSelector, data => {
+// memoized selector that returns dates for 1. the previous full month of data and 2. 36 months prior to that
+export const lastThreeYearsSelector = createSelector(entityDataSelector, data => {
   const { response } = data;
   const latestDate = response[response.length - 1].year_month;
   const thisMonth = new Date(latestDate);
@@ -18,12 +18,26 @@ const lastThreeYearsSelector = createSelector(entityDataSelector, data => {
   const threeYearsAgo = new Date(thisMonth);
   threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
 
-  return response.filter(d => d.year_month >= threeYearsAgo && d.year_month < thisMonth);
+  return {
+    endDate: thisMonth,
+    startDate: threeYearsAgo,
+  };
 });
+
+// memoized selector that filters entity data by last 3 years, using previous month of latest date in dataset
+const filterLastThreeYearsSelector = createSelector(
+  lastThreeYearsSelector,
+  entityDataSelector,
+  (dates, data) => {
+    const { endDate, startDate } = dates;
+    const { response } = data;
+    return response.filter(d => d.year_month >= startDate && d.year_month < endDate);
+  }
+);
 
 // memoized selector that fitlers the last 3 years of data by active crash types
 const lastThreeYearsFilteredByType = createSelector(
-  lastThreeYearsSelector,
+  filterLastThreeYearsSelector,
   filterTypeFieldsSelector,
   entityTypeSelector,
   (values, fields, entityType) =>
