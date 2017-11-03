@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { formatDate } from '../../common/d3Utils';
 
-const RankCardsControls = ({ handleRankClick, handleNameClick }) => (
+const RankCardsControls = ({ handleRankClick, handleNameClick, dateRanges }) => (
   <div className="RankCardsControls">
     <div className="rank-controls-copy">
       <p>
@@ -11,7 +12,9 @@ const RankCardsControls = ({ handleRankClick, handleNameClick }) => (
     </div>
     <div className="rank-controls-dates-sort">
       <div className="rank-controls-date-range">
-        <h6>MM/YY — MM/YY</h6>
+        {dateRanges && (
+          <h6>{`${formatDate(dateRanges.startDate)} — ${formatDate(dateRanges.endDate)}`}</h6>
+        )}
       </div>
       <div className="rank-controls-btns">
         <h6>SORT</h6>
@@ -25,6 +28,11 @@ const RankCardsControls = ({ handleRankClick, handleNameClick }) => (
 RankCardsControls.propTypes = {
   handleRankClick: PropTypes.func.isRequired,
   handleNameClick: PropTypes.func.isRequired,
+  dateRanges: PropTypes.shape({}),
+};
+
+RankCardsControls.defaultProps = {
+  dateRanges: null,
 };
 
 export default RankCardsControls;

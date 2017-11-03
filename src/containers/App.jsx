@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 
 import * as actions from '../actions';
 import { entityDataSelector } from '../common/reduxSelectors';
+import { lastThreeYearsSelector } from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
 
 import Header from '../components/Header';
@@ -29,6 +30,7 @@ class App extends Component {
     entityData: PropTypes.arrayOf(PropTypes.object),
     chartView: pt.chartView.isRequired,
     dateRanges: pt.dateRanges.isRequired,
+    dateRangesRank: PropTypes.shape({}),
     isFetchingCharts: PropTypes.bool.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
@@ -47,6 +49,7 @@ class App extends Component {
   };
 
   static defaultProps = {
+    dateRangesRank: null,
     entityData: [],
     entitiesNested: [],
     entityType: '',
@@ -101,6 +104,7 @@ class App extends Component {
   render() {
     const {
       chartView,
+      dateRangesRank,
       entityType,
       toggleChartView,
       sortEntitiesByRank,
@@ -122,6 +126,7 @@ class App extends Component {
             <RankCardsControls
               handleNameClick={sortEntitiesByName}
               handleRankClick={sortEntitiesByRank}
+              dateRanges={dateRangesRank}
             />
           ) : (
             <TimeLine />
@@ -144,6 +149,7 @@ const mapStateToProps = state => {
   return {
     width: browser.width,
     height: browser.height,
+    dateRangesRank: entityData.response.length ? lastThreeYearsSelector(state) : null,
     dateRanges,
     isFetchingCharts,
     entityData: entityData.response,
