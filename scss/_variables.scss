@@ -12,8 +12,8 @@ $ui-text-teal: #d2eaec !default;
 $ui-text-grey: #ddd !default;
 
 // primary and secondary entity colors
-$entity-primary: #393b79 !default;
-$entity-secondary: #843c39 !default;
+$entity-primary: $primary-color !default; // shared JS value from styleVars.js
+$entity-secondary: $secondary-color !default; // shared JS value from styleVars.js
 $entity-citywide: #999 !default;
 
 // possible UI color values

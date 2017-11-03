@@ -10,14 +10,16 @@ import {
   ENTITIES_FILTER_NAME,
 } from '../common/actionTypes';
 
+import styleVars from '../common/styleVars';
+
 export const entitiesInitalState = {
   primary: {
-    color: '#393B79',
+    color: styleVars['primary-color'],
     key: null,
     values: [],
   },
   secondary: {
-    color: '#843C39',
+    color: styleVars['secondary-color'],
     key: null,
     values: [],
   },

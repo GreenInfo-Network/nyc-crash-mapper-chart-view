@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import EntitySelector from './EntitySelector';
 import * as pt from '../../common/reactPropTypeDefs';
+import styleVars from '../../common/styleVars';
 
 /**
  * Class that houses the Entity Selector components
@@ -34,7 +35,11 @@ class EntitySelections extends Component {
 
     return (
       <div className="EntitySelections">
-        <EntitySelector color={'#999'} entityType={'City Wide'} entity={' '} />
+        <EntitySelector
+          color={styleVars['reference-color']}
+          entityType={'City Wide'}
+          entity={' '}
+        />
         <EntitySelector
           color={primary.color}
           entityType={entityType}

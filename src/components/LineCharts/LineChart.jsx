@@ -354,7 +354,7 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { referenceValues, y2Max } = this.props;
+    const { referenceValues, referenceColor, y2Max } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -432,7 +432,7 @@ class LineChart extends Component {
       .append('path')
       .attr('class', 'line-citywide')
       .attr('d', d => this.lineGenerator2(d))
-      .attr('stroke', '#999')
+      .attr('stroke', referenceColor)
       .attr('opacity', 0.7);
   }
 

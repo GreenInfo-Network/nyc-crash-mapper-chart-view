@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
+import styleVars from '../common/styleVars';
 import * as pt from '../common/reactPropTypeDefs';
 import {
   dateRangesSelector,
@@ -30,6 +31,8 @@ const mapStateToProps = (state, props) => {
     primaryValues: primaryEntityValuesFilteredSelector(state, props),
     secondaryValues: secondaryEntityValuesFilteredSelector(state, props),
     referenceValues: referenceEntityValuesFilteredSelector(state, props),
+    colorPrimary: entities.primary.color,
+    colorSecondary: entities.secondary.color,
     yMax: props.yMax, // this is created on the component instance (see LineChartsContainer)
     y2Max: props.y2Max, // this is created on the component instance (see LineChartsContainer),
     filterType,
@@ -114,6 +117,8 @@ class LineChartWrapper extends Component {
       keyPrimary,
       keySecondary,
       keyReference,
+      colorPrimary,
+      colorSecondary,
       startDate,
       endDate,
       yMax,
@@ -134,9 +139,9 @@ class LineChartWrapper extends Component {
           primaryValues={primaryValues}
           secondaryValues={secondaryValues}
           referenceValues={referenceValues}
-          primaryColor="#393B79"
-          secondaryColor="#843C39"
-          referenceColor="#e2e2e2"
+          primaryColor={colorPrimary}
+          secondaryColor={colorSecondary}
+          referenceColor={styleVars['reference-color']}
           startDate={startDate}
           endDate={endDate}
           yMax={yMax}
@@ -158,6 +163,8 @@ LineChartWrapper.propTypes = {
   primaryValues: PropTypes.arrayOf(PropTypes.object),
   secondaryValues: PropTypes.arrayOf(PropTypes.object),
   referenceValues: PropTypes.arrayOf(PropTypes.object),
+  colorPrimary: PropTypes.string.isRequired,
+  colorSecondary: PropTypes.string.isRequired,
   startDate: pt.date.isRequired,
   endDate: pt.date.isRequired,
   yMax: PropTypes.number,
