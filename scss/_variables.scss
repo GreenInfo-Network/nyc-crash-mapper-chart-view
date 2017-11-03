@@ -7,6 +7,10 @@ $orange: #fd8d3c !default;
 $orange-red: #f03b20 !default;
 $red: #bd0026 !default;
 
+$ui-teal: #d2eaec !default;
+$ui-text-teal: #d2eaec !default;
+$ui-text-grey: #ddd !default;
+
 // primary and secondary entity colors
 $entity-primary: #393b79 !default;
 $entity-secondary: #843c39 !default;
@@ -18,8 +22,10 @@ $marine-light: lighten($marine, 10) !default;
 
 $off-white: #fffad5 !default;
 $grey: #4d4d4d !default;
+$grey-light: #989898 !default;
 $medium-grey: lighten($dark-grey, 50) !default;
-$ui-grey: rgba($grey, 0.8) !default;
+$bg-grey: #f5f5f3 !default;
+$ui-grey: rgba($grey, 0.7) !default;
 $transparent: rgba(0, 0, 0, 0) !default;
 
 $btn-hover: lighten($yellow-orange, 10) !default;

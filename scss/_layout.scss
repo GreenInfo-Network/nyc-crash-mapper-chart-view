@@ -4,6 +4,7 @@
 
 body {
   font-family: $roboto;
+  color: $off-white;
 }
 
 html,
@@ -64,8 +65,6 @@ button {
 
 // UI containers
 .ui {
-  // position: absolute;
-  // z-index: 1;
   box-sizing: border-box;
   background-color: $ui-grey;
   color: $off-white;
@@ -89,7 +88,7 @@ button {
 
 // ruled lines
 hr {
-  border-top-color: #333;
+  border-top-color: $off-white;
   // border-top-color: $hr-border;
   margin: 0;
   padding: 0;

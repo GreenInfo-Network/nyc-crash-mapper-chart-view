@@ -2,6 +2,7 @@
 // Makes use of CSS Grid
 .App {
   position: relative;
+  background-color: $bg-grey;
   display: grid;
   grid-template-columns: calc(100% - #{$options-filters-width}) $options-filters-width;
   grid-template-rows:
@@ -17,7 +18,8 @@
 
   .grid-area {
     padding: 10px 20px;
-    border: 1px solid $light-grey;
+    background-color: $ui-grey;
+    border: 1px solid $grey-light;
   }
 
   .grid-area.header {

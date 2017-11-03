@@ -5,7 +5,12 @@
   // max-height: 150px;
   padding: 10px 10px 5px;
   margin: 5px;
-  border: 1px solid $medium-grey;
+  border: 1px solid $grey-light;
+
+  h6,
+  p {
+    color: $ui-text-grey;
+  }
 
   h6 {
     padding: 0;
@@ -14,6 +19,7 @@
     .rank-pos {
       font-size: 2.2rem;
       font-weight: bold;
+      color: $off-white;
     }
 
     &.rank-entity-type {
