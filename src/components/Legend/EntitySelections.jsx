@@ -11,6 +11,7 @@ import styleVars from '../../common/styleVars';
  */
 class EntitySelections extends Component {
   static propTypes = {
+    chartView: PropTypes.string.isRequired,
     entityType: pt.key,
     primary: pt.entity,
     secondary: pt.entity,
@@ -26,6 +27,7 @@ class EntitySelections extends Component {
 
   render() {
     const {
+      chartView,
       entityType,
       primary,
       secondary,
@@ -35,11 +37,13 @@ class EntitySelections extends Component {
 
     return (
       <div className="EntitySelections">
-        <EntitySelector
-          color={styleVars['reference-color']}
-          entityType={'City Wide'}
-          entity={' '}
-        />
+        {chartView !== 'rank' && (
+          <EntitySelector
+            color={styleVars['reference-color']}
+            entityType={'City Wide'}
+            entity={' '}
+          />
+        )}
         <EntitySelector
           color={primary.color}
           entityType={entityType}

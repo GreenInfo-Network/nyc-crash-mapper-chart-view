@@ -16,6 +16,7 @@ const Legend = props => {
       ) : (
         <EntitySelections
           {...entities}
+          {...{ chartView }}
           deselectPrimaryEntity={deselectPrimaryEntity}
           deselectSecondaryEntity={deselectSecondaryEntity}
         />
