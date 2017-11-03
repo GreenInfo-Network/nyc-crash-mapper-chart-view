@@ -5,24 +5,35 @@ import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 import EntitySelections from './EntitySelections';
 import CompareLegend from './CompareLegend';
+import RankLegend from './RankLegend';
 
 const Legend = props => {
   const { entities, deselectPrimaryEntity, deselectSecondaryEntity, chartView } = props;
 
-  return (
-    <div className="Legend">
-      {chartView === 'compare' ? (
-        <CompareLegend />
-      ) : (
-        <EntitySelections
-          {...entities}
-          {...{ chartView }}
-          deselectPrimaryEntity={deselectPrimaryEntity}
-          deselectSecondaryEntity={deselectSecondaryEntity}
-        />
-      )}
-    </div>
-  );
+  function renderLegend() {
+    switch (chartView) {
+      case 'compare':
+        return <CompareLegend />;
+
+      case 'trend':
+        return (
+          <EntitySelections
+            {...entities}
+            {...{ chartView }}
+            deselectPrimaryEntity={deselectPrimaryEntity}
+            deselectSecondaryEntity={deselectSecondaryEntity}
+          />
+        );
+
+      case 'rank':
+        return <RankLegend />;
+
+      default:
+        return null;
+    }
+  }
+
+  return <div className="Legend">{renderLegend()}</div>;
 };
 
 Legend.propTypes = {
