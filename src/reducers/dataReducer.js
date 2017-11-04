@@ -7,8 +7,8 @@ const defaultState = {
   city_council: {}, // ... city council district data
   citywide: {}, // ... citywide data
   community_board: {}, // ... community board data
-  nta: {}, // ... neighborhood (tabulation area) data
-  nypd: {}, // ... nypd precinct data
+  neighborhood: {}, // ... neighborhood (tabulation area) data
+  nypd_precinct: {}, // ... nypd precinct data
 };
 
 export default function(state = defaultState, action) {

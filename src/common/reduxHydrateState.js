@@ -12,7 +12,13 @@ import { parseDate } from './d3Utils';
 import { entitiesInitalState } from '../reducers/entitiesReducer';
 
 // valid strings for various parts of app state
-const validGeographies = ['borough', 'city_council', 'community_board', 'nta', 'nypd'];
+const validGeographies = [
+  'borough',
+  'city_council',
+  'community_board',
+  'neighborhood',
+  'nypd_precinct',
+];
 const validRefGeos = ['citywide', 'manhattan', 'bronx', 'queens', 'brooklyn', 'staten island'];
 const validViews = ['trend', 'compare', 'rank'];
 
