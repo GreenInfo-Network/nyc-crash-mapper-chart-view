@@ -96,14 +96,27 @@ const rankedListSelector = createSelector(
       entity.totalKilled = d3.sum(entity.values, d => d.totalKilled);
       entity.totalInjured = d3.sum(entity.values, d => d.totalInjured);
       entity.maxTotal = d3.max(entity.values, d => d.total);
+      entity.sortTotal = entity.totalInjured + entity.totalKilled / 1000;
     });
 
-    // sort by total injured then by total killed
+    // sort by total injured desc then by total killed desc
     nested
       .sort((a, b) => b.totalInjured - a.totalInjured || b.totalKilled - a.totalKilled)
       .forEach((entity, i) => {
-        // set rank using array index from sorting above
-        entity.rank = i + 1;
+        // set "rank" using array index from sorting above
+        const prev = nested[i - 1];
+
+        if (prev) {
+          if (prev.sortTotal === entity.sortTotal) {
+            entity.rank = prev.rank;
+          } else {
+            entity.rank = prev.rank + 1;
+          }
+        }
+
+        if (!prev) {
+          entity.rank = 1;
+        }
       });
 
     return nested;

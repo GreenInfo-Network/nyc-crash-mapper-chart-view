@@ -135,7 +135,7 @@ class RankCardsList extends Component {
 
     if (!ranked.length) return null;
 
-    const total = ranked.length;
+    const total = d3.max(ranked, d => d.rank);
 
     // set x-scale domain & range, assumes values are sorted by date
     const xScale = d3
