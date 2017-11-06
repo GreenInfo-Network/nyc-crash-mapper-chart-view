@@ -161,7 +161,7 @@ class SelectAreasList extends Component {
 
         // class names for list items
         const listItemClass = classNames({
-          'sparkline-list-item': true,
+          'select-areas-list-item': true,
           'primary-active': key === primary.key,
           'secondary-active': key === secondary.key,
         });

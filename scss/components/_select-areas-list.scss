@@ -4,11 +4,11 @@
   margin-bottom: 0;
   padding-bottom: 25px;
 
-  .sparkline-list-item {
+  .select-areas-list-item {
     display: block;
-    padding: 0 5px 5px 10px;
+    padding: 5px 5px 5px 10px;
     margin-right: 10px;
-    border-bottom: 1px solid $medium-grey;
+    border-radius: $border-radius;
     cursor: pointer;
 
     &:last-child {
@@ -20,15 +20,14 @@
     }
 
     &:hover {
-      border: 3px solid yellow;
+      color: $marine-light;
+      background-color: $btn-hover;
     }
 
-    &.primary-active {
-      border: 3px solid $primary-color;
-    }
-
+    &.primary-active,
     &.secondary-active {
-      border: 3px solid $secondary-color;
+      color: $marine;
+      background-color: $yellow-orange;
     }
   }
 }
