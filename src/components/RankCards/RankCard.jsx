@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import * as pt from '../../common/reactPropTypeDefs';
+import styleVars from '../../common/styleVars';
 
 // Class a "Card" that contains a rank, entity name, and sparkline
 class RankCard extends Component {
@@ -14,14 +15,19 @@ class RankCard extends Component {
   renderSVG() {
     const { entity, svgWidth, svgHeight, strokeWidth, path } = this.props;
     const { key } = entity;
+    const {
+      'sparkline-color-1': color1,
+      'sparkline-color-2': color2,
+      'sparkline-color-3': color3,
+    } = styleVars;
 
     return (
       <svg width={svgWidth} height={svgHeight}>
         <defs>
           <linearGradient id={`gradient-${key}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f03b20" />
-            <stop offset="50%" stopColor="#feb24c" />
-            <stop offset="100%" stopColor="#ffeda0" />
+            <stop offset="0%" stopColor={color1} />
+            <stop offset="50%" stopColor={color2} />
+            <stop offset="100%" stopColor={color3} />
           </linearGradient>
           <mask
             id={`mask-${key}`}
