@@ -18,11 +18,19 @@ const DotGridChart = props => {
   // offset of SVG group element
   const translateFactor = radius + strokeWidth;
 
+  // For the total injured / killed headers, we hide them if there's no data so that things stay aligned vertically
+  const injuredTotalStyle = {
+    visibility: injuredTotal >= 0 ? 'visible' : 'hidden',
+  };
+  const killedTotalStyle = {
+    visibility: killedTotal >= 0 ? 'visible' : 'hidden',
+  };
+
   // TO DO: replace SVG with Canvas? Boroughs take a while to render...
   return (
     <div className="DotGridChart">
-      {killedTotal > 0 && <h6>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>}
-      {injuredTotal > 0 && <h6>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>}
+      <h6 style={killedTotalStyle}>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>
+      <h6 style={injuredTotalStyle}>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>
       <svg width={gridWidth} height={gridHeight + 10}>
         <g transform={`translate(${translateFactor}, ${translateFactor})`}>
           {grid.map((d, i) => (
