@@ -4,4 +4,5 @@ module.exports = {
   'primary-color': '#FFF1B3',
   'secondary-color': '#FFDAEB',
   'reference-color': '#AFE2CE',
+  'rank-legend-width': 170,
 };

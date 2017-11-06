@@ -1,8 +1,8 @@
 .EntitySelector {
+  // note: width is set by EntitySelections.jsx
   height: auto;
   padding: 5px;
   margin-right: 10px;
-  // border: 1px solid #eee;
 
   .flex-wrapper {
     display: flex;
@@ -19,8 +19,15 @@
   .color-key {
     display: inline-block;
     width: 15px;
-    height: 2px;
     background-color: #eee;
+
+    &.line {
+      height: 3px;
+    }
+
+    &.square {
+      height: 15px;
+    }
   }
 
   h6 {
@@ -33,12 +40,12 @@
   }
 
   button.deselect {
-    height: 2.5rem;
-    padding: 0 5px;
+    height: 1.8rem;
+    padding: 0 4px;
     border: 0;
     vertical-align: middle;
     font-weight: normal;
-    font-size: 2.2rem;
-    line-height: normal;
+    font-size: 1.8rem;
+    line-height: 1.8rem;
   }
 }

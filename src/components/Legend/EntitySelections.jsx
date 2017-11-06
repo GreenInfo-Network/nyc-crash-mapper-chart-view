@@ -37,22 +37,30 @@ class EntitySelections extends Component {
       deselectSecondaryEntity,
     } = this.props;
 
+    const style = {
+      width:
+        chartView === 'rank' ? `calc(100% - ${styleVars['rank-legend-width']}px - 20px)` : '100%',
+    };
+
     return (
-      <div className="EntitySelections">
+      <div className="EntitySelections" style={style}>
         {chartView !== 'rank' && (
           <EntitySelector
+            chartView={chartView}
             color={styleVars['reference-color']}
             entityType={reference}
             entity={' '}
           />
         )}
         <EntitySelector
+          chartView={chartView}
           color={primary.color}
           entityType={entityType}
           entity={primary.key}
           deselectEntity={deselectPrimaryEntity}
         />
         <EntitySelector
+          chartView={chartView}
           color={secondary.color}
           entityType={entityType}
           entity={secondary.key}

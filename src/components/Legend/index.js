@@ -26,7 +26,16 @@ const Legend = props => {
         );
 
       case 'rank':
-        return <RankLegend />;
+        return [
+          <RankLegend key="a" />,
+          <EntitySelections
+            key="b"
+            {...entities}
+            {...{ chartView }}
+            deselectPrimaryEntity={deselectPrimaryEntity}
+            deselectSecondaryEntity={deselectSecondaryEntity}
+          />,
+        ];
 
       default:
         return null;

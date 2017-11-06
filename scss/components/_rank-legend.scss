@@ -1,6 +1,6 @@
 .RankLegend {
-  width: 170px;
-  display: flex;
+  width: #{$rank-legend-width}px; // via styleVars.js
+  display: inline-flex;
   justify-content: space-between;
   align-items: center;
 
