@@ -111,6 +111,7 @@ class LineChartWrapper extends Component {
       appHeight,
       appWidth,
       children,
+      period,
       primaryValues,
       secondaryValues,
       referenceValues,
@@ -125,9 +126,11 @@ class LineChartWrapper extends Component {
       y2Max,
     } = this.props;
 
+    const titleText = period === 'period1' ? 'Period One' : 'Period Two';
+
     return (
       <div className="LineChartWrapper">
-        <LineChartTitle title={'Period One'} startDate={startDate} endDate={endDate}>
+        <LineChartTitle title={titleText} startDate={startDate} endDate={endDate}>
           {children}
         </LineChartTitle>
         <LineChart
