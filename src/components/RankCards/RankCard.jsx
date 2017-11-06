@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import * as pt from '../../common/reactPropTypeDefs';
 import styleVars from '../../common/styleVars';
+import { formatNumber } from '../../common/d3Utils';
 
 // Class a "Card" that contains a rank, entity name, and sparkline
 class RankCard extends Component {
@@ -89,7 +90,7 @@ class RankCard extends Component {
           <span className="rank-pos">{rank}</span> / {rankTotal}
         </h6>
         <h6 className="rank-entity-type">{`${entityTypeDisplay} ${label}`}</h6>
-        <p>{`${totalInjured} injuries, ${totalKilled} fatalities`}</p>
+        <p>{`${formatNumber(totalInjured)} injuries, ${formatNumber(totalKilled)} fatalities`}</p>
         {this.renderSVG()}
       </div>
     );

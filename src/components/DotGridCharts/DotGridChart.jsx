@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import { formatNumber } from '../../common/d3Utils';
 
 const DotGridChart = props => {
   const { personType, radius, strokeWidth, data } = props;
@@ -9,8 +10,6 @@ const DotGridChart = props => {
 
   const { grid, gridWidth, gridHeight, killedTotal, injuredTotal } = data;
 
-  // number formatter
-  const formatNumber = d3.format(',');
   // color scale
   const colorScale = d3
     .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
