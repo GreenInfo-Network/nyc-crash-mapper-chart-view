@@ -5,7 +5,11 @@
   // max-height: 150px;
   padding: 10px 10px 5px;
   margin: 5px;
-  border: 1px solid $grey-light;
+  border: 2px solid $grey-light;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 
   h6,
   p {
@@ -32,10 +36,10 @@
   }
 
   &.primary-active {
-    border: 3px solid $entity-primary;
+    border-color: $entity-primary;
   }
 
   &.secondary-active {
-    border: 3px solid $entity-secondary;
+    border-color: $entity-secondary;
   }
 }
