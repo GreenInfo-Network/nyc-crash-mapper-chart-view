@@ -1,5 +1,5 @@
 .Menu {
-  width: 100%;
+  width: calc(100% - #{$header-title-width});
   display: inline-flex;
   justify-content: flex-start;
   margin: 0;
