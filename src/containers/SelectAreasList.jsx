@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import {
-  selectPrimaryEntity,
-  deselectPrimaryEntity,
-  selectSecondaryEntity,
-  deselectSecondaryEntity,
-} from '../actions';
-
+import { selectPrimaryEntity, selectSecondaryEntity } from '../actions';
+import toggleEntity from '../common/toggleEntity';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
@@ -31,6 +26,12 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+  selectPrimaryEntity: entity => dispatch(selectPrimaryEntity(entity)),
+  selectSecondaryEntity: entity => dispatch(selectSecondaryEntity(entity)),
+});
+
 /**
   * Connected Component that renders a list of geo entities
   * This component is also responsible for setting the primary and secondary geographic entities
@@ -44,11 +45,9 @@ class SelectAreasList extends Component {
     ranked: PropTypes.arrayOf(PropTypes.object).isRequired,
     response: PropTypes.arrayOf(PropTypes.object),
     filterTerm: PropTypes.string,
-    selectPrimaryEntity: PropTypes.func.isRequired,
-    deselectPrimaryEntity: PropTypes.func.isRequired,
-    selectSecondaryEntity: PropTypes.func.isRequired,
-    deselectSecondaryEntity: PropTypes.func.isRequired,
     sparkLineListHeight: PropTypes.number,
+    selectPrimaryEntity: PropTypes.func.isRequired,
+    selectSecondaryEntity: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -60,7 +59,8 @@ class SelectAreasList extends Component {
 
   constructor(props) {
     super(props);
-    this.renderSparkLines = this.renderSparkLines.bind(this);
+    this.renderListItems = this.renderListItems.bind(this);
+    this.handleListItemClick = this.handleListItemClick.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -100,32 +100,11 @@ class SelectAreasList extends Component {
     return listItems;
   }
 
-  handleSparkLineClick(key) {
-    // when a user clicks a sparkline list item, pass that entity's data off to the redux store
-    // so that it may be used by the line and dot grid charts
-    const { secondary, primary, response, entityType } = this.props;
-    const entity = {};
-    entity.key = key;
-    entity.values = response.filter(d => d[entityType] === key);
-
-    if (!primary.key && key !== secondary.key) {
-      this.props.selectPrimaryEntity(entity);
-    }
-
-    if (primary.key && key === primary.key) {
-      this.props.deselectPrimaryEntity();
-    }
-
-    if (primary.key && !secondary.key && key !== primary.key) {
-      this.props.selectSecondaryEntity(entity);
-    }
-
-    if (secondary.key && key === secondary.key) {
-      this.props.deselectSecondaryEntity();
-    }
+  handleListItemClick(key) {
+    toggleEntity(key, this.props);
   }
 
-  renderSparkLines() {
+  renderListItems() {
     // eslint-disable-next-line
     const { entityType, primary, secondary, ranked, response } = this.props;
     const entityTypeDisplay = entityType.replace(/_/g, ' ');
@@ -173,7 +152,7 @@ class SelectAreasList extends Component {
             key={label}
             data-search={`city council ${label}`}
             className={listItemClass}
-            onClick={() => this.handleSparkLineClick(key)}
+            onClick={() => this.handleListItemClick(key)}
           >
             <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label}`}</h6>
           </li>
@@ -183,7 +162,7 @@ class SelectAreasList extends Component {
 
   render() {
     const { sparkLineListHeight } = this.props;
-    let listItems = this.renderSparkLines();
+    let listItems = this.renderListItems();
     listItems = this.filterListItems(listItems);
 
     // NOTE: sparkLineListHeight is used to explicity set the height of the sparklines list so that it is scrollable if there are lots of list items
@@ -196,9 +175,4 @@ class SelectAreasList extends Component {
   }
 }
 
-export default connect(mapStateToProps, {
-  selectPrimaryEntity,
-  deselectPrimaryEntity,
-  selectSecondaryEntity,
-  deselectSecondaryEntity,
-})(SelectAreasList);
+export default connect(mapStateToProps, mapDispatchToProps)(SelectAreasList);

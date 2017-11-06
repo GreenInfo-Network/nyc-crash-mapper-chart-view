@@ -5,33 +5,16 @@ import * as d3 from 'd3';
 
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
+import toggleEntity from '../common/toggleEntity';
 import * as pt from '../common/reactPropTypeDefs';
 import styleVars from '../common/styleVars';
 
 import RankCard from '../components/RankCards/RankCard';
 
-const mapStateToProps = state => {
-  const { browser, entities, filterType } = state;
-  const { width } = browser;
-  const { entityType, sortName, sortRank, sortAsc, filterTerm } = entities;
-  const { response } = entityDataSelector(state);
-  const ranked = response && response.length ? rankedListSelector(state) : null;
-
-  return {
-    appWidth: width,
-    entityType,
-    sortName,
-    sortRank,
-    sortAsc,
-    filterType,
-    filterTerm,
-    response,
-    ranked: ranked || [],
-    primary: entities.primary,
-    secondary: entities.secondary,
-  };
-};
-
+/*
+ * Class that is a connected component and houses the list of "Rank Cards"
+ * Handles creating, filtering, and sorting of cards
+*/
 class RankCardsList extends Component {
   static propTypes = {
     appWidth: PropTypes.number.isRequired,
@@ -46,6 +29,7 @@ class RankCardsList extends Component {
     sortRank: PropTypes.bool.isRequired,
     sortAsc: PropTypes.bool.isRequired,
     sparkLineListHeight: PropTypes.number,
+    dispatch: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -58,6 +42,7 @@ class RankCardsList extends Component {
   constructor(props) {
     super(props);
     this.renderRankCards = this.renderRankCards.bind(this);
+    this.handleRankCardClick = this.handleRankCardClick.bind(this);
     this.container = null;
   }
 
@@ -71,6 +56,10 @@ class RankCardsList extends Component {
       height: cHeight,
       width: cWidth,
     };
+  }
+
+  handleRankCardClick(key) {
+    toggleEntity(key, this.props);
   }
 
   filterListItems(listItems) {
@@ -184,6 +173,7 @@ class RankCardsList extends Component {
           primaryKey={primary.key}
           secondaryKey={secondary.key}
           path={path}
+          handleClick={this.handleRankCardClick}
         />
       );
     });
@@ -207,4 +197,32 @@ class RankCardsList extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(RankCardsList);
+// takes slices of the redux.store.state and returns them as props
+const mapStateToProps = state => {
+  const { browser, entities, filterType } = state;
+  const { width } = browser;
+  const { entityType, sortName, sortRank, sortAsc, filterTerm } = entities;
+  const { response } = entityDataSelector(state);
+  const ranked = response && response.length ? rankedListSelector(state) : null;
+
+  return {
+    appWidth: width,
+    entityType,
+    sortName,
+    sortRank,
+    sortAsc,
+    filterType,
+    filterTerm,
+    response,
+    ranked: ranked || [],
+    primary: entities.primary,
+    secondary: entities.secondary,
+  };
+};
+
+// expose Redux's store.dispatch method to pass it to toggleEntity so that it can properly fire action creators
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RankCardsList);

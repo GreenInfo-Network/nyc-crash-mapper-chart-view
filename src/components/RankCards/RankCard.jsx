@@ -53,7 +53,14 @@ class RankCard extends Component {
   }
 
   render() {
-    const { entity, entityTypeDisplay, rankTotal, primaryKey, secondaryKey } = this.props;
+    const {
+      entity,
+      entityTypeDisplay,
+      rankTotal,
+      primaryKey,
+      secondaryKey,
+      handleClick,
+    } = this.props;
     const { key, rank, totalInjured, totalKilled } = entity;
     let label;
 
@@ -76,6 +83,7 @@ class RankCard extends Component {
         ref={_ => {
           this.container = _;
         }}
+        onClick={() => handleClick(key)}
       >
         <h6>
           <span className="rank-pos">{rank}</span> / {rankTotal}
@@ -91,6 +99,7 @@ class RankCard extends Component {
 RankCard.propTypes = {
   entity: pt.entity,
   entityTypeDisplay: PropTypes.string,
+  handleClick: PropTypes.func.isRequired,
   rankTotal: PropTypes.number,
   strokeWidth: PropTypes.number.isRequired,
   svgWidth: PropTypes.number,
