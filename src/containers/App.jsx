@@ -16,6 +16,7 @@ import RankCards from '../components/RankCards/';
 import TimeLine from './TimeLine';
 import RankCardsControls from '../components/RankCards/RankCardsControls';
 import Legend from '../containers/Legend';
+import LoadingMsg from '../components/LoadingMsg';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -101,6 +102,14 @@ class App extends Component {
     }
   }
 
+  renderChartArea() {
+    const { isFetchingCharts } = this.props;
+    if (isFetchingCharts) {
+      return <LoadingMsg />;
+    }
+    return this.renderChartView();
+  }
+
   render() {
     const {
       chartView,
@@ -132,7 +141,7 @@ class App extends Component {
             <TimeLine />
           )}
         </div>
-        <div className="grid-area detailchart">{this.renderChartView()}</div>
+        <div className="grid-area detailchart">{this.renderChartArea()}</div>
         <div className="grid-area legend">
           <Legend />
         </div>
