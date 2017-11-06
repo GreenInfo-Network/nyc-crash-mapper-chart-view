@@ -107,7 +107,7 @@ class SelectAreasList extends Component {
   renderListItems() {
     // eslint-disable-next-line
     const { entityType, primary, secondary, ranked, response } = this.props;
-    const entityTypeDisplay = entityType.replace(/_/g, ' ');
+    const entityTypeDisplay = entityType !== 'neighborhood' ? entityType.replace(/_/g, ' ') : '';
 
     if (!ranked.length) return null;
 
