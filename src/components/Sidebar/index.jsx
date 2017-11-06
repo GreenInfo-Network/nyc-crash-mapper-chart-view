@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SparkLineListController from './SparkLineListController';
+import SelectAreasController from './SelectAreasController';
 import OptionsContainer from './OptionsContainer';
 import FilterByType from '../../containers/FilterByType';
 import FilterByBoundary from '../../containers/FilterByBoundary';
@@ -103,7 +103,7 @@ class Sidebar extends Component {
           optionsContainerHeight={sparkLineListHeight}
           collapseHeight={sparkLineListHeight}
         >
-          <SparkLineListController
+          <SelectAreasController
             {...{ entityType, filterTerm, sparkLineListHeight, filterEntitiesByName }}
           />
         </OptionsContainer>

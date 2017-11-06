@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SparkLineList from '../../containers/SparkLineList';
+import SelectAreasList from '../../containers/SelectAreasList';
 
-/** Class that houses the SparkLineList and provides a UI & Controller for filtering it
+/** Class that houses the SelectAreasList and provides a UI & Controlled Form for filtering it
 */
-class SparkLineContainer extends Component {
+class SelectAreasController extends Component {
   static propTypes = {
     entityType: PropTypes.string,
     filterTerm: PropTypes.string,
@@ -32,8 +32,8 @@ class SparkLineContainer extends Component {
     const { entityType, filterTerm, sparkLineListHeight } = this.props;
 
     return (
-      <div className="SparkLineListController">
-        <div className="sparkline-controls">
+      <div className="SelectAreasController">
+        <div className="select-areas-controls">
           <input
             placeholder={`Search a ${entityType.replace(/_/, ' ')}`}
             value={filterTerm}
@@ -41,10 +41,10 @@ class SparkLineContainer extends Component {
             type="text"
           />
         </div>
-        <SparkLineList {...{ sparkLineListHeight }} />
+        <SelectAreasList {...{ sparkLineListHeight }} />
       </div>
     );
   }
 }
 
-export default SparkLineContainer;
+export default SelectAreasController;

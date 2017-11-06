@@ -32,10 +32,10 @@ const mapStateToProps = state => {
 };
 
 /**
-  * Connected Component that renders a list of SVG sparkLines
+  * Connected Component that renders a list of geo entities
   * This component is also responsible for setting the primary and secondary geographic entities
 */
-class SparkLineList extends Component {
+class SelectAreasList extends Component {
   static propTypes = {
     entityType: PropTypes.string,
     filterType: pt.filterType.isRequired,
@@ -189,7 +189,7 @@ class SparkLineList extends Component {
     // NOTE: sparkLineListHeight is used to explicity set the height of the sparklines list so that it is scrollable if there are lots of list items
     // this value is calculated in the Sidebar parent component (Sidebar/index.jsx) and passed down
     return (
-      <ul style={{ height: sparkLineListHeight - 110 }} className="SparkLineList scroll">
+      <ul style={{ height: sparkLineListHeight - 110 }} className="SelectAreasList scroll">
         {listItems}
       </ul>
     );
@@ -201,4 +201,4 @@ export default connect(mapStateToProps, {
   deselectPrimaryEntity,
   selectSecondaryEntity,
   deselectSecondaryEntity,
-})(SparkLineList);
+})(SelectAreasList);
