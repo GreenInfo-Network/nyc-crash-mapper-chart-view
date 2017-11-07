@@ -25,6 +25,7 @@ const mapStateToProps = (state, props) => {
     appWidth: width,
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
+    entityType: entities.entityType,
     keyPrimary: entities.primary.key,
     keySecondary: entities.secondary.key,
     keyReference: entities.reference,
@@ -112,6 +113,7 @@ class LineChartWrapper extends Component {
       appWidth,
       children,
       period,
+      entityType,
       primaryValues,
       secondaryValues,
       referenceValues,
@@ -136,6 +138,7 @@ class LineChartWrapper extends Component {
         <LineChart
           appHeight={appHeight}
           appWidth={appWidth}
+          entityType={entityType}
           keyPrimary={keyPrimary}
           keySecondary={keySecondary}
           keyReference={keyReference}
@@ -160,6 +163,7 @@ LineChartWrapper.propTypes = {
   appWidth: PropTypes.number.isRequired,
   children: PropTypes.element,
   period: PropTypes.string.isRequired,
+  entityType: PropTypes.string,
   keyPrimary: pt.key,
   keySecondary: pt.key,
   keyReference: pt.key,
@@ -178,6 +182,7 @@ LineChartWrapper.propTypes = {
 
 LineChartWrapper.defaultProps = {
   children: null,
+  entityType: '',
   keyPrimary: '',
   keySecondary: '',
   keyReference: '',

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as pt from '../../common/reactPropTypeDefs';
+import { formatDate, formatNumber } from '../../common/d3Utils';
 
 const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 
@@ -11,6 +12,7 @@ class LineChart extends Component {
   static propTypes = {
     appHeight: PropTypes.number.isRequired,
     appWidth: PropTypes.number.isRequired,
+    entityType: PropTypes.string,
     keyPrimary: pt.key,
     keySecondary: pt.key,
     keyReference: pt.key,
@@ -28,6 +30,7 @@ class LineChart extends Component {
   };
 
   static defaultProps = {
+    entityType: '',
     keyPrimary: '',
     keySecondary: '',
     keyReference: '',
@@ -72,6 +75,9 @@ class LineChart extends Component {
       .x(d => this.xScale(d.year_month))
       .y(d => this.yScale2(d.count))
       .curve(d3.curveMonotoneX);
+
+    // look up function for finding a data value
+    this.bisectDate = d3.bisector(d => d.year_month).left;
   }
 
   componentDidMount() {
@@ -81,6 +87,7 @@ class LineChart extends Component {
     // make sure to create and update the chart
     if (referenceValues && referenceValues.length) {
       this.initChart();
+      this.initTooltips();
       this.updateChart();
     }
   }
@@ -152,6 +159,134 @@ class LineChart extends Component {
       height: cHeight,
       width: cWidth,
     };
+  }
+
+  initTooltips() {
+    // contains the logic for showing, hiding, and creating tooltip contents
+    const {
+      entityType,
+      keyReference,
+      keyPrimary,
+      keySecondary,
+      referenceValues,
+      primaryValues,
+      secondaryValues,
+    } = this.props;
+    const margin = this.margin;
+    const { width } = this.getContainerSize();
+    const svg = d3.select(this.svg);
+    const rect = svg.select('rect.tooltip-overlay');
+    const tooltip = svg.select('g.tooltip');
+    const xScale = this.xScale;
+    const bisectDate = this.bisectDate;
+    const entityLabel = entityType.replace(/_/g, ' ');
+
+    function lookUpDatum(date, values) {
+      // use d3's bisector to find the closest datum to a given date object
+      const i = bisectDate(values, date, 1);
+      const d0 = values[i - 1];
+      const d1 = values[i];
+      return date - d0.year_month > d1.year_month - date ? d1 : d0;
+    }
+
+    function calcYPos(entity) {
+      // determine what y position the "total" label for a primary or entity should be
+      let yPrimary;
+      let ySecondary;
+
+      if (keyPrimary && keySecondary) {
+        yPrimary = 60;
+        ySecondary = 80;
+      }
+
+      if (keyPrimary && !keySecondary) {
+        yPrimary = 60;
+      }
+
+      if (!keyPrimary && keySecondary) {
+        ySecondary = 60;
+      }
+
+      return entity === 'primary' ? yPrimary : ySecondary;
+    }
+
+    function handleMouseMove() {
+      // use the mouse x position to look up data so we can display it in the tooltip div
+      const mouse = d3.mouse(this);
+      const mouseX = mouse[0];
+      // this grabs the corresponding date from the xScale, not necessary the date in the data
+      const xValue = xScale.invert(mouseX);
+
+      // determine if we should shift the tooltip to the left (e.g. it's the last date in the data)
+      let rectXOffset = 0;
+      if (mouseX >= width - margin.left - margin.right - 150) {
+        rectXOffset = -150;
+      }
+
+      // use d3's bisector to find the closest datum to the date above
+      const d = lookUpDatum(xValue, referenceValues);
+
+      // set the tooltip position relative to the current datum's x position
+      // and write the formatted date for that datum
+      tooltip
+        .style(
+          'transform',
+          `translate(${xScale(d.year_month) + margin.left + rectXOffset}px, 20px)`
+        )
+        .select('text.tooltip-date')
+        .attr('x', '10px')
+        .attr('y', '20px')
+        .text(formatDate(d.year_month));
+
+      // write out the total for the reference entity
+      tooltip
+        .select('text.tooltip-ref')
+        .attr('x', '10px')
+        .attr('y', '40px')
+        .text(`${keyReference} total: ${formatNumber(d.count)}`);
+
+      // repeat the above steps for primary entity
+      if (keyPrimary !== '' && primaryValues.length) {
+        const k = lookUpDatum(xValue, primaryValues);
+        const y = calcYPos('primary');
+        tooltip
+          .select('text.tooltip-primary')
+          .attr('x', '10px')
+          .attr('y', `${y}px`)
+          .text(`${entityLabel} ${keyPrimary} total: ${formatNumber(k.count)}`);
+      } else {
+        // if a user deselected the entity then set it's text to be empty
+        tooltip.select('text.tooltip-primary').text('');
+      }
+
+      // repeat the above steps for secondary entity
+      if (keySecondary !== '' && secondaryValues.length) {
+        const n = lookUpDatum(xValue, secondaryValues);
+        const y = calcYPos('secondary');
+        tooltip
+          .select('text.tooltip-secondary')
+          .attr('x', '10px')
+          .attr('y', `${y}px`)
+          .text(`${entityLabel} ${keySecondary} total: ${formatNumber(n.count)}`);
+      } else {
+        // if a user deselected the entity then set it's text to be empty
+        tooltip.select('text.tooltip-secondary').text('');
+      }
+
+      // alter the rectangle's height if a primary or secondary entity are selected
+      if (keyPrimary || keySecondary) {
+        const h1 = calcYPos('primary');
+        const h2 = calcYPos('secondary');
+        const h = h2 > h1 ? h2 : h1;
+        tooltip.select('rect').style('height', `${h + 10}px`);
+      }
+    }
+
+    // attach event listeners to invisible rectangle
+    rect
+      .on('mouseover', () => tooltip.style('visibility', 'visible'))
+      .on('mouseout', () => tooltip.style('visibility', 'hidden'))
+      .on('mousemove', handleMouseMove);
   }
 
   resizeChart() {
@@ -350,6 +485,9 @@ class LineChart extends Component {
       .attr('class', 'line')
       .attr('d', d => lineGenerator(d.values))
       .attr('stroke', d => d.color);
+
+    // reset the tooltips
+    this.initTooltips();
   }
 
   initChart() {
@@ -434,6 +572,27 @@ class LineChart extends Component {
       .attr('d', d => this.lineGenerator2(d))
       .attr('stroke', referenceColor)
       .attr('opacity', 0.7);
+
+    // add an invisible rectangle that will detect mouseovers for displaying tooltips
+    g
+      .append('rect')
+      .classed('tooltip-overlay', true)
+      .attr('pointer-events', 'all')
+      .attr('fill', 'none')
+      .attr('width', width)
+      .attr('height', height);
+
+    // add another svg group element for the tooltip
+    const tooltip = svg.append('g').classed('tooltip', true);
+    // background rectangle with rounded corners
+    tooltip
+      .append('rect')
+      .attr('rx', 4)
+      .attr('ry', 4);
+    tooltip.append('text').classed('tooltip-date', true);
+    tooltip.append('text').classed('tooltip-ref', true);
+    tooltip.append('text').classed('tooltip-primary', true);
+    tooltip.append('text').classed('tooltip-secondary', true);
   }
 
   render() {
