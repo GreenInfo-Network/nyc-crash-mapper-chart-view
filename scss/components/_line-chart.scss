@@ -42,9 +42,9 @@
     pointer-events: none;
 
     rect {
-      fill: rgba(0, 0, 0, 0.7);
-      width: 150px;
-      height: 50px;
+      fill: $tooltip-grey;
+      width: #{$linechart-tooltip-w}px;
+      height: #{$linechart-tooltip-h}px;
     }
 
     text {
@@ -53,9 +53,12 @@
       fill: $off-white;
       text-transform: capitalize;
     }
-    // padding: 10px;
-    // color: $off-white;
-    // background-color: rgba(0, 0, 0, 0.3);
-    // border-radius: $border-radius;
+  }
+
+  line.tooltip-line {
+    stroke-width: 2px;
+    stroke: $tooltip-grey;
+    visibility: hidden;
+    pointer-events: none;
   }
 }

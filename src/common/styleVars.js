@@ -12,4 +12,7 @@ module.exports = {
   'sparkline-color-1': '#f03b20',
   'sparkline-color-2': '#feb24c',
   'sparkline-color-3': '#ffeda0',
+  // default width and height of line chart tooltip
+  'linechart-tooltip-w': 150,
+  'linechart-tooltip-h': 50,
 };

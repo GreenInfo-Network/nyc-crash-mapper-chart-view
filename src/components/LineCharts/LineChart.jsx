@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
+import styleVars from '../../common/styleVars';
 
 const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 
@@ -177,12 +178,15 @@ class LineChart extends Component {
     const svg = d3.select(this.svg);
     const rect = svg.select('rect.tooltip-overlay');
     const tooltip = svg.select('g.tooltip');
+    const tooltipLine = svg.select('g.g-parent').select('line.tooltip-line');
+    const tooltipWidth = styleVars['linechart-tooltip-w'];
+    const tooltipHeight = styleVars['linechart-tooltip-h'];
     const xScale = this.xScale;
     const bisectDate = this.bisectDate;
     const entityLabel = entityType.replace(/_/g, ' ');
 
     function lookUpDatum(date, values) {
-      // use d3's bisector to find the closest datum to a given date object
+      // use d3's bisector to find the object in values array closest to a given date
       const i = bisectDate(values, date, 1);
       const d0 = values[i - 1];
       const d1 = values[i];
@@ -191,8 +195,8 @@ class LineChart extends Component {
 
     function calcYPos(entity) {
       // determine what y position the "total" label for a primary or entity should be
-      let yPrimary;
-      let ySecondary;
+      let yPrimary = 0;
+      let ySecondary = 0;
 
       if (keyPrimary && keySecondary) {
         yPrimary = 60;
@@ -218,9 +222,9 @@ class LineChart extends Component {
       const xValue = xScale.invert(mouseX);
 
       // determine if we should shift the tooltip to the left (e.g. it's the last date in the data)
-      let rectXOffset = 0;
-      if (mouseX >= width - margin.left - margin.right - 150) {
-        rectXOffset = -150;
+      let rectXOffset = 5;
+      if (mouseX >= width - margin.left - margin.right - tooltipWidth) {
+        rectXOffset = -tooltipWidth - 5;
       }
 
       // use d3's bisector to find the closest datum to the date above
@@ -279,13 +283,24 @@ class LineChart extends Component {
         const h2 = calcYPos('secondary');
         const h = h2 > h1 ? h2 : h1;
         tooltip.select('rect').style('height', `${h + 10}px`);
+      } else {
+        tooltip.select('rect').style('height', `${tooltipHeight}px`);
       }
+
+      // adjust the tooltip's vertical reference line
+      tooltipLine.attr('x1', () => xScale(d.year_month)).attr('x2', () => xScale(d.year_month));
     }
 
     // attach event listeners to invisible rectangle
     rect
-      .on('mouseover', () => tooltip.style('visibility', 'visible'))
-      .on('mouseout', () => tooltip.style('visibility', 'hidden'))
+      .on('mouseover', () => {
+        tooltip.style('visibility', 'visible');
+        tooltipLine.style('visibility', 'visible');
+      })
+      .on('mouseout', () => {
+        tooltip.style('visibility', 'hidden');
+        tooltipLine.style('visibility', 'hidden');
+      })
       .on('mousemove', handleMouseMove);
   }
 
@@ -593,6 +608,15 @@ class LineChart extends Component {
     tooltip.append('text').classed('tooltip-ref', true);
     tooltip.append('text').classed('tooltip-primary', true);
     tooltip.append('text').classed('tooltip-secondary', true);
+
+    // vertical reference line to show where the tooltip is selecting data
+    g
+      .append('line')
+      .classed('tooltip-line', true)
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', 0)
+      .attr('y2', height);
   }
 
   render() {
