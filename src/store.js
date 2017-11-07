@@ -14,8 +14,8 @@ function makeStore(initialState) {
     rootReducer,
     initialState,
     compose(
-      createResponsiveStoreEnhancer(500), // throttle time
-      applyMiddleware(...middleware)
+      applyMiddleware(...middleware),
+      createResponsiveStoreEnhancer(150) // throttle time
     )
   );
 
