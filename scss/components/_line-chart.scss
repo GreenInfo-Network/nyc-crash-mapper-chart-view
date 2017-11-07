@@ -1,7 +1,8 @@
 .LineChart {
-  vertical-align: middle;
   width: 100%;
   height: calc(100% - 45px);
+  position: relative;
+  vertical-align: middle;
 
   &:nth-of-type(2n) {
     margin-left: 10px;
@@ -34,5 +35,28 @@
     text {
       fill: $light-grey;
     }
+  }
+
+  .tooltip {
+    visibility: hidden;
+    pointer-events: none;
+
+    rect {
+      fill: $tooltip-grey;
+    }
+
+    text {
+      font-family: $roboto;
+      font-size: 1.2rem;
+      fill: $off-white;
+      text-transform: capitalize;
+    }
+  }
+
+  line.tooltip-line {
+    stroke-width: 2px;
+    stroke: $tooltip-grey;
+    visibility: hidden;
+    pointer-events: none;
   }
 }

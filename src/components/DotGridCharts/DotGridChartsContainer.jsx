@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as pt from '../../common/reactPropTypeDefs';
+import entityTypeDisplay from '../../common/misc';
 import DotGridWrapper from '../../containers/DotGridWrapper';
 import DotGridTitle from './DotGridTitle';
 
@@ -30,7 +31,7 @@ class DotGridChartsContainer extends Component {
 
   render() {
     const { entityType, keyPrimary, keySecondary, dateRanges } = this.props;
-    const entityLabel = entityType.replace(/_/, ' ');
+    const entityLabel = entityTypeDisplay(entityType);
 
     return (
       <div className="DotGridChartsContainer scroll">

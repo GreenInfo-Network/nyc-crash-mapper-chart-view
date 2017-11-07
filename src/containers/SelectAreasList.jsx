@@ -8,6 +8,7 @@ import toggleEntity from '../common/toggleEntity';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
+import entityTypeDisplay from '../common/misc';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -107,7 +108,7 @@ class SelectAreasList extends Component {
   renderListItems() {
     // eslint-disable-next-line
     const { entityType, primary, secondary, ranked, response } = this.props;
-    const entityTypeDisplay = entityType !== 'neighborhood' ? entityType.replace(/_/g, ' ') : '';
+    const entityLabel = entityTypeDisplay(entityType);
 
     if (!ranked.length) return null;
 
@@ -154,7 +155,7 @@ class SelectAreasList extends Component {
             className={listItemClass}
             onClick={() => this.handleListItemClick(key)}
           >
-            <h6 style={{ padding: 0 }}>{`${entityTypeDisplay} ${label}`}</h6>
+            <h6 style={{ padding: 0 }}>{`${entityLabel} ${label}`}</h6>
           </li>
         );
       });
