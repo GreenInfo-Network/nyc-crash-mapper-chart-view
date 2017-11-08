@@ -8,6 +8,7 @@ import rankedListSelector from '../common/reduxSelectorsRankedList';
 import toggleEntity from '../common/toggleEntity';
 import * as pt from '../common/reactPropTypeDefs';
 import styleVars from '../common/styleVars';
+import entityTypeDisplay from '../common/misc';
 
 import RankCard from '../components/RankCards/RankCard';
 
@@ -70,8 +71,8 @@ class RankCardsList extends Component {
     if (listItems && filterTerm !== '') {
       listItems = listItems.filter(li => {
         const { props } = li;
-        const { entity, entityTypeDisplay } = props;
-        const searchTerm = `${entityTypeDisplay} ${entity.key}`;
+        const { entity, entityLabel } = props;
+        const searchTerm = `${entityLabel} ${entity.key}`;
         return searchTerm.toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1;
       });
     }
@@ -122,7 +123,7 @@ class RankCardsList extends Component {
 
   renderRankCards() {
     const { appWidth, entityType, primary, secondary, ranked } = this.props;
-    const entityTypeDisplay = entityType.replace(/_/g, ' ');
+    const entityLabel = entityTypeDisplay(entityType);
     // we have to pass a width down to the cards because SVG features require dimensions in pixels, not percentages
     // and the first render of the RankCard will not be able to compute it's own height
     // account for padding-left, padding-right & scrollbar width
@@ -164,7 +165,7 @@ class RankCardsList extends Component {
         <RankCard
           key={entity.key}
           entity={entity}
-          entityTypeDisplay={entityTypeDisplay}
+          entityLabel={entityLabel}
           rankTotal={total}
           svgWidth={svgWidth}
           svgHeight={svgHeight}

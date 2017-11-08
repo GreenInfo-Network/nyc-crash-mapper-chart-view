@@ -54,14 +54,7 @@ class RankCard extends Component {
   }
 
   render() {
-    const {
-      entity,
-      entityTypeDisplay,
-      rankTotal,
-      primaryKey,
-      secondaryKey,
-      handleClick,
-    } = this.props;
+    const { entity, entityLabel, rankTotal, primaryKey, secondaryKey, handleClick } = this.props;
     const { key, rank, totalInjured, totalKilled } = entity;
     let label;
 
@@ -89,7 +82,7 @@ class RankCard extends Component {
         <h6>
           <span className="rank-pos">{rank}</span> / {rankTotal}
         </h6>
-        <h6 className="rank-entity-type">{`${entityTypeDisplay} ${label}`}</h6>
+        <h6 className="rank-entity-type">{`${entityLabel} ${label}`}</h6>
         <p>{`${formatNumber(totalInjured)} injuries, ${formatNumber(totalKilled)} fatalities`}</p>
         {this.renderSVG()}
       </div>
@@ -99,7 +92,7 @@ class RankCard extends Component {
 
 RankCard.propTypes = {
   entity: pt.entity,
-  entityTypeDisplay: PropTypes.string,
+  entityLabel: PropTypes.string,
   handleClick: PropTypes.func.isRequired,
   rankTotal: PropTypes.number,
   strokeWidth: PropTypes.number.isRequired,
@@ -113,7 +106,7 @@ RankCard.propTypes = {
 
 RankCard.defaultProps = {
   entity: {},
-  entityTypeDisplay: '',
+  entityLabel: '',
   rankTotal: null,
   svgWidth: null,
   svgHeight: null,
