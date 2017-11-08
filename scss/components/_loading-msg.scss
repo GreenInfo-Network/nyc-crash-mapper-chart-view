@@ -4,4 +4,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .spinner {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    background-image: url('../assets/icons/spinner.gif');
+    margin-right: 10px;
+  }
 }
