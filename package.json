@@ -85,6 +85,7 @@
     "style-loader": "^0.18.2",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-webpack-plugin": "^0.7.0",
+    "svgr": "^1.0.0",
     "uglifyjs-webpack-plugin": "^0.4.3",
     "url-loader": "^0.5.9",
     "webpack": "^2.4.1",
