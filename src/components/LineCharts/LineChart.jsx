@@ -399,6 +399,23 @@ class LineChart extends Component {
       .selectAll('.line-citywide')
       .transition(t)
       .attr('d', d => this.lineGenerator2(d));
+
+    // resize invisible rectangle that will detect mouseovers for displaying tooltips
+    g
+      .select('rect.tooltip-overlay')
+      .attr('width', width)
+      .attr('height', height);
+
+    // resize reference line to show where the tooltip is selecting data
+    g
+      .select('line.tooltip-line')
+      .attr('x1', 0)
+      .attr('x2', 0)
+      .attr('y1', 0)
+      .attr('y2', height);
+
+    // update tooltips settings
+    this.initTooltips();
   }
 
   updateChart() {
