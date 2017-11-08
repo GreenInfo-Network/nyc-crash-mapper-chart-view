@@ -282,11 +282,11 @@ class LineChart extends Component {
             .select(this)
             .node()
             .getBoundingClientRect();
-          // reset value for the width of the tooltip's rect if text is longer then the default
-          tooltipWidth = c.width > tooltipWidth - 20 ? (tooltipWidth = c.width) : tooltipWidth;
+          // reset value for the width of the tooltip's rect if text is longer then the default minus padding
+          tooltipWidth = c.width > tooltipWidth - 20 ? (tooltipWidth = c.width + 20) : tooltipWidth;
         });
         // set the tooltip's rect width based on the largest text width if needed
-        tooltip.select('rect').style('width', `${tooltipWidth + 20}px`);
+        tooltip.select('rect').style('width', `${tooltipWidth}px`);
       } else {
         tooltip.select('rect').style('height', `${tooltipHeight}px`);
         tooltip.select('rect').style('width', `${tooltipWidth}px`);
@@ -298,7 +298,7 @@ class LineChart extends Component {
       // position the tooltip to the left of the datum if its close to the right side of the chart
       let rectXOffset = 5;
       if (mouseX >= width - margin.left - margin.right - tooltipWidth) {
-        rectXOffset = -tooltipWidth - rectXOffset - 20; // 20 accounts for padding on left & right
+        rectXOffset = -tooltipWidth - rectXOffset; // 20 accounts for padding on left & right
       }
 
       // finally set the tooltip position
