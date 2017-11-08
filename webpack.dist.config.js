@@ -84,7 +84,11 @@ module.exports = {
         use: 'json-loader',
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/,
+        test: /\.svg$/,
+        use: ['babel-loader', 'svgr/lib/webpack']
+      },
+      {
+        test: /\.(jpe?g|png|gif)$/,
         loader: 'url-loader',
         options: {
           limit: 8192,

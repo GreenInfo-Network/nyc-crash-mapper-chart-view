@@ -82,11 +82,16 @@ module.exports = {
         test: /\.(json|geojson)$/,
         use: 'json-loader',
       },
+      // load svg files as React Components, because why not?
+      {
+        test: /\.svg$/,
+        use: ['babel-loader', 'svgr/lib/webpack']
+      },
       // load images
       // url-loader will base64 encode images smaller than options.limit
       // otherwise it behaves just like file-loader
       {
-        test: /\.(jpe?g|png|gif|svg)$/,
+        test: /\.(jpe?g|png|gif)$/,
         loader: 'url-loader',
         options: {
           limit: 8192,
