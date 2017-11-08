@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
 import styleVars from '../../common/styleVars';
+import entityTypeDisplay from '../../common/misc';
 
+// this method of require'ing d3 lets us use the d3-interpolate-path plugin with d3
 const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 
 /** Class that renders the line chart for selected geographic entities using D3
@@ -179,11 +181,12 @@ class LineChart extends Component {
     const rect = svg.select('rect.tooltip-overlay');
     const tooltip = svg.select('g.tooltip');
     const tooltipLine = svg.select('g.g-parent').select('line.tooltip-line');
-    const tooltipWidth = styleVars['linechart-tooltip-w'];
+    // notice the "let" here, this value can be modified if tooltip text exceeds its default width
+    let tooltipWidth = styleVars['linechart-tooltip-w'];
     const tooltipHeight = styleVars['linechart-tooltip-h'];
+    const entityLabel = entityTypeDisplay(entityType);
     const xScale = this.xScale;
     const bisectDate = this.bisectDate;
-    const entityLabel = entityType.replace(/_/g, ' ');
 
     function lookUpDatum(date, values) {
       // use d3's bisector to find the object in values array closest to a given date
@@ -220,23 +223,11 @@ class LineChart extends Component {
       const mouseX = mouse[0];
       // this grabs the corresponding date from the xScale, not necessary the date in the data
       const xValue = xScale.invert(mouseX);
-
-      // determine if we should shift the tooltip to the left (e.g. it's the last date in the data)
-      let rectXOffset = 5;
-      if (mouseX >= width - margin.left - margin.right - tooltipWidth) {
-        rectXOffset = -tooltipWidth - 5;
-      }
-
       // use d3's bisector to find the closest datum to the date above
       const d = lookUpDatum(xValue, referenceValues);
 
-      // set the tooltip position relative to the current datum's x position
-      // and write the formatted date for that datum
+      // write the formatted date for that datum
       tooltip
-        .style(
-          'transform',
-          `translate(${xScale(d.year_month) + margin.left + rectXOffset}px, 20px)`
-        )
         .select('text.tooltip-date')
         .attr('x', '10px')
         .attr('y', '20px')
@@ -277,18 +268,44 @@ class LineChart extends Component {
         tooltip.select('text.tooltip-secondary').text('');
       }
 
-      // alter the rectangle's height if a primary or secondary entity are selected
+      // alter the rectangle's width & height if a primary or secondary entity are selected
       if (keyPrimary || keySecondary) {
         const h1 = calcYPos('primary');
         const h2 = calcYPos('secondary');
         const h = h2 > h1 ? h2 : h1;
         tooltip.select('rect').style('height', `${h + 10}px`);
+        // iterate over all text elements to find the one with the largest width
+        const textElements = tooltip.selectAll('text');
+        // eslint-disable-next-line
+        textElements.each(function() {
+          const c = d3
+            .select(this)
+            .node()
+            .getBoundingClientRect();
+          // reset value for the width of the tooltip's rect if text is longer then the default
+          tooltipWidth = c.width > tooltipWidth - 20 ? (tooltipWidth = c.width) : tooltipWidth;
+        });
+        // set the tooltip's rect width based on the largest text width if needed
+        tooltip.select('rect').style('width', `${tooltipWidth + 20}px`);
       } else {
         tooltip.select('rect').style('height', `${tooltipHeight}px`);
+        tooltip.select('rect').style('width', `${tooltipWidth}px`);
       }
 
       // adjust the tooltip's vertical reference line
       tooltipLine.attr('x1', () => xScale(d.year_month)).attr('x2', () => xScale(d.year_month));
+
+      // position the tooltip to the left of the datum if its close to the right side of the chart
+      let rectXOffset = 5;
+      if (mouseX >= width - margin.left - margin.right - tooltipWidth) {
+        rectXOffset = -tooltipWidth - rectXOffset - 20; // 20 accounts for padding on left & right
+      }
+
+      // finally set the tooltip position
+      tooltip.style(
+        'transform',
+        `translate(${xScale(d.year_month) + margin.left + rectXOffset}px, 20px)`
+      );
     }
 
     // attach event listeners to invisible rectangle
