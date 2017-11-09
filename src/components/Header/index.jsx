@@ -1,20 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import * as pt from '../../common/reactPropTypeDefs';
 
 import HeaderTitle from './HeaderTitle';
-import Menu from './Menu';
+import Menu from '../../containers/Menu';
 
-const Header = props => (
+const Header = () => (
   <div className="Header">
     <HeaderTitle />
-    <Menu {...props} />
+    <Menu />
   </div>
 );
-
-Header.propTypes = {
-  toggleChartView: PropTypes.func.isRequired,
-  chartView: pt.chartView.isRequired,
-};
 
 export default Header;

@@ -42,7 +42,6 @@ class App extends Component {
     filterType: pt.filterType.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
-    toggleChartView: PropTypes.func.isRequired,
     sortEntitiesByName: PropTypes.func.isRequired,
     sortEntitiesByRank: PropTypes.func.isRequired,
     filterEntitiesByName: PropTypes.func.isRequired,
@@ -115,7 +114,6 @@ class App extends Component {
       chartView,
       dateRangesRank,
       entityType,
-      toggleChartView,
       sortEntitiesByRank,
       sortEntitiesByName,
       filterEntitiesByName,
@@ -125,7 +123,7 @@ class App extends Component {
     return (
       <div className="App grid-container">
         <div className="grid-area header">
-          <Header {...{ toggleChartView, chartView }} />
+          <Header />
         </div>
         <div className="grid-area sparklines">
           <Sidebar {...{ entityType, filterTerm, filterEntitiesByName }} />
