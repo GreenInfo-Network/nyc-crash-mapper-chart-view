@@ -59,4 +59,8 @@
     visibility: hidden;
     pointer-events: none;
   }
+
+  rect.background-fill {
+    fill: $line-chart-bg-grey;
+  }
 }

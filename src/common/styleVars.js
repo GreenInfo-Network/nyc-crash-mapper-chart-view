@@ -5,8 +5,8 @@
 module.exports = {
   'app-column-right': 300,
   // primary, secondary, and reference entity colors
-  'primary-color': '#FFF1B3',
-  'secondary-color': '#FFDAEB',
+  'primary-color': '#FDB462',
+  'secondary-color': '#F08273',
   'reference-color': '#AFE2CE',
   // width of the rank legend container
   'rank-legend-width': 170,

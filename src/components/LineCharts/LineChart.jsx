@@ -573,6 +573,13 @@ class LineChart extends Component {
       .attr('class', 'g-parent')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+    // used to set the background color of the chart
+    g
+      .append('rect')
+      .classed('background-fill', true)
+      .attr('width', width)
+      .attr('height', height);
+
     // vertical grid lines
     g
       .append('g')
@@ -594,35 +601,27 @@ class LineChart extends Component {
           .tickFormat('')
       );
 
+    // first y axis
     g
       .append('g')
       .attr('class', 'y axis')
       .call(yAxis);
 
+    // second y axis
     g
       .append('g')
       .attr('class', 'y2 axis')
       .attr('transform', `translate(${width}, 0)`)
       .call(yAxis2);
 
+    // x axis
     g
       .append('g')
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${height})`)
       .call(xAxis.ticks(5));
 
-    // draw the citywide line
-    g
-      .selectAll('.line-citywide')
-      .data([referenceValues])
-      .enter()
-      .append('path')
-      .attr('class', 'line-citywide')
-      .attr('d', d => this.lineGenerator2(d))
-      .attr('stroke', referenceColor)
-      .attr('opacity', 0.7);
-
-    // add an invisible rectangle that will detect mouseovers for displaying tooltips
+    // invisible rect element used to detect mouse events for tooltips
     g
       .append('rect')
       .classed('tooltip-overlay', true)
@@ -631,9 +630,21 @@ class LineChart extends Component {
       .attr('width', width)
       .attr('height', height);
 
-    // add another svg group element for the tooltip
+    // reference line
+    g
+      .selectAll('.line-reference')
+      .data([referenceValues])
+      .enter()
+      .append('path')
+      .attr('class', 'line-citywide')
+      .attr('d', d => this.lineGenerator2(d))
+      .attr('stroke', referenceColor)
+      .attr('opacity', 0.7);
+
+    // separate svg group element for the tooltip
     const tooltip = svg.append('g').classed('tooltip', true);
-    // background rectangle with rounded corners
+
+    // tooltip background rectangle with rounded corners
     tooltip
       .append('rect')
       .attr('rx', 4)
