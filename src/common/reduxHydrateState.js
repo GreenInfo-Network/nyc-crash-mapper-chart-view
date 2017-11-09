@@ -151,16 +151,14 @@ const createInitialState = p => {
     dateRanges: {
       period1,
       period2: {
-        // if there's a valid period 1 start date, use that as the period 2 end date, else use fallback
-        startDate:
-          period1.startDate && period1.endDate
-            ? new Date(new Date(period1.startDate).setFullYear(period1.startDate.getFullYear() - 1))
-            : isValidDate(p.p2start, p2StartDefault),
-        // if there's a valid period 1 start date, use 1 year prior as the period 2 start date
-        endDate:
-          period1.startDate && period1.endDate
-            ? new Date(period1.startDate)
-            : isValidDate(p.p2end, p2EndDefault),
+        // if there's not a valid period 2 start date, use the year prior to the start date of period 1 as the start date for period 2
+        startDate: !parseDate(p.p2start)
+          ? new Date(new Date(period1.startDate).setFullYear(period1.startDate.getFullYear() - 1))
+          : isValidDate(p.p2start, p2StartDefault),
+        // if there's not a valid period 2 END date, use the START date of period 1 as the END date for period 2
+        endDate: !parseDate(p.p2end)
+          ? new Date(period1.startDate)
+          : isValidDate(p.p2end, p2EndDefault),
       },
     },
     entities: {
