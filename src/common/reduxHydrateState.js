@@ -45,6 +45,20 @@ const isJsonString = _ => {
 // test if a date is valid
 const isValidDate = (val, fallback) => parseDate(val) || fallback;
 
+const isValidPeriod1 = (strStart, strEnd) => {
+  const startDate = parseDate(strStart);
+  const endDate = parseDate(strEnd);
+
+  if (startDate && endDate && +startDate !== +endDate) {
+    return { startDate, endDate };
+  }
+
+  return {
+    startDate: p1StartDefault,
+    endDate: p1EndDefault,
+  };
+};
+
 // test if geo / entity type is valid
 const isValidGeo = _ => {
   if (_ && validGeographies.includes(_)) {
@@ -130,33 +144,42 @@ const parseQueryParams = () => {
 
 // @param {object} p Parsed query params object
 // @returns {object} that may be used to "hydrate" the Redux store (app state)
-const createInitialState = p => ({
-  dateRanges: {
-    period1: {
-      startDate: isValidDate(p.p1start, p1StartDefault),
-      endDate: isValidDate(p.p1end, p1EndDefault),
+const createInitialState = p => {
+  const period1 = isValidPeriod1(p.p1start, p.p1end);
+
+  return {
+    dateRanges: {
+      period1,
+      period2: {
+        // if there's a valid period 1 start date, use that as the period 2 end date, else use fallback
+        startDate:
+          period1.startDate && period1.endDate
+            ? new Date(new Date(period1.startDate).setFullYear(period1.startDate.getFullYear() - 1))
+            : isValidDate(p.p2start, p2StartDefault),
+        // if there's a valid period 1 start date, use 1 year prior as the period 2 start date
+        endDate:
+          period1.startDate && period1.endDate
+            ? new Date(period1.startDate)
+            : isValidDate(p.p2end, p2EndDefault),
+      },
     },
-    period2: {
-      startDate: isValidDate(p.p2start, p2StartDefault),
-      endDate: isValidDate(p.p2end, p2EndDefault),
+    entities: {
+      ...entitiesInitalState,
+      entityType: isValidGeo(p.geo),
+      primary: {
+        ...entitiesInitalState.primary, // keep other props (values, color, etc.)
+        key: p.primary, // okay if left undefined and too difficult to validate
+      },
+      secondary: {
+        ...entitiesInitalState.secondary, // keep other props (values, color, etc.)
+        key: p.secondary, // okay if left undefined and too difficult to validate
+      },
+      reference: isValidRefGeo(p.reference),
     },
-  },
-  entities: {
-    ...entitiesInitalState,
-    entityType: isValidGeo(p.geo),
-    primary: {
-      ...entitiesInitalState.primary, // keep other props (values, color, etc.)
-      key: p.primary, // okay if left undefined and too difficult to validate
-    },
-    secondary: {
-      ...entitiesInitalState.secondary, // keep other props (values, color, etc.)
-      key: p.secondary, // okay if left undefined and too difficult to validate
-    },
-    reference: isValidRefGeo(p.reference),
-  },
-  chartView: setValidView(p.view),
-  filterType: setValidFilterTypes(p),
-});
+    chartView: setValidView(p.view),
+    filterType: setValidFilterTypes(p),
+  };
+};
 
 export default function() {
   const params = parseQueryParams();
