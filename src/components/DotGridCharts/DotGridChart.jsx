@@ -1,8 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { formatNumber } from '../../common/d3Utils';
 
+import { formatNumber } from '../../common/d3Utils';
+import SvgCyclist from '../../../assets/icons/bicycling.svg';
+import SvgMotorist from '../../../assets/icons/motorist.svg';
+import SvgPedestrain from '../../../assets/icons/pedestrian.svg';
+
+const IconCyclist = props => <SvgCyclist {...props} />;
+const IconMotorist = props => <SvgMotorist {...props} />;
+const IconPedestrian = props => <SvgPedestrain {...props} />;
+
+function personTypeIcon(personType) {
+  switch (personType) {
+    case 'cyclist':
+      return IconCyclist;
+
+    case 'motorist':
+      return IconMotorist;
+
+    case 'pedestrian':
+      return IconPedestrian;
+
+    default:
+      return null;
+  }
+}
+
+// Actual component that renders the SVG DotGrid Chart
 const DotGridChart = props => {
   const { personType, radius, strokeWidth, data } = props;
 
@@ -17,6 +42,8 @@ const DotGridChart = props => {
   // offset of SVG group element
   const translateFactor = radius + strokeWidth;
 
+  const PersonIcon = personTypeIcon(personType);
+
   // For the total injured / killed headers, we hide them if there's no data so that things stay aligned vertically
   const injuredTotalStyle = {
     visibility: injuredTotal >= 0 ? 'visible' : 'hidden',
@@ -28,8 +55,15 @@ const DotGridChart = props => {
   // TO DO: replace SVG with Canvas? Boroughs take a while to render...
   return (
     <div className="DotGridChart">
-      <h6 style={killedTotalStyle}>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>
-      <h6 style={injuredTotalStyle}>{`${personType} injured: ${formatNumber(injuredTotal)}`}</h6>
+      <div>
+        <PersonIcon className="PersonIcon" width="35px" height="35px" />
+        <div style={{ display: 'inline-block' }}>
+          <h6 style={killedTotalStyle}>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>
+          <h6 style={injuredTotalStyle}>
+            {`${personType} injured: ${formatNumber(injuredTotal)}`}
+          </h6>
+        </div>
+      </div>
       <svg width={gridWidth} height={gridHeight + 10}>
         <g transform={`translate(${translateFactor}, ${translateFactor})`}>
           {grid.map((d, i) => (
