@@ -1,52 +1,78 @@
 // main App / container
-// Makes use of CSS Grid
+// first, styles for browsers that don't support CSS Grid (e.g. IE)
 .App {
   position: relative;
-  background-color: $bg-grey;
-  display: grid;
-  grid-template-columns: calc(100% - #{$options-filters-width}) $options-filters-width;
-  grid-template-rows:
-    $header-height
-    $timeline-height
-    $line-chart-container-height
-    $legend-height;
-  grid-template-areas:
-    'header sparklines'
-    'timeline sparklines'
-    'detailchart sparklines'
-    'legend sparklines';
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  opacity: 0.7;
 
-  .grid-area {
+  .grid-left,
+  .grid-right {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .grid-left {
+    width: calc(100% - #{$options-filters-width});
+    height: 100%;
+  }
+
+  .grid-right {
+    width: $options-filters-width;
+    height: 100%;
+    padding: 10px 0 10px 20px;
+  }
+
+  .header,
+  .timeline,
+  .legend {
     padding: 10px 20px;
-    background-color: $ui-grey;
-    border: 1px solid $grey-light;
+    border-bottom: 2px solid $grey-light;
   }
 
-  .grid-area.header {
-    grid-area: header;
+  .header {
+    height: $header-height;
   }
 
-  .grid-area.sparklines {
-    grid-area: sparklines;
-    padding-right: 0;
+  .timeline {
+    height: $timeline-height;
   }
 
-  .grid-area.entity-selectors {
-    grid-area: entityselectors;
+  .detailchart {
+    height: $line-chart-container-height;
   }
 
-  .grid-area.detailchart {
-    padding: 0;
-    grid-area: detailchart;
+  .legend {
+    height: $legend-height;
+    border-top: 2px solid $grey-light;
+    border-bottom: none;
   }
+}
 
-  .grid-area.timeline {
-    grid-area: timeline;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
+// the following code will be used only if a browser recognizes @supports and actually supports CSS Grid
+@supports (display: grid) {
+  .App {
+    position: relative;
+    display: grid;
+    grid-template-columns: calc(100% - #{$options-filters-width}) $options-filters-width;
+    grid-template-rows: 100%;
+    grid-template-areas: 'grid-left' 'grid-right';
+    grid-column-gap: 2px;
+    grid-row-gap: 2px;
+    background-color: $grey-light;
 
-  .grid-area.legend {
-    grid-area: legend;
+    .grid-left,
+    .grid-right {
+      background-color: $ui-grey;
+    }
+
+    // reset non-cssgrid layout
+    .grid-left {
+      width: 100%;
+      height: 100%;
+    }
   }
 }

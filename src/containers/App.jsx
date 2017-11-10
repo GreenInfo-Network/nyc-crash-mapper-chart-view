@@ -122,26 +122,28 @@ class App extends Component {
 
     return (
       <div className="App grid-container">
-        <div className="grid-area header">
-          <Header />
+        <div className="grid-left">
+          <div className="header">
+            <Header />
+          </div>
+          <div className="timeline">
+            {chartView === 'rank' ? (
+              <RankCardsControls
+                handleNameClick={sortEntitiesByName}
+                handleRankClick={sortEntitiesByRank}
+                dateRanges={dateRangesRank}
+              />
+            ) : (
+              <TimeLine />
+            )}
+          </div>
+          <div className="detailchart">{this.renderChartArea()}</div>
+          <div className="legend">
+            <Legend />
+          </div>
         </div>
-        <div className="grid-area sparklines">
+        <div className="grid-right">
           <Sidebar {...{ entityType, filterTerm, filterEntitiesByName }} />
-        </div>
-        <div className="grid-area timeline">
-          {chartView === 'rank' ? (
-            <RankCardsControls
-              handleNameClick={sortEntitiesByName}
-              handleRankClick={sortEntitiesByRank}
-              dateRanges={dateRangesRank}
-            />
-          ) : (
-            <TimeLine />
-          )}
-        </div>
-        <div className="grid-area detailchart">{this.renderChartArea()}</div>
-        <div className="grid-area legend">
-          <Legend />
         </div>
       </div>
     );
