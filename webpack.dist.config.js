@@ -27,7 +27,7 @@ const extractSass = new ExtractTextPlugin({
 
 module.exports = {
   entry: {
-    bundle: './src/index.js',
+    bundle: ['babel-polyfill', './src/index.js'],
   },
   cache: false,
   devtool: 'cheap-module-source-map',

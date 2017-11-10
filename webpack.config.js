@@ -11,7 +11,7 @@ module.exports = {
   // specify the root module for our application aka entry point
   // the react-hot-loader/patch preceeds this bc react-hot-loader@beta.7
   entry: {
-    bundle: ['react-hot-loader/patch', './src/index.js'],
+    bundle: ['babel-polyfill', 'react-hot-loader/patch', './src/index.js'],
   },
 
   // what type of source maps to use
