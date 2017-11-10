@@ -273,7 +273,7 @@ class LineChart extends Component {
         const h1 = calcYPos('primary');
         const h2 = calcYPos('secondary');
         const h = h2 > h1 ? h2 : h1;
-        tooltip.select('rect').style('height', `${h + 10}px`);
+        tooltip.select('rect').attr('height', `${h + 10}px`);
         // iterate over all text elements to find the one with the largest width
         const textElements = tooltip.selectAll('text');
         // eslint-disable-next-line
@@ -286,10 +286,10 @@ class LineChart extends Component {
           tooltipWidth = c.width > tooltipWidth - 20 ? (tooltipWidth = c.width + 20) : tooltipWidth;
         });
         // set the tooltip's rect width based on the largest text width if needed
-        tooltip.select('rect').style('width', `${tooltipWidth}px`);
+        tooltip.select('rect').attr('width', `${tooltipWidth}px`);
       } else {
-        tooltip.select('rect').style('height', `${tooltipHeight}px`);
-        tooltip.select('rect').style('width', `${tooltipWidth}px`);
+        tooltip.select('rect').attr('height', `${tooltipHeight}px`);
+        tooltip.select('rect').attr('width', `${tooltipWidth}px`);
       }
 
       // adjust the tooltip's vertical reference line
@@ -302,21 +302,19 @@ class LineChart extends Component {
       }
 
       // finally set the tooltip position
-      tooltip.style(
-        'transform',
-        `translate(${xScale(d.year_month) + margin.left + rectXOffset}px, 20px)`
-      );
+      const yOffset = xScale(d.year_month) + margin.left + rectXOffset;
+      tooltip.attr('transform', `translate(${yOffset}, 20)`);
     }
 
     // attach event listeners to invisible rectangle
     rect
       .on('mouseover', () => {
-        tooltip.style('visibility', 'visible');
-        tooltipLine.style('visibility', 'visible');
+        tooltip.attr('visibility', 'visible');
+        tooltipLine.attr('visibility', 'visible');
       })
       .on('mouseout', () => {
-        tooltip.style('visibility', 'hidden');
-        tooltipLine.style('visibility', 'hidden');
+        tooltip.attr('visibility', 'hidden');
+        tooltipLine.attr('visibility', 'hidden');
       })
       .on('mousemove', handleMouseMove);
   }
@@ -341,6 +339,13 @@ class LineChart extends Component {
 
     // reposition the main group element
     g.attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    // resize the background rect
+    g
+      .select('rect.background-fill')
+      .transition(t)
+      .attr('width', width)
+      .attr('height', height);
 
     // update ranges for x and y scales
     xScale.range([0, width]);
@@ -647,6 +652,8 @@ class LineChart extends Component {
     // tooltip background rectangle with rounded corners
     tooltip
       .append('rect')
+      .attr('fill', '#333')
+      .attr('fill-opacity', 0.8)
       .attr('rx', 4)
       .attr('ry', 4);
     tooltip.append('text').classed('tooltip-date', true);

@@ -38,12 +38,7 @@
   }
 
   .tooltip {
-    visibility: hidden;
     pointer-events: none;
-
-    rect {
-      fill: $tooltip-grey;
-    }
 
     text {
       font-family: $roboto;
@@ -56,11 +51,12 @@
   line.tooltip-line {
     stroke-width: 2px;
     stroke: $tooltip-grey;
-    visibility: hidden;
+    stroke-opacity: 0.8;
     pointer-events: none;
   }
 
   rect.background-fill {
-    fill: $line-chart-bg-grey;
+    fill: $tooltip-grey;
+    fill-opacity: 0.5;
   }
 }
