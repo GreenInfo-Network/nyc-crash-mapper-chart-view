@@ -11,9 +11,9 @@ module.exports = {
   // width of the rank legend container
   'rank-legend-width': 170,
   // colors for defining stops in the sparkline gradient's fill & rank view legend
-  'sparkline-color-1': '#f03b20',
-  'sparkline-color-2': '#feb24c',
-  'sparkline-color-3': '#ffeda0',
+  'sparkline-color-1': '#f0f9e8',
+  'sparkline-color-2': '#bae4bc',
+  'sparkline-color-3': '#7bccc4',
   // default width and height of line chart tooltip
   'linechart-tooltip-w': 150,
   'linechart-tooltip-h': 50,
