@@ -85,7 +85,16 @@ module.exports = {
       // load svg files as React Components, because why not?
       {
         test: /\.svg$/,
-        use: ['babel-loader', 'svgr/lib/webpack']
+        use: [
+          'babel-loader',
+          {
+            loader: 'svgr/lib/webpack',
+            options: {
+              svgo: false,
+              icon: true,
+            },
+          },
+        ]
       },
       // load images
       // url-loader will base64 encode images smaller than options.limit

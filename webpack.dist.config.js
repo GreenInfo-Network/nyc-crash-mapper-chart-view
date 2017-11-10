@@ -85,7 +85,16 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        use: ['babel-loader', 'svgr/lib/webpack']
+        use: [
+          'babel-loader',
+          {
+            loader: 'svgr/lib/webpack',
+            options: {
+              svgo: false,
+              icon: true,
+            },
+          },
+        ]
       },
       {
         test: /\.(jpe?g|png|gif)$/,
