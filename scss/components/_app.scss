@@ -24,6 +24,7 @@
     width: $options-filters-width;
     height: 100%;
     padding: 10px 0 10px 20px;
+    border-left: 2px solid $grey-light;
   }
 
   .header,
@@ -73,6 +74,10 @@
     .grid-left {
       width: 100%;
       height: 100%;
+    }
+
+    .grid-right {
+      border-left: none;
     }
   }
 }
