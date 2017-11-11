@@ -1,6 +1,8 @@
 .RankCardsControls {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 
   h6,
   p {
@@ -9,15 +11,44 @@
     color: $ui-text-grey;
   }
 
-  .rank-controls-dates-sort {
-    display: flex;
-    justify-content: space-between;
+  p {
+    font-size: 1.4rem;
   }
 
-  .rank-controls-btns {
-    * {
-      display: inline-block;
-      margin-left: 10px;
+  .rank-controls-copy,
+  .rank-controls-dates-sort {
+    padding: 0 20px;
+  }
+
+  .rank-controls-copy {
+    height: calc(100% - 35px);
+    padding-top: 5px;
+    overflow-y: auto;
+
+    p {
+      line-height: 1.8rem;
     }
+  }
+
+  .rank-controls-dates-sort {
+    height: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 5px;
+  }
+
+  .rank-controls-btns > button {
+    width: 75px;
+    height: 20px;
+    display: inline-block;
+    margin: 0;
+    margin-left: 10px;
+    text-align: center;
+    line-height: normal;
+  }
+
+  .rank-controls-btns > h6 {
+    display: inline-block;
   }
 }

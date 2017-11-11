@@ -4,9 +4,10 @@ import { formatDate } from '../../common/d3Utils';
 
 const RankCardsControls = ({ handleRankClick, handleNameClick, dateRanges }) => (
   <div className="RankCardsControls">
-    <div className="rank-controls-copy">
+    <div className="rank-controls-copy scroll">
       <p>
-        We calculate rank by sorting on the number of injuries, then the number of fatalities, for
+        We calculate rank by adding up the crashes based on the settings in the "Filter by Type"
+        menu at right. Then we sort on the number of injuries, then the number of fatalities, for
         each geographic area over the past 36 months, ending with the most recently completed month.
       </p>
     </div>
@@ -17,7 +18,7 @@ const RankCardsControls = ({ handleRankClick, handleNameClick, dateRanges }) => 
         )}
       </div>
       <div className="rank-controls-btns">
-        <h6>SORT</h6>
+        <h6>Sort by:</h6>
         <button onClick={() => handleNameClick()}>Name</button>
         <button onClick={() => handleRankClick()}>Rank</button>
       </div>
