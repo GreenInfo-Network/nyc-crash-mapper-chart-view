@@ -49,7 +49,7 @@ class TimeLine extends Component {
       dateRangeTwo,
     };
     const bcr = this.container.getBoundingClientRect();
-    this.width = bcr.width;
+    this.width = bcr.width - 40; // account for padding left & right
     this.height = bcr.height - 42; // account for height of h6 element
     this.svg.setAttribute('width', this.width);
     this.svg.setAttribute('height', this.height);
