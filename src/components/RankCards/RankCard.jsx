@@ -54,15 +54,16 @@ class RankCard extends Component {
   }
 
   render() {
-    const { entity, entityLabel, rankTotal, primaryKey, secondaryKey, handleClick } = this.props;
+    const {
+      entity,
+      entityLabel,
+      idLabel,
+      rankTotal,
+      primaryKey,
+      secondaryKey,
+      handleClick,
+    } = this.props;
     const { key, rank, totalInjured, totalKilled } = entity;
-    let label;
-
-    if (typeof +key === 'number') {
-      label = +key < 10 ? `0${key}` : key;
-    } else {
-      label = key;
-    }
 
     // class names for list items
     const rankCardClassNames = classNames({
@@ -82,7 +83,7 @@ class RankCard extends Component {
         <h6>
           <span className="rank-pos">{rank}</span> / {rankTotal}
         </h6>
-        <h6 className="rank-entity-type">{`${entityLabel} ${label}`}</h6>
+        <h6 className="rank-entity-type">{`${entityLabel} ${idLabel}`}</h6>
         <p>{`${formatNumber(totalInjured)} injuries, ${formatNumber(totalKilled)} fatalities`}</p>
         {this.renderSVG()}
       </div>
@@ -93,6 +94,7 @@ class RankCard extends Component {
 RankCard.propTypes = {
   entity: pt.entity,
   entityLabel: PropTypes.string,
+  idLabel: PropTypes.string,
   handleClick: PropTypes.func.isRequired,
   rankTotal: PropTypes.number,
   strokeWidth: PropTypes.number.isRequired,
@@ -107,6 +109,7 @@ RankCard.propTypes = {
 RankCard.defaultProps = {
   entity: {},
   entityLabel: '',
+  idLabel: '',
   rankTotal: null,
   svgWidth: null,
   svgHeight: null,

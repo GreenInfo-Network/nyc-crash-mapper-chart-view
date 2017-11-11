@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
 import styleVars from '../../common/styleVars';
-import entityTypeDisplay from '../../common/misc';
+import entityTypeDisplay from '../../common/labelFormatters';
 
 // this method of require'ing d3 lets us use the d3-interpolate-path plugin with d3
 const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));

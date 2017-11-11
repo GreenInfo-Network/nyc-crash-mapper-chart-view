@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as pt from '../../common/reactPropTypeDefs';
-import entityTypeDisplay from '../../common/misc';
+import entityTypeDisplay, { entityIdDisplay } from '../../common/labelFormatters';
 import DotGridWrapper from '../../containers/DotGridWrapper';
 import DotGridTitle from './DotGridTitle';
 
@@ -32,10 +32,14 @@ class DotGridChartsContainer extends Component {
   render() {
     const { entityType, keyPrimary, keySecondary, dateRanges } = this.props;
     const entityLabel = entityTypeDisplay(entityType);
+    const keyLabelPrimary = entityIdDisplay(entityType, keyPrimary);
+    const keyLabelSecondary = entityIdDisplay(entityType, keySecondary);
 
     return (
       <div className="DotGridChartsContainer scroll">
-        {keyPrimary && <DotGridTitle {...{ keyPrimary, dateRanges, entityLabel }} />}
+        {keyPrimary && (
+          <DotGridTitle keyLabel={keyLabelPrimary} {...{ keyPrimary, dateRanges, entityLabel }} />
+        )}
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
@@ -90,7 +94,9 @@ class DotGridChartsContainer extends Component {
             personType="motorist"
           />
         </div>
-        {keySecondary && <DotGridTitle {...{ keyPrimary, dateRanges, entityLabel }} />}
+        {keySecondary && (
+          <DotGridTitle keyLabel={keyLabelSecondary} {...{ keyPrimary, dateRanges, entityLabel }} />
+        )}
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}

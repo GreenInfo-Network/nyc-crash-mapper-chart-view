@@ -8,7 +8,7 @@ import toggleEntity from '../common/toggleEntity';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
-import entityTypeDisplay from '../common/misc';
+import entityTypeDisplay, { entityIdDisplay } from '../common/labelFormatters';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -131,13 +131,7 @@ class SelectAreasList extends Component {
       })
       .map(entity => {
         const { key } = entity;
-        let label;
-
-        if (typeof +key === 'number') {
-          label = +key < 10 ? `0${key}` : key;
-        } else {
-          label = key;
-        }
+        const idLabel = entityIdDisplay(entityType, key);
 
         // class names for list items
         const listItemClass = classNames({
@@ -150,12 +144,12 @@ class SelectAreasList extends Component {
           // store some data-xxx properties so we can filter on them later
           // eslint-disable-next-line
           <li
-            key={label}
-            data-search={`city council ${label}`}
+            key={idLabel}
+            data-search={`${entityLabel} ${idLabel}`}
             className={listItemClass}
             onClick={() => this.handleListItemClick(key)}
           >
-            <h6 style={{ padding: 0 }}>{`${entityLabel} ${label}`}</h6>
+            <h6 style={{ padding: 0 }}>{`${entityLabel} ${idLabel}`}</h6>
           </li>
         );
       });

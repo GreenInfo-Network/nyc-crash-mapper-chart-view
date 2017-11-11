@@ -8,7 +8,7 @@ import rankedListSelector from '../common/reduxSelectorsRankedList';
 import toggleEntity from '../common/toggleEntity';
 import * as pt from '../common/reactPropTypeDefs';
 import styleVars from '../common/styleVars';
-import entityTypeDisplay from '../common/misc';
+import entityTypeDisplay, { entityIdDisplay } from '../common/labelFormatters';
 
 import RankCard from '../components/RankCards/RankCard';
 
@@ -166,6 +166,7 @@ class RankCardsList extends Component {
           key={entity.key}
           entity={entity}
           entityLabel={entityLabel}
+          idLabel={entityIdDisplay(entityType, entity.key)}
           rankTotal={total}
           svgWidth={svgWidth}
           svgHeight={svgHeight}
