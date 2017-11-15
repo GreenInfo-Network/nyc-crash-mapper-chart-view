@@ -67,7 +67,7 @@ class TimeLine extends Component {
   updateTimeLineD3() {
     const { dateRangeOne, dateRangeTwo } = this.props;
     const bcr = this.container.getBoundingClientRect();
-    this.width = bcr.width;
+    this.width = bcr.width - 40;
     this.svg.setAttribute('width', this.width);
     this.timeline.getSetWidth(this.width);
     this.timeline.resize({ dateRangeOne, dateRangeTwo });
