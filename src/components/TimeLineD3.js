@@ -75,7 +75,7 @@ export default function(callbacks, dateRanges) {
       .brushX()
       .extent([[0, 0], [width, height]])
       // eslint-disable-next-line
-      .on('brush', function() {
+      .on('brush end', function() {
         const brushG = d3.select(this);
         const rect = brushG.node().querySelector('rect.selection'); // can't use d3.select() here
         const rWidth = +rect.getAttribute('width');
@@ -84,8 +84,8 @@ export default function(callbacks, dateRanges) {
         if (text.node()) {
           text.attr('x', xPos + rWidth / 2 - 36).attr('y', height / 2 + 5);
         }
-      })
-      .on('end', () => brushend(onEndCallback));
+        brushend(onEndCallback);
+      });
 
     // add the brush to the brushes array so it can be altered programmatically
     brushes.push({ id: brushes.length, brush });
