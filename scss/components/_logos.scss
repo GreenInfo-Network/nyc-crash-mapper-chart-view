@@ -1,0 +1,15 @@
+.Logos {
+  height: 100%;
+  width: 170px;
+  display: inline-block;
+
+  img,
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  svg {
+    margin-left: 10px;
+  }
+}

@@ -6,9 +6,11 @@ import * as pt from '../../common/reactPropTypeDefs';
 import EntitySelections from './EntitySelections';
 import CompareLegend from './CompareLegend';
 import RankLegend from './RankLegend';
+import Logos from './Logos';
 
 const Legend = props => {
   const { entities, deselectPrimaryEntity, deselectSecondaryEntity, chartView } = props;
+  const className = chartView === 'about' ? 'Legend view-about' : 'Legend';
 
   function renderLegend() {
     switch (chartView) {
@@ -42,7 +44,12 @@ const Legend = props => {
     }
   }
 
-  return <div className="Legend">{renderLegend()}</div>;
+  return (
+    <div className={className}>
+      {renderLegend()}
+      <Logos />
+    </div>
+  );
 };
 
 Legend.propTypes = {

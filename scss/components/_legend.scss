@@ -6,4 +6,8 @@
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
+
+  &.view-about {
+    flex-direction: row-reverse;
+  }
 }
