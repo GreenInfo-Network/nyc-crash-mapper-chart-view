@@ -339,6 +339,15 @@ class LineChart extends Component {
     // reposition the main group element
     g.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+    // resize the clipath
+    g
+      .select('defs')
+      .select('clipPath')
+      .select('rect')
+      .attr('y', -2) // allow room for line path's stroke width
+      .attr('width', width)
+      .attr('height', height + 2);
+
     // resize the background rect
     g
       .select('rect.background-fill')
