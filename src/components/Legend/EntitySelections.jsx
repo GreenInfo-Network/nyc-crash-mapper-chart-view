@@ -38,13 +38,13 @@ class EntitySelections extends Component {
       deselectSecondaryEntity,
     } = this.props;
 
-    const style = {
-      width:
-        chartView === 'rank' ? `calc(100% - ${styleVars['rank-legend-width']}px - 20px)` : '100%',
-    };
+    // const style = {
+    //   width:
+    //     chartView === 'rank' ? `calc(100% - ${styleVars['rank-legend-width']}px - 20px)` : '100%',
+    // };
 
     return (
-      <div className="EntitySelections" style={style}>
+      <div className="EntitySelections">
         {chartView !== 'rank' && (
           <EntitySelector
             chartView={chartView}

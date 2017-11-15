@@ -85,6 +85,8 @@ $timeline-height: 100px !default;
 
 $legend-height: 65px !default;
 
+$logos-width: 170px !default;
+
 $line-chart-container-height: calc(100% - #{$header-height} - #{$timeline-height} - #{$legend-height});
 
 $options-filters-height: 100% !default;
@@ -92,4 +94,4 @@ $options-filters-width: #{$app-column-right}px !default; // imported via styleVa
 
 $toggle-width: 130px !default; // width of the trend & compare toggle
 
-$entity-selections-width: calc(100% - #{$toggle-width});
+$entity-selections-width: calc(100% - #{$toggle-width} - #{$logos-width} - #{$padding-25 * 2});
