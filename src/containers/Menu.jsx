@@ -42,7 +42,7 @@ const Menu = props => {
     { type: 'view', value: 'trend', label: 'Trend' },
     { type: 'view', value: 'compare', label: 'Compare' },
     { type: 'view', value: 'rank', label: 'Rank' },
-    { type: 'meta', value: 'about', label: 'About' },
+    { type: 'view', value: 'about', label: 'About' },
   ];
 
   const handleViewClick = value => {
@@ -65,13 +65,13 @@ const Menu = props => {
         );
 
       case 'view':
+      case 'about':
         return (
           <button className={className} onClick={() => handleViewClick(item.value)}>
             {item.label}
           </button>
         );
 
-      // TO DO: implement "About"
       default:
         return <button onClick={() => {}}>{item.label}</button>;
     }

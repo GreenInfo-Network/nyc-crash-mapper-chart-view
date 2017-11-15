@@ -17,6 +17,7 @@ import TimeLine from './TimeLine';
 import RankCardsControls from '../components/RankCards/RankCardsControls';
 import Legend from '../containers/Legend';
 import LoadingMsg from '../components/LoadingMsg';
+import About from '../components/About';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -95,6 +96,9 @@ class App extends Component {
 
       case 'rank':
         return <RankCards {...{ entityType }} />;
+
+      case 'about':
+        return <About />;
 
       default:
         return null;

@@ -1,0 +1,17 @@
+.About {
+  height: 100%;
+  padding: 20px;
+
+  p,
+  li {
+    font-size: 1.8rem;
+  }
+
+  p {
+    padding-bottom: 20px;
+  }
+
+  a {
+    color: $ui-teal;
+  }
+}
