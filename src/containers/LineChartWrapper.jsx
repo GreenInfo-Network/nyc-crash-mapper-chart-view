@@ -10,6 +10,9 @@ import {
   primaryEntityValuesFilteredSelector,
   secondaryEntityValuesFilteredSelector,
   referenceEntityValuesFilteredSelector,
+  primaryAllDatesSelector,
+  secondaryAllDatesSelector,
+  referenceAllDatesSelector,
 } from '../common/reduxSelectors';
 
 import LineChart from '../components/LineCharts/LineChart';
@@ -29,9 +32,14 @@ const mapStateToProps = (state, props) => {
     keyPrimary: entities.primary.key,
     keySecondary: entities.secondary.key,
     keyReference: entities.reference,
+    // some data overlap going on here that could probably be avoided given more time for refactoring
+    // although using the memozied selectors should help cut down on the amount of data processing
     primaryValues: primaryEntityValuesFilteredSelector(state, props),
     secondaryValues: secondaryEntityValuesFilteredSelector(state, props),
     referenceValues: referenceEntityValuesFilteredSelector(state, props),
+    primaryAllDates: primaryAllDatesSelector(state, props),
+    secondaryAllDates: secondaryAllDatesSelector(state, props),
+    referenceAllDates: referenceAllDatesSelector(state, props),
     colorPrimary: entities.primary.color,
     colorSecondary: entities.secondary.color,
     yMax: props.yMax, // this is created on the component instance (see LineChartsContainer)
@@ -114,9 +122,9 @@ class LineChartWrapper extends Component {
       children,
       period,
       entityType,
-      primaryValues,
-      secondaryValues,
-      referenceValues,
+      primaryAllDates,
+      secondaryAllDates,
+      referenceAllDates,
       keyPrimary,
       keySecondary,
       keyReference,
@@ -138,13 +146,14 @@ class LineChartWrapper extends Component {
         <LineChart
           appHeight={appHeight}
           appWidth={appWidth}
+          period={period}
           entityType={entityType}
           keyPrimary={keyPrimary}
           keySecondary={keySecondary}
           keyReference={keyReference}
-          primaryValues={primaryValues}
-          secondaryValues={secondaryValues}
-          referenceValues={referenceValues}
+          primaryValues={primaryAllDates}
+          secondaryValues={secondaryAllDates}
+          referenceValues={referenceAllDates}
           primaryColor={colorPrimary}
           secondaryColor={colorSecondary}
           referenceColor={styleVars['reference-color']}
@@ -170,6 +179,9 @@ LineChartWrapper.propTypes = {
   primaryValues: PropTypes.arrayOf(PropTypes.object),
   secondaryValues: PropTypes.arrayOf(PropTypes.object),
   referenceValues: PropTypes.arrayOf(PropTypes.object),
+  primaryAllDates: PropTypes.arrayOf(PropTypes.object),
+  secondaryAllDates: PropTypes.arrayOf(PropTypes.object),
+  referenceAllDates: PropTypes.arrayOf(PropTypes.object),
   colorPrimary: PropTypes.string.isRequired,
   colorSecondary: PropTypes.string.isRequired,
   startDate: pt.date.isRequired,
@@ -189,6 +201,9 @@ LineChartWrapper.defaultProps = {
   primaryValues: [],
   secondaryValues: [],
   referenceValues: [],
+  primaryAllDates: [],
+  secondaryAllDates: [],
+  referenceAllDates: [],
   yMax: null,
   y2Max: null,
 };

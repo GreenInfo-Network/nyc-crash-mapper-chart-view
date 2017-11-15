@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as d3 from 'd3';
 
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
 import styleVars from '../../common/styleVars';
 import entityTypeDisplay from '../../common/labelFormatters';
-
-// this method of require'ing d3 lets us use the d3-interpolate-path plugin with d3
-const d3 = Object.assign({}, require('d3'), require('d3-interpolate-path'));
 
 /** Class that renders the line chart for selected geographic entities using D3
 */
@@ -15,6 +13,7 @@ class LineChart extends Component {
   static propTypes = {
     appHeight: PropTypes.number.isRequired,
     appWidth: PropTypes.number.isRequired,
+    period: PropTypes.string.isRequired,
     entityType: PropTypes.string,
     keyPrimary: pt.key,
     keySecondary: pt.key,
@@ -72,7 +71,7 @@ class LineChart extends Component {
       .y(d => this.yScale(d.count))
       .curve(d3.curveMonotoneX);
 
-    // line path generator for citywide data
+    // line path generator for reference data
     this.lineGenerator2 = d3
       .line()
       .x(d => this.xScale(d.year_month))
@@ -340,6 +339,15 @@ class LineChart extends Component {
     // reposition the main group element
     g.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+    // resize the clipath
+    g
+      .select('defs')
+      .select('clipPath')
+      .select('rect')
+      .attr('y', -2) // allow room for line path's stroke width
+      .attr('width', width)
+      .attr('height', height + 2);
+
     // resize the background rect
     g
       .select('rect.background-fill')
@@ -435,6 +443,9 @@ class LineChart extends Component {
       secondaryColor,
       yMax,
       y2Max,
+      period,
+      startDate,
+      endDate,
     } = this.props;
     const { width, height } = this.getContainerSize();
     const entities = [
@@ -459,10 +470,14 @@ class LineChart extends Component {
     const lineGenerator2 = this.lineGenerator2;
     const svg = d3.select(this.svg);
     const g = svg.select('g.g-parent');
-    const t = g.transition().duration(750); // transition for updates
+    // transition for updates
+    const t = g
+      .transition()
+      .duration(750)
+      .ease(d3.easeLinear);
 
     // update xScale domain
-    xScale.domain(d3.extent(referenceValues, d => d.year_month));
+    xScale.domain([startDate, endDate]);
 
     // update yScale domain
     yScale.domain([0, yMax]);
@@ -495,17 +510,12 @@ class LineChart extends Component {
         .tickFormat('')
     );
 
-    // transition the citywide line
+    // transition the reference line
     g
       .selectAll('.line-citywide')
       .data([referenceValues])
       .transition(t)
-      // eslint-disable-next-line
-      .attrTween('d', function(d) {
-        const previous = d3.select(this).attr('d');
-        const current = lineGenerator2(d);
-        return d3.interpolatePath(previous, current);
-      });
+      .attr('d', d => lineGenerator2(d));
 
     // update the svg main group element's data binding
     g.datum(entities, d => d.key);
@@ -517,20 +527,15 @@ class LineChart extends Component {
     lines
       .exit()
       .transition(t)
-      .style('stroke', 'rgba(255, 255, 255, 0)')
+      .attr('stroke-opacity', 0)
       .remove();
 
     // update existing lines
     lines
       .transition(t)
-      // eslint-disable-next-line
-      .attrTween('d', function(d) {
-        const previous = d3.select(this).attr('d');
-        const current = lineGenerator(d.values);
-        return d3.interpolatePath(previous, current);
-      })
-      // .attr('d', d => lineGenerator(d.values))
-      .attr('stroke', d => d.color);
+      .attr('d', d => lineGenerator(d.values))
+      .attr('stroke', d => d.color)
+      .attr('clip-path', `url(#clip-${period})`);
 
     // create new lines
     lines
@@ -538,7 +543,8 @@ class LineChart extends Component {
       .append('path')
       .attr('class', 'line')
       .attr('d', d => lineGenerator(d.values))
-      .attr('stroke', d => d.color);
+      .attr('stroke', d => d.color)
+      .attr('stroke-opacity', 1);
 
     // reset the tooltips
     this.initTooltips();
@@ -546,7 +552,7 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { referenceValues, referenceColor, y2Max } = this.props;
+    const { period, referenceValues, referenceColor, y2Max, startDate, endDate } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -565,7 +571,7 @@ class LineChart extends Component {
     // set scale domains and ranges
     yScale.range([height, 0]).domain([0, 0]);
     yScale2.range([height, 0]).domain([0, y2Max]);
-    xScale.range([0, width]).domain(d3.extent(referenceValues, d => d.year_month));
+    xScale.range([0, width]).domain([startDate, endDate]);
 
     // set scales for axises
     xAxis.scale(xScale);
@@ -577,6 +583,16 @@ class LineChart extends Component {
       .append('g')
       .attr('class', 'g-parent')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    // set up a clipath to prevent data from appearing outside of the chart bounds
+    g
+      .append('defs')
+      .append('clipPath')
+      .attr('id', `clip-${period}`)
+      .append('rect')
+      .attr('y', -2) // allow room for line path's stroke width
+      .attr('width', width)
+      .attr('height', height + 2);
 
     // used to set the background color of the chart
     g
@@ -644,7 +660,8 @@ class LineChart extends Component {
       .attr('class', 'line-citywide')
       .attr('d', d => this.lineGenerator2(d))
       .attr('stroke', referenceColor)
-      .attr('opacity', 0.7);
+      .attr('opacity', 0.7)
+      .attr('clip-path', `url(#clip-${period})`);
 
     // separate svg group element for the tooltip
     const tooltip = svg.append('g').classed('tooltip', true);
@@ -665,6 +682,7 @@ class LineChart extends Component {
     g
       .append('line')
       .classed('tooltip-line', true)
+      .attr('visibility', 'hidden')
       .attr('x1', 0)
       .attr('x2', 0)
       .attr('y1', 0)

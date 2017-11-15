@@ -109,33 +109,55 @@ const valuesByDateRangeSelector = entity =>
     return values.filter(d => +d.year_month >= +startDate && +d.year_month <= +endDate);
   });
 
+// helper function that given an array of values and array of field types,
+// returns values with the some of and that only include those fields
+const reduceValuesByType = (values, fields) =>
+  // return an array with computed total of each selected crash type
+  values.reduce((acc, cur) => {
+    const { year_month } = cur; // need to keep year_month for line charts, or do we?
+    const o = {};
+    o.count = 0;
+    o.year_month = year_month;
+
+    // sum the total of each selected crash type
+    // keep only the selected crash types
+    Object.keys(cur)
+      .filter(key => fields.includes(key))
+      .forEach(key => {
+        o.count += cur[key];
+        o[key] = cur[key];
+      });
+
+    acc.push(o);
+    return acc;
+  }, []);
+
+/**
+  * Factory function that returns a Memoized Selector which filters an entity's values by crash types
+  * but returns the data for the full date range
+  * @param {string} entity: type of geographic entity to filter for
+  * @returns {function}: memoized selector
+*/
+const valuesFilteredByTypeSelector = entity =>
+  createSelector(entityValuesSelector(entity), filterTypeFieldsSelector, reduceValuesByType);
+
+/**
+  * Memoized Selectors that filters an entity values by crash types
+  * @param {object} state: redux state / store
+  * @param {object} props: react props passed to the component instance
+  * @returns {array}: filtered version of store.entities.<entity>.values
+*/
+export const primaryAllDatesSelector = valuesFilteredByTypeSelector('primary');
+export const secondaryAllDatesSelector = valuesFilteredByTypeSelector('secondary');
+export const referenceAllDatesSelector = valuesFilteredByTypeSelector('reference');
+
 /**
   * Factory function that returns a Memoized Selector that filters an entity values by crash types and date range
   * @param {string} entity: type of geographic entity to filter for
   * @returns {function}: memoized selector
 */
 const valuesFilteredByDateTypeSelector = entity =>
-  createSelector(valuesByDateRangeSelector(entity), filterTypeFieldsSelector, (values, fields) =>
-    // return an array with computed total of each selected crash type
-    values.reduce((acc, cur) => {
-      const { year_month } = cur; // need to keep year_month for line charts, or do we?
-      const o = {};
-      o.count = 0;
-      o.year_month = year_month;
-
-      // sum the total of each selected crash type
-      // keep only the selected crash types
-      Object.keys(cur)
-        .filter(key => fields.includes(key))
-        .forEach(key => {
-          o.count += cur[key];
-          o[key] = cur[key];
-        });
-
-      acc.push(o);
-      return acc;
-    }, [])
-  );
+  createSelector(valuesByDateRangeSelector(entity), filterTypeFieldsSelector, reduceValuesByType);
 
 /**
   * Memoized Selectors that filters an entity values by crash types and date range
