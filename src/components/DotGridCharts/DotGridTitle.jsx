@@ -14,13 +14,13 @@ const DotGridTitle = props => {
       <h5>{`${entityLabel} ${keyLabel}`}</h5>
       <div className="date-ranges">
         <div>
-          <h6 className="period">Period One</h6>
+          <h6 className="period">Period A</h6>
           <h6 className="date-range">
             {`${formatTime(period1.startDate)} – ${formatTime(period1.endDate)}`}
           </h6>
         </div>
         <div>
-          <h6 className="period">Period Two</h6>
+          <h6 className="period">Period B</h6>
           <h6 className="date-range">
             {`${formatTime(period2.startDate)} – ${formatTime(period2.endDate)}`}
           </h6>

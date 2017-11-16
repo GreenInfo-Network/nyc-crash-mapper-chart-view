@@ -43,16 +43,16 @@ class DotGridChartsContainer extends Component {
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
-            period={'period2'}
-            title={'Period Two'}
+            period={'period1'}
+            title={'Period A'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="pedestrian"
           />
           <DotGridWrapper
             entityType={'primary'}
-            period={'period1'}
-            title={'Period One'}
+            period={'period2'}
+            title={'Period B'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="pedestrian"
@@ -61,16 +61,16 @@ class DotGridChartsContainer extends Component {
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
-            period={'period2'}
-            title={'Period Two'}
+            period={'period1'}
+            title={'Period A'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="cyclist"
           />
           <DotGridWrapper
             entityType={'primary'}
-            period={'period1'}
-            title={'Period One'}
+            period={'period2'}
+            title={'Period B'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="cyclist"
@@ -79,16 +79,16 @@ class DotGridChartsContainer extends Component {
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
-            period={'period2'}
-            title={'Period Two'}
+            period={'period1'}
+            title={'Period A'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="motorist"
           />
           <DotGridWrapper
             entityType={'primary'}
-            period={'period1'}
-            title={'Period One'}
+            period={'period2'}
+            title={'Period B'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="motorist"
@@ -100,16 +100,16 @@ class DotGridChartsContainer extends Component {
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}
-            period={'period2'}
-            title={'Period Two'}
+            period={'period1'}
+            title={'Period A'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="pedestrian"
           />
           <DotGridWrapper
             entityType={'secondary'}
-            period={'period1'}
-            title={'Period One'}
+            period={'period2'}
+            title={'Period B'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="pedestrian"
@@ -118,16 +118,16 @@ class DotGridChartsContainer extends Component {
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}
-            period={'period2'}
-            title={'Period Two'}
+            period={'period1'}
+            title={'Period A'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="cyclist"
           />
           <DotGridWrapper
             entityType={'secondary'}
-            period={'period1'}
-            title={'Period One'}
+            period={'period2'}
+            title={'Period B'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="cyclist"
@@ -136,16 +136,16 @@ class DotGridChartsContainer extends Component {
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}
-            period={'period2'}
-            title={'Period Two'}
+            period={'period1'}
+            title={'Period A'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="motorist"
           />
           <DotGridWrapper
             entityType={'secondary'}
-            period={'period1'}
-            title={'Period One'}
+            period={'period2'}
+            title={'Period B'}
             radius={this.circleRadius}
             strokeWidth={this.strokeWidth}
             personType="motorist"
