@@ -98,7 +98,7 @@ class Sidebar extends Component {
         <hr />
 
         <OptionsContainer
-          title={'Select Areas'}
+          title={'Select Areas (Up to Two)'}
           collapsable={false}
           optionsContainerHeight={sparkLineListHeight}
           collapseHeight={sparkLineListHeight}
