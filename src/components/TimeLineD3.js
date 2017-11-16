@@ -2,10 +2,8 @@ import * as d3 from 'd3';
 
 /**
  * Function that sets up the D3 brushes for selecting two separate date ranges
- * @param {object} callbacks: callback functions for brush 1 and brush 2 that are
- * invoked on brushend
- * @param {object} dateRanges: two sets of start and end dates that are used to set the brushes
- * initial values
+ * @param {object} callbacks: callback functions for brush 1 and brush 2 that are invoked on brushend
+ * @param {object} dateRanges: two sets of start and end dates that are used to set the brushes initial values
  */
 export default function(callbacks, dateRanges) {
   const { onBrushOneEnd, onBrushTwoEnd } = callbacks;
@@ -166,14 +164,14 @@ export default function(callbacks, dateRanges) {
             xScale(dateRangeOne.endDate),
           ]);
           // create label text for period one
-          text.text('Period One');
+          text.text('Period A');
         } else {
           brushObj.brush.move(d3.select(this), [
             xScale(dateRangeTwo.startDate),
             xScale(dateRangeTwo.endDate),
           ]);
           // create label text for period two
-          text.text('Period Two');
+          text.text('Period B');
         }
       });
 
