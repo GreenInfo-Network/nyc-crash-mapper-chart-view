@@ -348,13 +348,6 @@ class LineChart extends Component {
       .attr('width', width)
       .attr('height', height + 2);
 
-    // resize the background rect
-    g
-      .select('rect.background-fill')
-      .transition(t)
-      .attr('width', width)
-      .attr('height', height);
-
     // update ranges for x and y scales
     xScale.range([0, width]);
     yScale.range([height, 0]);
@@ -594,13 +587,6 @@ class LineChart extends Component {
       .attr('width', width)
       .attr('height', height + 2);
 
-    // used to set the background color of the chart
-    g
-      .append('rect')
-      .classed('background-fill', true)
-      .attr('width', width)
-      .attr('height', height);
-
     // vertical grid lines
     g
       .append('g')
@@ -669,7 +655,7 @@ class LineChart extends Component {
     // tooltip background rectangle with rounded corners
     tooltip
       .append('rect')
-      .attr('fill', '#333')
+      .attr('fill', 'rgb(35, 35, 35)')
       .attr('fill-opacity', 0.8)
       .attr('rx', 4)
       .attr('ry', 4);
