@@ -152,7 +152,7 @@ class DotGridChartsContainer extends Component {
           />
         </div>
         {!keyPrimary && !keySecondary ? (
-          <h5 className="select-entity">Select a {entityLabel}</h5>
+          <h5 className="select-entity">Select a {entityType.replace(/_/g, ' ')}</h5>
         ) : null}
       </div>
     );
