@@ -24,6 +24,7 @@ export const entitiesInitalState = {
     values: [],
   },
   entityType: 'city_council', // matches properties in store.data
+  filterTerm: '',
   reference: 'citywide',
   sortRank: true,
   sortName: false,
