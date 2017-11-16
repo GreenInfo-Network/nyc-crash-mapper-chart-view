@@ -80,8 +80,8 @@ class ReferenceEntitySelect extends Component {
 
     return (
       <div className="ReferenceEntitySelect">
-        <p>Choose a reference geography:</p>
-        <select value={reference} onChange={this.handleChange}>
+        <label htmlFor="reference-select">Select a benchmark area:</label>
+        <select id="reference-select" value={reference} onChange={this.handleChange}>
           {options.map(o => (
             <option key={o.value} value={o.value}>
               {o.label}
