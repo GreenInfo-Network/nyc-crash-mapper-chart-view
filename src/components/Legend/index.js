@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 import EntitySelections from './EntitySelections';
 import CompareLegend from './CompareLegend';
-import RankLegend from './RankLegend';
 import Logos from './Logos';
 
 const Legend = props => {
@@ -28,16 +27,15 @@ const Legend = props => {
         );
 
       case 'rank':
-        return [
-          <RankLegend key="a" />,
+        return (
           <EntitySelections
             key="b"
             {...entities}
             {...{ chartView }}
             deselectPrimaryEntity={deselectPrimaryEntity}
             deselectSecondaryEntity={deselectSecondaryEntity}
-          />,
-        ];
+          />
+        );
 
       default:
         return null;
