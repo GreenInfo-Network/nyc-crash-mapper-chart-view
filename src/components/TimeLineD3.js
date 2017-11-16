@@ -20,7 +20,7 @@ export default function(callbacks, dateRanges) {
   let width = 960 - margin.left - margin.right;
   let height = 80 - margin.top - margin.bottom;
 
-  const xScale = d3.scaleTime().domain([new Date(), new Date(2011, 7, 1)]);
+  const xScale = d3.scaleTime().domain([new Date(2011, 7, 1), new Date()]);
 
   const axisMinor = d3
     .axisBottom()
@@ -51,9 +51,9 @@ export default function(callbacks, dateRanges) {
     const d1 = d0.map(d3.timeMonth.round);
 
     // If empty when rounded, use floor & ceil instead.
-    if (d1[1] >= d1[0]) {
-      d1[1] = d3.timeMonth.floor(d0[0]);
-      d1[0] = d3.timeMonth.offset(d1[0]);
+    if (d1[0] >= d1[1]) {
+      d1[0] = d3.timeMonth.floor(d0[0]);
+      d1[1] = d3.timeMonth.offset(d1[0]);
     }
 
     d3
@@ -162,15 +162,15 @@ export default function(callbacks, dateRanges) {
         // set some default values of the brushes
         if (brushObj.id === 0) {
           brushObj.brush.move(d3.select(this), [
-            xScale(dateRangeOne.endDate),
             xScale(dateRangeOne.startDate),
+            xScale(dateRangeOne.endDate),
           ]);
           // create label text for period one
           text.text('Period One');
         } else {
           brushObj.brush.move(d3.select(this), [
-            xScale(dateRangeTwo.endDate),
             xScale(dateRangeTwo.startDate),
+            xScale(dateRangeTwo.endDate),
           ]);
           // create label text for period two
           text.text('Period Two');
@@ -228,20 +228,19 @@ export default function(callbacks, dateRanges) {
 
     // update brushes' extent & position
     brushes.forEach(brushObj => {
+      brushObj.brush.extent([[0, 0], [width, height]]);
+
       if (brushObj.id === 0) {
         brushObj.brush.move(t.select('#brush-0'), [
-          xScale(dateRangeOne.endDate),
           xScale(dateRangeOne.startDate),
+          xScale(dateRangeOne.endDate),
         ]);
       } else {
         brushObj.brush.move(t.select('#brush-1'), [
-          xScale(dateRangeTwo.endDate),
           xScale(dateRangeTwo.startDate),
+          xScale(dateRangeTwo.endDate),
         ]);
       }
-      // BUG: this doesn't correctly set the brush extent for some reason,
-      // most likely because we're using d3-brush in an unconventional way
-      brushObj.brush.extent([[0, 0], [width, height]]);
     });
   };
 

@@ -19,8 +19,8 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         period1: {
-          startDate: action.dates[1],
-          endDate: action.dates[0],
+          startDate: action.dates[0],
+          endDate: action.dates[1],
         },
       };
 
@@ -28,8 +28,8 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         period2: {
-          startDate: action.dates[1],
-          endDate: action.dates[0],
+          startDate: action.dates[0],
+          endDate: action.dates[1],
         },
       };
 
