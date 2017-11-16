@@ -1,7 +1,23 @@
 .HeaderTitle {
   width: $header-title-width;
   display: inline-block;
-  font-size: 2.6rem;
-  text-transform: uppercase;
-  color: $ui-teal;
+
+  img.chekpeds-logo,
+  h3 {
+    vertical-align: middle;
+  }
+
+  img.chekpeds-logo {
+    height: 33px;
+    display: inline-block;
+  }
+
+  h3 {
+    display: inline-block;
+    font-size: 2.6rem;
+    text-transform: uppercase;
+    color: $ui-teal;
+    padding: 0;
+    margin-left: 10px;
+  }
 }

@@ -76,7 +76,7 @@ $padding-5: 5px !default;
 //––––––––––––––––––––––––––––––––––––––––––––––––––
 $header-height: 55px !default;
 $header-width: auto !default;
-$header-title-width: 245px !default;
+$header-title-width: 245px + 33px + 10px !default;
 
 $select-areas-controls-height: 45px !default;
 $select-areas-list-height: calc(100% - #{$select-areas-controls-height});
