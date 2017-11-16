@@ -9,6 +9,7 @@ const RankCardsControls = ({ handleRankClick, handleNameClick, dateRanges }) => 
         We calculate rank by adding up the crashes based on the settings in the "Filter by Type"
         menu at right. Then we sort on the number of injuries, then the number of fatalities, for
         each geographic area over the past 36 months, ending with the most recently completed month.
+        To see two areas on other chart views, select them and then click Trend or Compare.
       </p>
     </div>
     <div className="rank-controls-dates-sort">
