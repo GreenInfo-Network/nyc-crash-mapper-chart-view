@@ -58,9 +58,13 @@ const DotGridChart = props => {
       <div>
         <PersonIcon className="PersonIcon" width="35px" height="35px" />
         <div style={{ display: 'inline-block' }}>
-          <h6 style={killedTotalStyle}>{`${personType} killed: ${formatNumber(killedTotal)}`}</h6>
+          <h6 style={killedTotalStyle}>
+            {`${personType} killed: `}
+            <strong>{formatNumber(killedTotal)}</strong>
+          </h6>
           <h6 style={injuredTotalStyle}>
-            {`${personType} injured: ${formatNumber(injuredTotal)}`}
+            {`${personType} injured: `}
+            <strong>{formatNumber(injuredTotal)}</strong>
           </h6>
         </div>
       </div>
