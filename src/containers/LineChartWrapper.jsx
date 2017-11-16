@@ -136,7 +136,7 @@ class LineChartWrapper extends Component {
       y2Max,
     } = this.props;
 
-    const titleText = period === 'period1' ? 'Period One' : 'Period Two';
+    const titleText = period === 'period1' ? 'Period A' : 'Period B';
 
     return (
       <div className="LineChartWrapper">
