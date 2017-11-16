@@ -88,6 +88,7 @@ To bundle the app's source code and then deploy the contents of the `dist/` dire
 ```
 npm run deploy:gh-pages
 ```
+NOTE: Doing this will remove the custom subdomain (`vis.crashmapper.org`) from the repo's settings. **You will need to manually add it back after redeploying.**
 
 ### Using Static Assets
 The empty `assets/` directory is available for Webpack to include static assets such as images, icons, etc. The Webpack Dev Server should resolve file paths just by doing `assets/filename.png` in your code (e.g. for the `src` attribute of an image tag). When doing `npm run build` the `CopyWebpackPlugin` will copy the `assets/` directory to `dist/assets` for you.
