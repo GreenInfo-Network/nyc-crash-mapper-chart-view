@@ -1,5 +1,6 @@
 // main App / container
 // first, styles for browsers that don't support CSS Grid (e.g. IE)
+// some of these carry over to the @supports block below
 .App {
   position: relative;
   width: 100%;
@@ -44,6 +45,7 @@
 
   .detailchart {
     height: $line-chart-container-height;
+    background-color: $dark-grey;
   }
 
   .legend {
