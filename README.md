@@ -254,7 +254,7 @@ The main scaffolding and layout of the app resides within `src/containers/App.js
 
 The app is connected to Redux via `<Provider>` and rendered to the DOM within `./src/ReduxEntry.jsx`.
 
-The entry point (`src/index.js`) makes use of `react-dom`'s `render()` method to inject the entire thing into the DOM.
+The entry point (`src/index.js`) makes use of `react-dom`'s `render()` method to inject the entire thing into the DOM. It is configured for [Webpack's Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) so that upon making changes the DOM will update without a full page reload, though sometimes a full page reload is necessary for changes to take place.
 
 In writing this web app I have not followed the Container & Presentational Component paradigm strictly in the sense that most of the **container** components contain mark up (JSX). My rationale for this is that it can be annoying to rename a component after connecting it to Redux, [although sometimes this is necessary](./src/containers/LineChartWrapper.jsx). In the Redux docs, an example of this is calling the `TodoList` component `VisibleTodoList`. The latter is essentially a wrapper around the former component, and while this makes sense semantically I found it burdensome to do this for each component that is connected to Redux.
 
@@ -281,7 +281,7 @@ This app uses CARTO's SQL API to load all data. Unlike the `nyc-crash-mapper` ma
 
 See [`sqlQueries`](./src/common/sqlQueries.js) and note that the **tagged template literals** will convert the multiline SQL queries into a single line string, removing extra white space, new line characters, etc.
 
-See the [`asyncAction creators`](./src/actions/asyncActions.js) for how the app requests data from the CARTO SQL API.
+See the [`asyncAction creators`](./src/actions/asyncActions.js) for how the app requests data from the CARTO SQL API. Note that the [`redux-thunk` middleware](https://github.com/gaearon/redux-thunk) is used so that the Redux properly updates the store's state from asynchronous tasks.
 
 The CARTO account name is specified in the app's [`config file`](./src/common/config.js).
 
