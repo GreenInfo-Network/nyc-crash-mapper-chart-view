@@ -59,7 +59,7 @@ const Menu = props => {
     switch (type) {
       case 'link':
         return (
-          <a target="_blank" rel="noopener noreferrer" href={item.value} className={className}>
+          <a href={item.value} className={className}>
             {item.label}
           </a>
         );
