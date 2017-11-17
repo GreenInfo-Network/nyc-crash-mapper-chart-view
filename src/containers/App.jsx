@@ -16,7 +16,7 @@ import RankCards from '../components/RankCards/';
 import TimeLine from './TimeLine';
 import RankCardsControls from '../components/RankCards/RankCardsControls';
 import Legend from '../containers/Legend';
-import LoadingMsg from '../components/LoadingMsg';
+import Message from '../components/Message';
 import About from '../components/About';
 
 // for debugging & messing around
@@ -33,7 +33,7 @@ class App extends Component {
     chartView: pt.chartView.isRequired,
     dateRanges: pt.dateRanges.isRequired,
     dateRangesRank: PropTypes.shape({}),
-    isFetchingCharts: PropTypes.bool.isRequired,
+    isFetchingData: PropTypes.number.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
     setEntityType: PropTypes.func.isRequired,
     entityType: PropTypes.string,
@@ -41,6 +41,7 @@ class App extends Component {
     keyPrimary: pt.key,
     keySecondary: pt.key,
     filterType: pt.filterType.isRequired,
+    anyFilterTypeSelected: PropTypes.bool.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
     sortEntitiesByName: PropTypes.func.isRequired,
@@ -66,7 +67,7 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, entityType, isFetchingCharts } = nextProps;
+    const { entityData, entityType, isFetchingData } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -74,7 +75,7 @@ class App extends Component {
       entityType !== this.props.entityType &&
       this.props.entityData.length &&
       !entityData.length &&
-      !isFetchingCharts
+      isFetchingData === 0
     ) {
       this.props.fetchEntityData(entityType);
     }
@@ -106,10 +107,16 @@ class App extends Component {
   }
 
   renderChartArea() {
-    const { isFetchingCharts } = this.props;
-    if (isFetchingCharts) {
-      return <LoadingMsg />;
+    const { isFetchingData, anyFilterTypeSelected } = this.props;
+    if (isFetchingData > 0) {
+      return <Message message="Loading data..." showSpinner />;
     }
+
+    if (!anyFilterTypeSelected) {
+      // don't render charts if no crash types are selected
+      return <Message message="Select one or more crash filter types" />;
+    }
+
     return this.renderChartView();
   }
 
@@ -156,15 +163,31 @@ class App extends Component {
 
 const mapStateToProps = state => {
   const { browser, chartView, dateRanges, entities, data, filterType } = state;
-  const { isFetchingCharts } = data;
+  const { isFetchingData } = data;
   const entityData = entityDataSelector(state);
+
+  // boolean that states whether or not any crash type filters are selected
+  // used to display a message to user
+  let anyFilterTypeSelected = false;
+
+  Object.keys(filterType).forEach(key => {
+    if (key !== 'noInjuryFatality') {
+      const harmType = filterType[key];
+
+      Object.keys(harmType).forEach(personType => {
+        if (harmType[personType]) {
+          anyFilterTypeSelected = true;
+        }
+      });
+    }
+  });
 
   return {
     width: browser.width,
     height: browser.height,
     dateRangesRank: entityData.response.length ? lastThreeYearsSelector(state) : null,
     dateRanges,
-    isFetchingCharts,
+    isFetchingData,
     entityData: entityData.response,
     entityType: entities.entityType,
     keyPrimary: entities.primary.key,
@@ -172,6 +195,7 @@ const mapStateToProps = state => {
     filterType,
     filterTerm: entities.filterTerm,
     chartView,
+    anyFilterTypeSelected,
   };
 };
 
