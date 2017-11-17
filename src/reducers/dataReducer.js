@@ -1,8 +1,8 @@
 import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
 
 const defaultState = {
-  errorCharts: null, // any error from the charts data request
-  isFetchingCharts: false, // is the app waiting on a chart data request?
+  fetchError: null, // any error from the charts data request
+  isFetchingData: 0, // is the app waiting on a chart data request?
   borough: {}, // hash to store borough data
   city_council: {}, // ... city council district data
   citywide: {}, // ... citywide data
@@ -12,17 +12,23 @@ const defaultState = {
 };
 
 export default function(state = defaultState, action) {
+  let isFetchingData = state.isFetchingData;
+
   switch (action.type) {
     case ENTITY_DATA_REQUEST:
+      isFetchingData += 1;
+
       return {
         ...state,
-        isFetchingCharts: true,
+        isFetchingData,
       };
 
     case ENTITY_DATA_SUCCESS:
+      isFetchingData -= 1;
+
       return {
         ...state,
-        isFetchingCharts: false,
+        isFetchingData,
         [action.geo]: {
           ...state[action.geo],
           response: action.response, // data unformatted from the API call
@@ -32,8 +38,7 @@ export default function(state = defaultState, action) {
     case ENTITY_DATA_ERROR:
       return {
         ...state,
-        isFetchingCharts: false,
-        errorCharts: action.error,
+        fetchError: action.error,
       };
 
     default:
