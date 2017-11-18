@@ -285,7 +285,7 @@ The following describes how React Components are nested within the app:
 
   - RankCards/index
     - RankCardsList\*
-    - RankCard
+      - RankCard
 
   - TimeLine\*
     - TimeLineD3
@@ -297,7 +297,6 @@ The following describes how React Components are nested within the app:
       - CompareLegend
       - EntitySelections
         - EntitySelector
-      - RankLegend
       - Logos
 
   - Message
