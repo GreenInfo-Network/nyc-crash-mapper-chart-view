@@ -243,7 +243,7 @@ This is implemented in several places:
 #### React
 All UI components are built using [React](https://reactjs.org/)(v15.5.4), which allow for transforming application data into UI views.
 
-This project follows the React Redux concept of using "Containers" which may be connected to the Redux store and/or action creators via [React-Redux](https://github.com/reactjs/react-redux). Non-container, or "Presentational" components, receive data from Containers or parent components as props, and only use Component level state for either trivial UI changes, eg: tracking whether or not a UI panel is collapsed or opened; or for further data munging specific to that component and its child components. The [LineChartContainer](src/components/LineCharts/LineChartsContainer.jsx) (_not actually a **container** component, sorry for the confusion!_) and  [DotGridWrapper](src/containers/DotGridWrapper.jsx) components are examples of the latter.
+This app follows the React Redux convention of using "Containers" which may be connected to the Redux store and/or action creators via [React-Redux](https://github.com/reactjs/react-redux). Non-container, or "Presentational" components, receive data from Containers or parent components as props, and only use Component level state for either trivial UI changes, eg: tracking whether or not a UI panel is collapsed or opened; or for further data munging specific to that component and its child components. The [LineChartContainer](src/components/LineCharts/LineChartsContainer.jsx) (_not actually a **container** component, sorry for the confusion!_) and  [DotGridWrapper](src/containers/DotGridWrapper.jsx) components are examples of the latter.
 
 - [`presentational components`](./src/components/)
 - [`container components`](./src/containers/)
@@ -252,10 +252,62 @@ Within the `src/components` directory, components are organized by related parts
 
 The main scaffolding and layout of the app resides within `src/containers/App.jsx`.
 
-The app is connected to Redux via `<Provider>` and rendered to the DOM within `./src/ReduxEntry.jsx`.
+The app is connected to Redux via `react-redux`'s `<Provider>` component within `./src/ReduxEntry.jsx`.
 
-The entry point (`src/index.js`) makes use of `react-dom`'s `render()` method to inject the entire thing into the DOM. It is configured for [Webpack's Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) so that upon making changes the DOM will update without a full page reload, though sometimes a full page reload is necessary for changes to take place.
+The entry point (`src/index.js`) makes use of `react-dom`'s `render()` method to inject the entire app into the DOM. It is configured for [Webpack's Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) so that upon making changes the DOM will update without a full page reload, though sometimes a full page reload is necessary for changes to take place.
 
+##### React Component Tree:
+The following describes how React Components are nested within the app:
+
+- App\*
+
+  - Header/index
+    - HeaderTitle
+    - Menu\*
+
+  - Sidebar/index
+    - SelectAreasController
+      - SelectAreasList\*
+    - OptionsContainer
+    - FilterByType\*
+    - FilterByBoundary\*
+
+  - LineChartsContainer
+    - ReferenceEntitySelect\*
+    - LineChartWrapper\*
+      - LineChart
+      - LineChartTitle
+
+  - DotGridChartsContainer
+    - DotGridWrapper\*
+      - DotGridChart
+      - DotGridTitle
+
+  - RankCards/index
+    - RankCardsList\*
+    - RankCard
+
+  - TimeLine\*
+    - TimeLineD3
+
+  - RankCardsControls
+
+  - Legend\*
+    - index
+      - CompareLegend
+      - EntitySelections
+        - EntitySelector
+      - RankLegend
+      - Logos
+
+  - Message
+
+  - About
+
+_\* means Component is a **container**_
+
+
+##### A Word on React-Redux Implementation
 In writing this web app I have not followed the Container & Presentational Component paradigm strictly in the sense that most of the **container** components contain mark up (JSX). My rationale for this is that it can be annoying to rename a component after connecting it to Redux, [although sometimes this is necessary](./src/containers/LineChartWrapper.jsx). In the Redux docs, an example of this is calling the `TodoList` component `VisibleTodoList`. The latter is essentially a wrapper around the former component, and while this makes sense semantically I found it burdensome to do this for each component that is connected to Redux.
 
 #### Integration with D3
