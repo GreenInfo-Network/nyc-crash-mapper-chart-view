@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import { Transition, TransitionGroup } from 'react-transition-group';
 
 import { formatNumber } from '../../common/d3Utils';
 import SvgCyclist from '../../../assets/icons/bicycling.svg';
@@ -70,17 +71,24 @@ const DotGridChart = props => {
       </div>
       <svg width={gridWidth} height={gridHeight + 10}>
         <g transform={`translate(${translateFactor}, ${translateFactor})`}>
-          {grid.map((d, i) => (
-            <circle
-              key={i}
-              cx={d.x}
-              cy={d.y}
-              r={radius}
-              stroke={colorScale(personType)}
-              strokeWidth={strokeWidth}
-              fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
-            />
-          ))}
+          <TransitionGroup component="g">
+            {grid.map((d, i) => (
+              <Transition key={`${d.x}-${d.y}`} appear in timeout={i * 10}>
+                {status => (
+                  <circle
+                    cx={d.x}
+                    cy={d.y}
+                    r={radius}
+                    stroke={colorScale(personType)}
+                    strokeWidth={strokeWidth}
+                    strokeOpacity={status.entering ? 0 : 1}
+                    fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
+                    fillOpacity={status.entering ? 0 : 1}
+                  />
+                )}
+              </Transition>
+            ))}
+          </TransitionGroup>
         </g>
       </svg>
     </div>
