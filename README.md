@@ -67,7 +67,9 @@ To have Webpack bundle files, start the dev server, and watch for changes do:
 npm start
 ```
 
-This will compile the assets in the project and start [Webpack Dev Server](https://webpack.js.org/configuration/dev-server/#devserver) as a local server. This should automatically open your web browser to `localhost:8080` and you should see the site once Webpack has finished its initial bundling process. Webpack will automatically refresh the page when it recompiles and notify you that it has done so.
+This will compile the assets in the project and start [Webpack Dev Server](https://webpack.js.org/configuration/dev-server/#devserver) as a local server. This should automatically open your web browser to `localhost:8889` and you should see the site once Webpack has finished its initial bundling process. Webpack will automatically refresh the page when it recompiles and notify you that it has done so.
+
+**NOTE:** Running this app locally assumes that the companion app, [nyc-crash-mapper](https://github.com/GreenInfo-Network/nyc-crash-mapper) is also running locally on a separate port to allow debugging between both apps. Thus, the navigation list item for `map` will link to `localhost:8080`. When the app is deployed, this navigation list item will link to `crashmapper.org`.
 
 ### Build
 To have Webpack create an optimized production build do:
