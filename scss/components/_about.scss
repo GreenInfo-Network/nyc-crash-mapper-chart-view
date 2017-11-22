@@ -2,13 +2,27 @@
   height: 100%;
   padding: 20px;
 
+  h6 {
+    font-weight: bolder;
+    font-size: 1.5rem;
+  }
+
+  ul {
+    list-style: disc inside none;
+  }
+
   p,
   li {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
   }
 
   p {
     padding-bottom: 20px;
+  }
+
+  li > p {
+    display: inline;
+    padding-bottom: 0;
   }
 
   a {
