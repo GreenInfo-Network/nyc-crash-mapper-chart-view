@@ -19,10 +19,12 @@ $entity-citywide: #999 !default;
 // possible UI color values
 $marine: #105b63 !default;
 $marine-light: lighten($marine, 10) !default;
+$marine-header: rgba(23, 131, 143, .7) !default;
 
 $off-white: #fffad5 !default;
 $grey: #4d4d4d !default;
 $grey-light: #989898 !default;
+$grey-lighter: #f6f5f6 !default;
 $medium-grey: lighten($dark-grey, 50) !default;
 $bg-grey: #f5f5f3 !default;
 $ui-grey: rgba($grey, 0.8) !default;

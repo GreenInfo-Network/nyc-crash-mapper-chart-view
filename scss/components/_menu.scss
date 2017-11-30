@@ -19,7 +19,7 @@
       content: '';
       height: 1px;
       width: 0;
-      background-color: $ui-teal;
+      background-color: $marine-header;
       display: block;
       position: absolute;
       bottom: 0;
@@ -39,7 +39,7 @@
     padding: 0 10px;
     font-size: 1.4rem;
     font-weight: normal;
-    color: $ui-teal;
+    color: $marine-header;
 
     &.active {
       font-weight: bold;
