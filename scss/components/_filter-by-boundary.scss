@@ -4,6 +4,11 @@
   select {
     color: $marine-light;
     background-color: $off-white;
-    font-size: $input-font-size;
+    text-align: left;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    font-weight: 500;
+    font-size: 11px;
+    height: 25px;
   }
 }

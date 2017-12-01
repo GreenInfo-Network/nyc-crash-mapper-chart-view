@@ -8,11 +8,15 @@
 
   label {
     margin-right: 10px;
+    text-transform: uppercase;
   }
 
   select {
     color: $marine-light;
     background-color: $off-white;
-    font-size: $input-font-size;
+    text-align: left;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    font-size: 11px;
   }
 }
