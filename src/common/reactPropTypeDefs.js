@@ -64,3 +64,8 @@ export const data = PropTypes.shape({
   response: PropTypes.arrayOf(PropTypes.object),
   ranked: PropTypes.arrayOf(PropTypes.object),
 });
+
+// coordinate list, e.g. that specifying a list of [ lat, lng ] arrays, forming a polygonal shape
+export const coordinatelist = PropTypes.arrayOf(
+  PropTypes.arrayOf(PropTypes.number),
+);

@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import qs from 'query-string';
 
 import { formatDateYM } from '../common/d3Utils';
-
-import { clearCustomGeography } from '../actions/';
+import { coordinatelist } from '../common/reactPropTypeDefs';
+import { clearCustomGeography } from '../actions/customGeographyActions';
 
 class FilterByCustomArea extends Component {
   static propTypes = {
+    customGeography: coordinatelist.isRequired,
     clearCustomGeography: PropTypes.func.isRequired,
   };
 
@@ -19,32 +20,46 @@ class FilterByCustomArea extends Component {
   }
 
   render() {
-    const queryParams = qs.stringify({ ...this.props, geo: 'custom' });
+    // a custom geography exists, so show only the clear button
+    const queryParams = qs.stringify({
+      ...this.props,
+      clearCustomGeography: null,
+      customGeography: null,
+      geo: 'custom',
+    });
     const hostname = process.env.NODE_ENV === 'production' ? 'crashmapper.org' : 'localhost:8080';
     const mainmapurl = `http://${hostname}/#/?${queryParams}`;
 
+    const button1 = ! this.props.customGeography.length ? (
+      <ul className="filter-list">
+        <li><button className="med filter-options-button roboto-medium active"><a href={mainmapurl} className="active">draw area</a></button></li>
+      </ul>
+    ) : null;
+
+    const button2 = this.props.customGeography.length ? (
+      <ul className="filter-list">
+        <li><button className="med filter-options-button roboto-medium" onClick={() => this.clickClearButton()}>clear area</button></li>
+      </ul>
+    ) : null;
+
     return (
       <div className="filter-by-type">
-        <ul className="filter-list">
-          <li><button className="med filter-options-button roboto-medium active"><a href={mainmapurl} className="active">draw area</a></button></li>
-        </ul>
-        <ul className="filter-list">
-          <li><button className="med filter-options-button roboto-medium" onClick={() => this.clickClearButton()}>clear area</button></li>
-        </ul>
+        {button1}
+        {button2}
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { chartView, entities, dateRanges, filterType } = state;
+  const { entities, dateRanges, filterType } = state;
+  const { customGeography } = state;
   const { primary, entityType } = entities;
   const { period1 } = dateRanges;
   const { injury, fatality } = filterType;
 
-  // everything here but `chartView` is used to link to the map app via query params
   return {
-    chartView,
+    // used to link to the map app via query params
     geo: entityType,
     cinj: injury.cyclist,
     minj: injury.motorist,
@@ -55,6 +70,8 @@ function mapStateToProps(state) {
     endDate: formatDateYM(period1.endDate), // only need the string representation here
     startDate: formatDateYM(period1.startDate), // only need the string representation here
     identifier: primary.key,
+    // not for the map link
+    customGeography,
   };
 }
 
