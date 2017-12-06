@@ -73,6 +73,9 @@ const referenceEntityValuesSelector = state => {
   if (reference === 'citywide' && state.data.citywide.response) {
     return state.data.citywide.response;
   }
+  if (reference === 'custom' && state.data.custom.response) {
+    return state.data.custom.response;
+  }
 
   if (state.data.borough.response) {
     return state.data.borough.response.filter(d => d.borough.toLowerCase() === reference);

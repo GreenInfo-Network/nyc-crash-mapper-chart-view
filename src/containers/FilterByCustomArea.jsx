@@ -14,13 +14,10 @@ class FilterByCustomArea extends Component {
   };
 
   clickClearButton() {
-    // eslint-disable-next-line
-    console.log(this.props);
     this.props.clearCustomGeography();
   }
 
   render() {
-    // a custom geography exists, so show only the clear button
     const queryParams = qs.stringify({
       ...this.props,
       clearCustomGeography: null,
@@ -30,6 +27,8 @@ class FilterByCustomArea extends Component {
     const hostname = process.env.NODE_ENV === 'production' ? 'crashmapper.org' : 'localhost:8080';
     const mainmapurl = `http://${hostname}/#/?${queryParams}`;
 
+    // show the Draw button if there's no shape, or the Clear button if there is
+    // avoids "draw? I already did?" and "clear what?" confusion on the part of the user
     const button1 = ! this.props.customGeography.length ? (
       <ul className="filter-list">
         <li><button className="med filter-options-button roboto-medium active"><a href={mainmapurl} className="active">draw area</a></button></li>

@@ -1,6 +1,9 @@
 // the latLngs= parameter is a list of [ lng, lat ] arrays, forming a custom-drawn shape
 // internally this becomes App state.customGeography
 // a zero-length list (no custom shape) is entirely expected
+// see also sqlQueries.js sqlCustomGeography() where this list is composed into WKT for a SQL query
+// see also asyncActions.js where the reference geography is loaded
+// see also reduxSelectors.js where reference geography data are massaged out of reselect
 
 import {
   CLEAR_CUSTOM_GEOGRAPHY,

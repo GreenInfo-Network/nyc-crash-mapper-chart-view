@@ -61,8 +61,9 @@ class App extends Component {
   };
 
   componentDidMount() {
+    // DOM content loaded, make async data requests to start
+    // starting state, entityType is citywide
     const { entityType } = this.props;
-    // DOM content loaded, make async data requests
     this.props.fetchEntityData(entityType);
   }
 

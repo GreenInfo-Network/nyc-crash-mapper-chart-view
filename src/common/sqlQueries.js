@@ -43,3 +43,24 @@ export const sqlByGeo = geo =>
     GROUP BY year_month, ${geo}
     ORDER BY year_month asc, ${geo} asc
   `;
+
+export const sqlCustomGeography = latlngs => {
+  console.log(latlngs);  // eslint-disable-line
+  return sls`
+    SELECT
+      2 * COUNT(c.cartodb_id) as total_crashes,
+      2 * SUM(c.number_of_cyclist_injured) as cyclist_injured,
+      2 * SUM(c.number_of_cyclist_killed) as cyclist_killed,
+      2 * SUM(c.number_of_motorist_injured) as motorist_injured,
+      2 * SUM(c.number_of_motorist_killed) as motorist_killed,
+      2 * SUM(c.number_of_pedestrian_injured) as pedestrian_injured,
+      2 * SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
+      2 * SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
+      2 * SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
+      year || '-' || LPAD(month::text, 2, '0') as year_month
+    FROM
+      crashes_all_prod c
+    GROUP BY year, month
+    ORDER BY year asc, month asc
+  `;
+};

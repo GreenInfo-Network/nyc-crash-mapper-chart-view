@@ -9,6 +9,7 @@ const defaultState = {
   community_board: {}, // ... community board data
   neighborhood: {}, // ... neighborhood (tabulation area) data
   nypd_precinct: {}, // ... nypd precinct data
+  custom: {}, // ... customGeography data
 };
 
 export default function(state = defaultState, action) {
