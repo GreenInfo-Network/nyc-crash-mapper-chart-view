@@ -6,15 +6,18 @@ import qs from 'query-string';
 import { formatDateYM } from '../common/d3Utils';
 import { coordinatelist } from '../common/reactPropTypeDefs';
 import { clearCustomGeography } from '../actions/customGeographyActions';
+import { setReferenceEntity } from '../actions';
 
 class FilterByCustomArea extends Component {
   static propTypes = {
     customGeography: coordinatelist.isRequired,
     clearCustomGeography: PropTypes.func.isRequired,
+    setReferenceEntity: PropTypes.func.isRequired,
   };
 
   clickClearButton() {
     this.props.clearCustomGeography();
+    this.props.setReferenceEntity('citywide');
   }
 
   render() {
@@ -76,4 +79,5 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   clearCustomGeography,
+  setReferenceEntity,
 })(FilterByCustomArea);
