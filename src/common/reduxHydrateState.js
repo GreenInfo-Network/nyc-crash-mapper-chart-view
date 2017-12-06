@@ -176,6 +176,7 @@ const createInitialState = p => {
     },
     chartView: setValidView(p.view),
     filterType: setValidFilterTypes(p),
+    customGeography: p.lngLats,
   };
 };
 

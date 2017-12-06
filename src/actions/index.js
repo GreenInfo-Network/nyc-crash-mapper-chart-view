@@ -17,3 +17,5 @@ export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
 export fetchEntityData from './asyncActions';
 
 export toggleChartView from './chartViewActions';
+
+export clearCustomGeography from './customGeographyActions';

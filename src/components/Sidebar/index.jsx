@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import SelectAreasController from './SelectAreasController';
 import OptionsContainer from './OptionsContainer';
+import FilterByCustomArea from '../../containers/FilterByCustomArea';
 import FilterByType from '../../containers/FilterByType';
 import FilterByBoundary from '../../containers/FilterByBoundary';
 
@@ -82,6 +83,15 @@ class Sidebar extends Component {
           onMeasure={({ height }) => this.updateCollapsedHeight('filterByTypeHeight', height)}
         >
           <FilterByType />
+        </OptionsContainer>
+
+        <hr />
+
+        <OptionsContainer
+          title={'Custom Area'}
+          onMeasure={({ height }) => this.updateCollapsedHeight('filterByCustomAreaHeight', height)}
+        >
+          <FilterByCustomArea />
         </OptionsContainer>
 
         <hr />
