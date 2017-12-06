@@ -42,6 +42,7 @@ class ReferenceEntitySelect extends Component {
 
   componentDidMount() {
     const { reference, boroughData, citywideData, customData } = this.props;
+    const { customGeography } = this.props;
 
     // if the app loaded with a reference entity other than citywide make sure to fetch it
     if (reference !== 'citywide' && reference !== 'custom' && !boroughData.response) {
@@ -49,13 +50,17 @@ class ReferenceEntitySelect extends Component {
     }
 
     // vice versa for above
-    if ((reference === 'citywide' && !citywideData.response) || (reference === 'custom' && !customData.response)) {
+    if (reference === 'citywide' && !citywideData.response) {
       this.props.fetchEntityData(reference);
+    }
+    else if (reference === 'custom' && !customData.response) {
+      this.props.fetchEntityData(reference, customGeography);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { reference, boroughData, citywideData, customData } = nextProps;
+    const { customGeography } = this.props;
 
     // if user selected a borough, and we don't have borough data yet, make an async request for it
     if (reference !== 'citywide' && reference !== 'custom' && !boroughData.response) {
@@ -63,8 +68,11 @@ class ReferenceEntitySelect extends Component {
     }
 
     // vice versa for above
-    if ((reference === 'citywide' && !citywideData.response) || (reference === 'custom' && !customData.response)) {
+    if (reference === 'citywide' && !citywideData.response) {
       this.props.fetchEntityData(reference);
+    }
+    else if (reference === 'custom' && !customData.response) {
+      this.props.fetchEntityData(reference, customGeography);
     }
   }
 

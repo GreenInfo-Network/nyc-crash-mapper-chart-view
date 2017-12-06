@@ -52,14 +52,15 @@ const handleError = (type, error) => {
 
 // fetches aggregated crash data via the CARTO SQL API
 // @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
-export default function fetchEntityData(entityType) {
+// @param {mixed} additionalData Additional data relevant to the entity type, e.g. for "custom" a customGeography coordinatelist array
+export default function fetchEntityData(entityType, additionalData) {
   let sql = "";
   switch (entityType) {
     case 'citywide':
       sql = sqlCitywide();
       break;
     case 'custom':
-      sql = sqlCustomGeography();
+      sql = sqlCustomGeography(additionalData);
       break;
     default:
       sql = sqlByGeo(entityType);
