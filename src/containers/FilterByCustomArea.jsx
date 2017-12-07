@@ -32,15 +32,28 @@ class FilterByCustomArea extends Component {
 
     // show the Draw button if there's no shape, or the Clear button if there is
     // avoids "draw? I already did?" and "clear what?" confusion on the part of the user
-    const button1 = ! this.props.customGeography.length ? (
+    const button1 = !this.props.customGeography.length ? (
       <ul className="filter-list">
-        <li><button className="med filter-options-button roboto-medium active"><a href={mainmapurl} className="active">draw area</a></button></li>
+        <li>
+          <button className="med filter-options-button roboto-medium active">
+            <a href={mainmapurl} className="active">
+              draw area
+            </a>
+          </button>
+        </li>
       </ul>
     ) : null;
 
     const button2 = this.props.customGeography.length ? (
       <ul className="filter-list">
-        <li><button className="med filter-options-button roboto-medium" onClick={() => this.clickClearButton()}>clear area</button></li>
+        <li>
+          <button
+            className="med filter-options-button roboto-medium"
+            onClick={() => this.clickClearButton()}
+          >
+            clear area
+          </button>
+        </li>
       </ul>
     ) : null;
 

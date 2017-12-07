@@ -5,19 +5,16 @@
 // see also asyncActions.js where the reference geography is loaded
 // see also reduxSelectors.js where reference geography data are massaged out of reselect
 
-import {
-  CLEAR_CUSTOM_GEOGRAPHY,
-  CHANGE_CUSTOM_GEOGRAPHY,
-} from '../common/actionTypes';
+import { CLEAR_CUSTOM_GEOGRAPHY, CHANGE_CUSTOM_GEOGRAPHY } from '../common/actionTypes';
 
 const defaultState = [];
 
 export default function(state = defaultState, action) {
   switch (action.type) {
     case CLEAR_CUSTOM_GEOGRAPHY:
-      return [];  // replace our coordinatelist with an empty list
+      return []; // replace our coordinatelist with an empty list
     case CHANGE_CUSTOM_GEOGRAPHY:
-      return [];  // not really supported, placeholder
+      return []; // not really supported, placeholder
     default:
       return state;
   }

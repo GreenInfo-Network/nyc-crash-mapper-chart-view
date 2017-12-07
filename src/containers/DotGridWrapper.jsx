@@ -31,7 +31,7 @@ const mapStateToProps = (state, props) => {
       values = customGeographyValuesFilteredSelector(state, props);
       break;
     default:
-      throw new Error("DotGridWrapper got unexpected entityType");
+      throw new Error('DotGridWrapper got unexpected entityType');
   }
 
   return {
@@ -73,7 +73,7 @@ class DotGridWrapper extends Component {
 
   static defaultProps = {
     values: [],
-    customGeography: [],  // only if entityType=='custom' see DotGridChartsContainer.jsx
+    customGeography: [], // only if entityType=='custom' see DotGridChartsContainer.jsx
     subheadHeights: {},
     radius: 5,
     strokeWidth: 1,

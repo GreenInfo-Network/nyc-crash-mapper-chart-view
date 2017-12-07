@@ -192,7 +192,7 @@ class LineChart extends Component {
       const i = bisectDate(values, date, 1);
       const d0 = values[i - 1];
       const d1 = values[i];
-      if (! d0 || ! d1) return null;
+      if (!d0 || !d1) return null;
       return date - d0.year_month > d1.year_month - date ? d1 : d0;
     }
 

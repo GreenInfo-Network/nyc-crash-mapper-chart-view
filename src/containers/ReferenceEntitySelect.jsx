@@ -50,12 +50,9 @@ class ReferenceEntitySelect extends Component {
     }
 
     // vice versa for above
-    if (reference === 'citywide' && !citywideData.response) {
-      this.props.fetchEntityData(reference);
-    }
-    else if (reference === 'custom' && !customData.response) {
+    if (reference === 'citywide' && !citywideData.response) this.props.fetchEntityData(reference);
+    else if (reference === 'custom' && !customData.response)
       this.props.fetchEntityData(reference, customGeography);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -68,12 +65,9 @@ class ReferenceEntitySelect extends Component {
     }
 
     // vice versa for above
-    if (reference === 'citywide' && !citywideData.response) {
-      this.props.fetchEntityData(reference);
-    }
-    else if (reference === 'custom' && !customData.response) {
+    if (reference === 'citywide' && !citywideData.response) this.props.fetchEntityData(reference);
+    else if (reference === 'custom' && !customData.response)
       this.props.fetchEntityData(reference, customGeography);
-    }
   }
 
   handleChange(event) {
@@ -92,7 +86,7 @@ class ReferenceEntitySelect extends Component {
       { value: 'staten island', label: 'Staten Island' },
     ];
     if (customGeography.length) {
-      options.push({ value: 'custom', label: 'Custom Geography' },);
+      options.push({ value: 'custom', label: 'Custom Geography' });
     }
 
     return (

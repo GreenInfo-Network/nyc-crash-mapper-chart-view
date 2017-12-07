@@ -92,7 +92,9 @@ class App extends Component {
   }
 
   renderChartView() {
-    const { chartView, dateRanges, entityType, keyPrimary, keySecondary, customGeography, width } = this.props;
+    const { chartView, dateRanges, entityType, keyPrimary, keySecondary } = this.props;
+    const { customGeography } = this.props;
+    const { width } = this.props;
 
     switch (chartView) {
       case 'trend':

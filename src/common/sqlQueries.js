@@ -49,7 +49,7 @@ export const sqlCustomGeography = latlngs => {
   // compose WKT to find crashes contained within this polygonal area
   const wkt = sls`
     ST_GEOMFROMTEXT(
-      'POLYGON((${latlngs.map((coord) => [ coord[0], coord[1]].join(' ') ).join(', ')}))'
+      'POLYGON((${latlngs.map(coord => [coord[0], coord[1]].join(' ')).join(', ')}))'
       , 4326
     )
   `;

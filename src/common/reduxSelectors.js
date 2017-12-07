@@ -66,7 +66,10 @@ export const filterTypeFieldsSelector = createSelector(filterTypeSelector, filte
 // returns the array of objects for the customGeography entity
 const primaryEntityValuesSelector = state => state.entities.primary.values;
 const secondaryEntityValuesSelector = state => state.entities.secondary.values;
-const customEntityValuesSelector = state => state.data.custom.response ? state.data.custom.response : [];
+const customEntityValuesSelector = state => {
+  const records = state.data.custom.response ? state.data.custom.response : [];
+  return records;
+};
 
 // returns array of objects for the reference entity
 // reference entity is used for the line chart only and may be either "citywide" or a borough name

@@ -54,7 +54,7 @@ const handleError = (type, error) => {
 // @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
 // @param {mixed} additionalData Additional data relevant to the entity type, e.g. for "custom" a customGeography coordinatelist array
 export default function fetchEntityData(entityType, additionalData) {
-  let sql = "";
+  let sql = '';
   switch (entityType) {
     case 'citywide':
       sql = sqlCitywide();

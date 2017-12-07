@@ -40,7 +40,10 @@ class DotGridChartsContainer extends Component {
     return (
       <div className="DotGridChartsContainer scroll">
         {customGeography.length ? (
-          <DotGridTitle keyLabel={'Custom Geography'} {...{dateRanges, keyPrimary: '', entityLabel: ''}} />
+          <DotGridTitle
+            keyLabel={'Custom Geography'}
+            {...{ dateRanges, keyPrimary: '', entityLabel: '' }}
+          />
         ) : null}
 
         {customGeography.length ? (

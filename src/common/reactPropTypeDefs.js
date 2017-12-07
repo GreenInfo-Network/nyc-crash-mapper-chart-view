@@ -66,6 +66,4 @@ export const data = PropTypes.shape({
 });
 
 // coordinate list, e.g. that specifying a list of [ lat, lng ] arrays, forming a polygonal shape
-export const coordinatelist = PropTypes.arrayOf(
-  PropTypes.arrayOf(PropTypes.number),
-);
+export const coordinatelist = PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number));
