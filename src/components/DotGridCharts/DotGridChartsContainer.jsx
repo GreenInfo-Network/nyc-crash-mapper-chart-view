@@ -114,128 +114,128 @@ class DotGridChartsContainer extends Component {
           <DotGridTitle keyLabel={keyLabelPrimary} {...{ keyPrimary, dateRanges, entityLabel }} />
         )}
         {keyPrimary && (
-        <div className="dot-grid-row">
-          <DotGridWrapper
-            entityType={'primary'}
-            period={'period1'}
-            title={'Period A'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="pedestrian"
-          />
-          <DotGridWrapper
-            entityType={'primary'}
-            period={'period2'}
-            title={'Period B'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="pedestrian"
-          />
-        </div>
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'primary'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="pedestrian"
+            />
+            <DotGridWrapper
+              entityType={'primary'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="pedestrian"
+            />
+          </div>
         )}
         {keyPrimary && (
-        <div className="dot-grid-row">
-          <DotGridWrapper
-            entityType={'primary'}
-            period={'period1'}
-            title={'Period A'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="cyclist"
-          />
-          <DotGridWrapper
-            entityType={'primary'}
-            period={'period2'}
-            title={'Period B'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="cyclist"
-          />
-        </div>
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'primary'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="cyclist"
+            />
+            <DotGridWrapper
+              entityType={'primary'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="cyclist"
+            />
+          </div>
         )}
         {keyPrimary && (
-        <div className="dot-grid-row">
-          <DotGridWrapper
-            entityType={'primary'}
-            period={'period1'}
-            title={'Period A'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="motorist"
-          />
-          <DotGridWrapper
-            entityType={'primary'}
-            period={'period2'}
-            title={'Period B'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="motorist"
-          />
-        </div>
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'primary'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="motorist"
+            />
+            <DotGridWrapper
+              entityType={'primary'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="motorist"
+            />
+          </div>
         )}
 
         {keySecondary && (
           <DotGridTitle keyLabel={keyLabelSecondary} {...{ keyPrimary, dateRanges, entityLabel }} />
         )}
         {keySecondary && (
-        <div className="dot-grid-row">
-          <DotGridWrapper
-            entityType={'secondary'}
-            period={'period1'}
-            title={'Period A'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="pedestrian"
-          />
-          <DotGridWrapper
-            entityType={'secondary'}
-            period={'period2'}
-            title={'Period B'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="pedestrian"
-          />
-        </div>
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'secondary'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="pedestrian"
+            />
+            <DotGridWrapper
+              entityType={'secondary'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="pedestrian"
+            />
+          </div>
         )}
         {keySecondary && (
-        <div className="dot-grid-row">
-          <DotGridWrapper
-            entityType={'secondary'}
-            period={'period1'}
-            title={'Period A'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="cyclist"
-          />
-          <DotGridWrapper
-            entityType={'secondary'}
-            period={'period2'}
-            title={'Period B'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="cyclist"
-          />
-        </div>
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'secondary'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="cyclist"
+            />
+            <DotGridWrapper
+              entityType={'secondary'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="cyclist"
+            />
+          </div>
         )}
         {keySecondary && (
-        <div className="dot-grid-row">
-          <DotGridWrapper
-            entityType={'secondary'}
-            period={'period1'}
-            title={'Period A'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="motorist"
-          />
-          <DotGridWrapper
-            entityType={'secondary'}
-            period={'period2'}
-            title={'Period B'}
-            radius={this.circleRadius}
-            strokeWidth={this.strokeWidth}
-            personType="motorist"
-          />
-        </div>
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'secondary'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="motorist"
+            />
+            <DotGridWrapper
+              entityType={'secondary'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="motorist"
+            />
+          </div>
         )}
 
         {!keyPrimary && !keySecondary ? (
