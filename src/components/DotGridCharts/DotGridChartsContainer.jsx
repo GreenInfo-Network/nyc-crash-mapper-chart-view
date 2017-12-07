@@ -16,6 +16,7 @@ class DotGridChartsContainer extends Component {
     keyPrimary: pt.key,
     keySecondary: pt.key,
     width: PropTypes.number.isRequired,
+    customGeography: pt.coordinatelist.isRequired,
   };
 
   static defaultProps = {
@@ -31,15 +32,88 @@ class DotGridChartsContainer extends Component {
 
   render() {
     const { entityType, keyPrimary, keySecondary, dateRanges } = this.props;
+    const { customGeography } = this.props;
     const entityLabel = entityTypeDisplay(entityType);
     const keyLabelPrimary = entityIdDisplay(entityType, keyPrimary);
     const keyLabelSecondary = entityIdDisplay(entityType, keySecondary);
 
     return (
       <div className="DotGridChartsContainer scroll">
+        {customGeography.length ? (
+          <DotGridTitle keyLabel={'Custom Geography'} {...{dateRanges, keyPrimary: '', entityLabel: ''}} />
+        ) : null}
+
+        {customGeography.length ? (
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'custom'}
+              customGeography={customGeography}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="pedestrian"
+            />
+            <DotGridWrapper
+              entityType={'custom'}
+              customGeography={customGeography}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="pedestrian"
+            />
+          </div>
+        ) : null}
+        {customGeography.length ? (
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'custom'}
+              customGeography={customGeography}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="cyclist"
+            />
+            <DotGridWrapper
+              entityType={'custom'}
+              customGeography={customGeography}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="cyclist"
+            />
+          </div>
+        ) : null}
+        {customGeography.length ? (
+          <div className="dot-grid-row">
+            <DotGridWrapper
+              entityType={'custom'}
+              customGeography={customGeography}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="motorist"
+            />
+            <DotGridWrapper
+              entityType={'custom'}
+              customGeography={customGeography}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              strokeWidth={this.strokeWidth}
+              personType="motorist"
+            />
+          </div>
+        ) : null}
+
         {keyPrimary && (
           <DotGridTitle keyLabel={keyLabelPrimary} {...{ keyPrimary, dateRanges, entityLabel }} />
         )}
+        {keyPrimary && (
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
@@ -58,6 +132,8 @@ class DotGridChartsContainer extends Component {
             personType="pedestrian"
           />
         </div>
+        )}
+        {keyPrimary && (
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
@@ -76,6 +152,8 @@ class DotGridChartsContainer extends Component {
             personType="cyclist"
           />
         </div>
+        )}
+        {keyPrimary && (
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'primary'}
@@ -94,9 +172,12 @@ class DotGridChartsContainer extends Component {
             personType="motorist"
           />
         </div>
+        )}
+
         {keySecondary && (
           <DotGridTitle keyLabel={keyLabelSecondary} {...{ keyPrimary, dateRanges, entityLabel }} />
         )}
+        {keySecondary && (
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}
@@ -115,6 +196,8 @@ class DotGridChartsContainer extends Component {
             personType="pedestrian"
           />
         </div>
+        )}
+        {keySecondary && (
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}
@@ -133,6 +216,8 @@ class DotGridChartsContainer extends Component {
             personType="cyclist"
           />
         </div>
+        )}
+        {keySecondary && (
         <div className="dot-grid-row">
           <DotGridWrapper
             entityType={'secondary'}
@@ -151,6 +236,8 @@ class DotGridChartsContainer extends Component {
             personType="motorist"
           />
         </div>
+        )}
+
         {!keyPrimary && !keySecondary ? (
           <h5 className="select-entity">Select a {entityType.replace(/_/g, ' ')}</h5>
         ) : null}
