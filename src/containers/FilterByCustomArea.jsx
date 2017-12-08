@@ -4,15 +4,24 @@ import { connect } from 'react-redux';
 import qs from 'query-string';
 
 import { formatDateYM } from '../common/d3Utils';
-import { coordinatelist } from '../common/reactPropTypeDefs';
+import * as pt from '../common/reactPropTypeDefs';
 import { clearCustomGeography } from '../actions/customGeographyActions';
 import { setReferenceEntity } from '../actions';
 
 class FilterByCustomArea extends Component {
   static propTypes = {
-    customGeography: coordinatelist.isRequired,
+    customGeography: pt.coordinatelist.isRequired,
     clearCustomGeography: PropTypes.func.isRequired,
     setReferenceEntity: PropTypes.func.isRequired,
+    // used to link to the map app via query params; see also the qs.stringify() call on queryParams
+    endDate: PropTypes.string.isRequired,
+    startDate: PropTypes.string.isRequired,
+  };
+
+  static defaultProps = {
+    // used to link to the map app via query params
+    geo: null,
+    identifier: null,
   };
 
   clickClearButton() {
@@ -21,10 +30,10 @@ class FilterByCustomArea extends Component {
   }
 
   render() {
+    // used to link to the map app via query params; see also propTypes and mapStateToProps
     const queryParams = qs.stringify({
-      ...this.props,
-      clearCustomGeography: null,
-      customGeography: null,
+      endDate: this.props.endDate,
+      startDate: this.props.startDate,
       geo: 'custom',
     });
     const hostname = process.env.NODE_ENV === 'production' ? 'crashmapper.org' : 'localhost:8080';
@@ -67,24 +76,14 @@ class FilterByCustomArea extends Component {
 }
 
 function mapStateToProps(state) {
-  const { entities, dateRanges, filterType } = state;
   const { customGeography } = state;
-  const { primary, entityType } = entities;
+  const { dateRanges } = state;
   const { period1 } = dateRanges;
-  const { injury, fatality } = filterType;
 
   return {
-    // used to link to the map app via query params
-    geo: entityType,
-    cinj: injury.cyclist,
-    minj: injury.motorist,
-    pinj: injury.pedestrian,
-    cfat: fatality.cyclist,
-    mfat: fatality.motorist,
-    pfat: fatality.pedestrian,
-    endDate: formatDateYM(period1.endDate), // only need the string representation here
-    startDate: formatDateYM(period1.startDate), // only need the string representation here
-    identifier: primary.key,
+    // used to link to the map app via query params; see also the qs.stringify() call on queryParams
+    endDate: formatDateYM(period1.endDate),
+    startDate: formatDateYM(period1.startDate),
     // not for the map link
     customGeography,
   };
