@@ -16,6 +16,12 @@ class FilterByCustomArea extends Component {
     // used to link to the map app via query params; see also the qs.stringify() call on queryParams
     endDate: PropTypes.string.isRequired,
     startDate: PropTypes.string.isRequired,
+    cinj: PropTypes.bool.isRequired,
+    minj: PropTypes.bool.isRequired,
+    pinj: PropTypes.bool.isRequired,
+    cfat: PropTypes.bool.isRequired,
+    mfat: PropTypes.bool.isRequired,
+    pfat: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -34,6 +40,12 @@ class FilterByCustomArea extends Component {
     const queryParams = qs.stringify({
       endDate: this.props.endDate,
       startDate: this.props.startDate,
+      cinj: this.props.cinj,
+      minj: this.props.minj,
+      pinj: this.props.pinj,
+      cfat: this.props.cfat,
+      mfat: this.props.mfat,
+      pfat: this.props.pfat,
       geo: 'custom',
     });
     const hostname = process.env.NODE_ENV === 'production' ? 'crashmapper.org' : 'localhost:8080';
@@ -76,14 +88,20 @@ class FilterByCustomArea extends Component {
 }
 
 function mapStateToProps(state) {
-  const { customGeography } = state;
-  const { dateRanges } = state;
+  const { customGeography, dateRanges, filterType } = state;
   const { period1 } = dateRanges;
+  const { injury, fatality } = filterType;
 
   return {
     // used to link to the map app via query params; see also the qs.stringify() call on queryParams
     endDate: formatDateYM(period1.endDate),
     startDate: formatDateYM(period1.startDate),
+    cinj: injury.cyclist,
+    minj: injury.motorist,
+    pinj: injury.pedestrian,
+    cfat: fatality.cyclist,
+    mfat: fatality.motorist,
+    pfat: fatality.pedestrian,
     // not for the map link
     customGeography,
   };
