@@ -9,6 +9,7 @@ import { formatDateYM } from './d3Utils';
 */
 export default function(state) {
   const { dateRanges, chartView, entities, filterType } = state;
+  const { customGeography } = state;
   const { period1, period2 } = dateRanges;
   const { entityType, primary, secondary, reference } = entities;
   const { injury, fatality } = filterType;
@@ -31,6 +32,11 @@ export default function(state) {
     pfat: fatality.pedestrian,
     view: chartView,
   };
+
+  // only if it exists; it's normal for it not to exist; see customGeographyCeducer
+  if (customGeography.length) {
+    historyState.lngLats = encodeURIComponent(JSON.stringify(customGeography));
+  }
 
   // stringify the history state so that it can be added to the URL query params
   const stringified = qs.stringify(historyState);

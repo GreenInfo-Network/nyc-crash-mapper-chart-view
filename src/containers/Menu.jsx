@@ -9,6 +9,7 @@ import { toggleChartView } from '../actions';
 
 function mapStateToProps(state) {
   const { chartView, entities, dateRanges, filterType } = state;
+  const { customGeography } = state;
   const { primary, entityType } = entities;
   const { period1 } = dateRanges;
   const { injury, fatality } = filterType;
@@ -17,6 +18,7 @@ function mapStateToProps(state) {
   return {
     chartView,
     geo: entityType,
+    customGeography,
     cinj: injury.cyclist,
     minj: injury.motorist,
     pinj: injury.pedestrian,
@@ -33,10 +35,32 @@ function mapStateToProps(state) {
 const Menu = props => {
   // eslint-disable-next-line
   const { chartView, toggleChartView, ...rest } = props;
-  const zoom = { zoom: 11 };
-  const center = { lat: 40.7048, lng: -73.8967 };
-  const queryParams = qs.stringify({ ...rest, ...zoom, ...center });
+  const { customGeography } = props;
+
+  const params = {
+    cinj: props.cinj,
+    minj: props.minj,
+    pinj: props.pinj,
+    cfat: props.cfat,
+    mfat: props.mfat,
+    pfat: props.pfat,
+    endDate: props.endDate,
+    startDate: props.startDate,
+  };
+  if (customGeography.length) {
+    params.geo = 'custom';
+    params.lngLats = encodeURIComponent(JSON.stringify(customGeography));
+  } else {
+    params.geo = props.geo;
+    params.identifier = props.identifier;
+    params.zoom = 11;
+    params.lat = 40.7048;
+    params.lng = -73.8967;
+  }
+
+  const queryParams = qs.stringify(params);
   const hostname = process.env.NODE_ENV === 'production' ? 'crashmapper.org' : 'localhost:8080';
+
   const items = [
     { type: 'link', value: `http://${hostname}/#/?${queryParams}`, label: 'Map' },
     { type: 'view', value: 'trend', label: 'Trend' },
@@ -88,6 +112,7 @@ Menu.propTypes = {
   toggleChartView: PropTypes.func.isRequired,
   chartView: pt.chartView.isRequired,
   geo: PropTypes.string,
+  customGeography: pt.coordinatelist.isRequired,
   cinj: PropTypes.bool.isRequired,
   minj: PropTypes.bool.isRequired,
   pinj: PropTypes.bool.isRequired,

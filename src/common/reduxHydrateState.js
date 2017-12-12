@@ -19,7 +19,15 @@ const validGeographies = [
   'neighborhood',
   'nypd_precinct',
 ];
-const validRefGeos = ['citywide', 'manhattan', 'bronx', 'queens', 'brooklyn', 'staten island'];
+const validRefGeos = [
+  'citywide',
+  'custom',
+  'manhattan',
+  'bronx',
+  'queens',
+  'brooklyn',
+  'staten island',
+];
 const validViews = ['trend', 'compare', 'rank'];
 
 // set up some default / fallback dates
@@ -172,10 +180,11 @@ const createInitialState = p => {
         ...entitiesInitalState.secondary, // keep other props (values, color, etc.)
         key: p.secondary, // okay if left undefined and too difficult to validate
       },
-      reference: isValidRefGeo(p.reference),
+      reference: p.geo === 'custom' ? 'custom' : isValidRefGeo(p.reference), // geo=custom as special case, remaps to reference=custom for compatibility
     },
     chartView: setValidView(p.view),
     filterType: setValidFilterTypes(p),
+    customGeography: p.lngLats,
   };
 };
 

@@ -192,6 +192,7 @@ class LineChart extends Component {
       const i = bisectDate(values, date, 1);
       const d0 = values[i - 1];
       const d1 = values[i];
+      if (!d0 || !d1) return null;
       return date - d0.year_month > d1.year_month - date ? d1 : d0;
     }
 
@@ -225,19 +226,21 @@ class LineChart extends Component {
       // use d3's bisector to find the closest datum to the date above
       const d = lookUpDatum(xValue, referenceValues);
 
-      // write the formatted date for that datum
-      tooltip
-        .select('text.tooltip-date')
-        .attr('x', '10px')
-        .attr('y', '20px')
-        .text(formatDate(d.year_month));
+      if (d) {
+        // write the formatted date for that datum
+        tooltip
+          .select('text.tooltip-date')
+          .attr('x', '10px')
+          .attr('y', '20px')
+          .text(formatDate(d.year_month));
 
-      // write out the total for the reference entity
-      tooltip
-        .select('text.tooltip-ref')
-        .attr('x', '10px')
-        .attr('y', '40px')
-        .text(`${keyReference} total: ${formatNumber(d.count)}`);
+        // write out the total for the reference entity
+        tooltip
+          .select('text.tooltip-ref')
+          .attr('x', '10px')
+          .attr('y', '40px')
+          .text(`${keyReference} total: ${formatNumber(d.count)}`);
+      }
 
       // repeat the above steps for primary entity
       if (keyPrimary !== '' && primaryValues.length) {
@@ -292,7 +295,9 @@ class LineChart extends Component {
       }
 
       // adjust the tooltip's vertical reference line
-      tooltipLine.attr('x1', () => xScale(d.year_month)).attr('x2', () => xScale(d.year_month));
+      if (d) {
+        tooltipLine.attr('x1', () => xScale(d.year_month)).attr('x2', () => xScale(d.year_month));
+      }
 
       // position the tooltip to the left of the datum if its close to the right side of the chart
       let rectXOffset = 5;
@@ -301,8 +306,10 @@ class LineChart extends Component {
       }
 
       // finally set the tooltip position
-      const yOffset = xScale(d.year_month) + margin.left + rectXOffset;
-      tooltip.attr('transform', `translate(${yOffset}, 20)`);
+      if (d) {
+        const yOffset = xScale(d.year_month) + margin.left + rectXOffset;
+        tooltip.attr('transform', `translate(${yOffset}, 20)`);
+      }
     }
 
     // attach event listeners to invisible rectangle

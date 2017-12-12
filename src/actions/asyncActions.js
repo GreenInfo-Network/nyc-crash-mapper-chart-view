@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sqlByGeo, sqlCitywide } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide, sqlCustomGeography } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
@@ -52,8 +52,20 @@ const handleError = (type, error) => {
 
 // fetches aggregated crash data via the CARTO SQL API
 // @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
-export default function fetchEntityData(entityType) {
-  const sql = entityType === 'citywide' ? sqlCitywide() : sqlByGeo(entityType);
+// @param {mixed} additionalData Additional data relevant to the entity type, e.g. for "custom" a customGeography coordinatelist array
+export default function fetchEntityData(entityType, additionalData) {
+  let sql = '';
+  switch (entityType) {
+    case 'citywide':
+      sql = sqlCitywide();
+      break;
+    case 'custom':
+      sql = sqlCustomGeography(additionalData);
+      break;
+    default:
+      sql = sqlByGeo(entityType);
+      break;
+  }
 
   return dispatch => {
     // tell our app we are fetching data

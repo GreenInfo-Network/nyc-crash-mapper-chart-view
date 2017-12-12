@@ -9,6 +9,7 @@ import {
   dateRangesSelector,
   primaryEntityValuesFilteredSelector,
   secondaryEntityValuesFilteredSelector,
+  customGeographyValuesFilteredSelector,
 } from '../common/reduxSelectors';
 
 import DotGridChart from '../components/DotGridCharts/DotGridChart';
@@ -17,10 +18,21 @@ const mapStateToProps = (state, props) => {
   const { browser, filterType } = state;
   const { entityType, period, personType } = props;
   const dateRange = dateRangesSelector(state, props);
-  const values =
-    entityType === 'primary'
-      ? primaryEntityValuesFilteredSelector(state, props)
-      : secondaryEntityValuesFilteredSelector(state, props);
+
+  let values = [];
+  switch (entityType) {
+    case 'primary':
+      values = primaryEntityValuesFilteredSelector(state, props);
+      break;
+    case 'secondary':
+      values = secondaryEntityValuesFilteredSelector(state, props);
+      break;
+    case 'custom':
+      values = customGeographyValuesFilteredSelector(state, props);
+      break;
+    default:
+      throw new Error('DotGridWrapper got unexpected entityType');
+  }
 
   return {
     appWidth: browser.width,
@@ -42,6 +54,7 @@ class DotGridWrapper extends Component {
   static propTypes = {
     appWidth: PropTypes.number.isRequired,
     entityType: pt.key.isRequired,
+    customGeography: pt.coordinatelist,
     filterType: pt.filterType.isRequired,
     period: PropTypes.string.isRequired,
     values: PropTypes.arrayOf(PropTypes.object),
@@ -60,6 +73,7 @@ class DotGridWrapper extends Component {
 
   static defaultProps = {
     values: [],
+    customGeography: [], // only if entityType=='custom' see DotGridChartsContainer.jsx
     subheadHeights: {},
     radius: 5,
     strokeWidth: 1,

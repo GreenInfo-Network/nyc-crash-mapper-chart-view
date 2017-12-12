@@ -10,6 +10,11 @@
   letter-spacing: 0.5px;
   border: none;
 
+  a {
+    text-decoration: none;
+    color: $btn-color-active;
+  }
+
   &:hover,
   &.active {
     color: $btn-color-active;

@@ -62,9 +62,15 @@ export const filterTypeFieldsSelector = createSelector(filterTypeSelector, filte
 });
 
 // returns the array of objects for a primary entity
-const primaryEntityValuesSelector = state => state.entities.primary.values;
 // returns the array of objects for a secondary entity
+// returns the array of objects for the customGeography entity
+const primaryEntityValuesSelector = state => state.entities.primary.values;
 const secondaryEntityValuesSelector = state => state.entities.secondary.values;
+const customEntityValuesSelector = state => {
+  const records = state.data.custom.response ? state.data.custom.response : [];
+  return records;
+};
+
 // returns array of objects for the reference entity
 // reference entity is used for the line chart only and may be either "citywide" or a borough name
 const referenceEntityValuesSelector = state => {
@@ -72,6 +78,9 @@ const referenceEntityValuesSelector = state => {
   const { reference } = entities;
   if (reference === 'citywide' && state.data.citywide.response) {
     return state.data.citywide.response;
+  }
+  if (reference === 'custom' && state.data.custom.response) {
+    return state.data.custom.response;
   }
 
   if (state.data.borough.response) {
@@ -84,6 +93,10 @@ const referenceEntityValuesSelector = state => {
 const entityValuesSelector = entity => {
   if (entity === 'reference') {
     return referenceEntityValuesSelector;
+  }
+
+  if (entity === 'custom') {
+    return customEntityValuesSelector;
   }
 
   if (entity === 'primary') {
@@ -168,3 +181,4 @@ const valuesFilteredByDateTypeSelector = entity =>
 export const primaryEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('primary');
 export const secondaryEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('secondary');
 export const referenceEntityValuesFilteredSelector = valuesFilteredByDateTypeSelector('reference');
+export const customGeographyValuesFilteredSelector = valuesFilteredByDateTypeSelector('custom');

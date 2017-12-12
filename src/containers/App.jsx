@@ -48,6 +48,7 @@ class App extends Component {
     sortEntitiesByRank: PropTypes.func.isRequired,
     filterEntitiesByName: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
+    customGeography: pt.coordinatelist.isRequired,
   };
 
   static defaultProps = {
@@ -61,9 +62,18 @@ class App extends Component {
   };
 
   componentDidMount() {
+    // DOM content loaded, make async data requests to start
+    // starting state, entityType is citywide
     const { entityType } = this.props;
-    // DOM content loaded, make async data requests
+    const { customGeography } = this.props;
+
     this.props.fetchEntityData(entityType);
+
+    // we will be wanting this as our baselines for both Compare and Trend
+    // for Compare we need this ASAP so the component can come up
+    if (customGeography.length) {
+      this.props.fetchEntityData('custom', customGeography);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -82,7 +92,9 @@ class App extends Component {
   }
 
   renderChartView() {
-    const { chartView, dateRanges, entityType, keyPrimary, keySecondary, width } = this.props;
+    const { chartView, dateRanges, entityType, keyPrimary, keySecondary } = this.props;
+    const { customGeography } = this.props;
+    const { width } = this.props;
 
     switch (chartView) {
       case 'trend':
@@ -91,7 +103,7 @@ class App extends Component {
       case 'compare':
         return (
           <DotGridChartsContainer
-            {...{ dateRanges, entityType, keyPrimary, keySecondary, width }}
+            {...{ dateRanges, entityType, keyPrimary, keySecondary, width, customGeography }}
           />
         );
 
@@ -162,7 +174,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, chartView, dateRanges, entities, data, filterType } = state;
+  const { browser, chartView, dateRanges, entities, data, filterType, customGeography } = state;
   const { isFetchingData } = data;
   const entityData = entityDataSelector(state);
 
@@ -196,6 +208,7 @@ const mapStateToProps = state => {
     filterTerm: entities.filterTerm,
     chartView,
     anyFilterTypeSelected,
+    customGeography,
   };
 };
 
