@@ -5,11 +5,7 @@ import * as d3 from 'd3';
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
 import styleVars from '../../common/styleVars';
-import {
-  entityTypeDisplay,
-  entityIdDisplay,
-  REFERENCE_ENTITY_NAMES,
-} from '../../common/labelFormatters';
+import { entityTypeDisplay, REFERENCE_ENTITY_NAMES } from '../../common/labelFormatters';
 
 /** Class that renders the line chart for selected geographic entities using D3
 */
@@ -113,8 +109,6 @@ class LineChart extends Component {
       endDate,
       yMax,
       y2Max,
-      secondaryColor,
-      referenceColor,
     } = this.props;
 
     // a truthy value to use to tell if our chart has been set up yet
@@ -157,34 +151,16 @@ class LineChart extends Component {
       }
     }
 
-    // update the Y axis labels to show the names of the selected areas
+    // update the Y axis labels to show the selected area type + reference area name
     if (chartExists) {
-      // axis label 2 (right side) is either the secondary or reference area
-      // reference area needs some hacks to cosmetically fix the names
-      // secondaries may need prefix + formatting e.g. "6" to "Council District 06"
       const entityLabel = entityTypeDisplay(entityType, true);
 
-      let label2 = '';
-      if (keySecondary) {
-        label2 = `${entityLabel} ${entityIdDisplay(entityType, keySecondary)}`;
-      } else {
-        label2 = REFERENCE_ENTITY_NAMES[keyReference];
-      }
-
-      // axis label 1 (left side) may be empty
-      // secondaries may need prefix + formatting e.g. "6" to "Cuty Council District 06"
-      let label1 = '';
-      if (keyPrimary) {
-        label1 = `${entityLabel} ${entityIdDisplay(entityType, keyPrimary)}`;
-      }
+      const label1 = keyPrimary ? `Crashes per ${entityLabel}` : '';
+      const inword = keyReference === 'citywide' ? '' : 'in'; // don't say "Crashes in Citywide"
+      const label2 = `Crashes ${inword} ${REFERENCE_ENTITY_NAMES[keyReference]}`;
 
       this.yAxisLabel1.text(label1);
       this.yAxisLabel2.text(label2);
-
-      // axis label 2 (right side) may be a secondary or a reference area
-      // change its color now to suit, either the secondaryColor or referenceColor
-      const color2 = keySecondary ? secondaryColor : referenceColor;
-      this.yAxisLabel2.attr('fill', color2);
     }
   }
 
@@ -589,8 +565,8 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { period, referenceValues, referenceColor, y2Max, startDate, endDate } = this.props;
-    const { primaryColor, secondaryColor } = this.props;
+    const { period, referenceValues, y2Max, startDate, endDate } = this.props;
+    const { primaryColor, referenceColor } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -603,7 +579,10 @@ class LineChart extends Component {
 
     const yAxisLabelFontSize = '15px';
     const yAxisLabelLetterSpacing = 0.1;
-    const yAxisLabelRotation = -90; // 90 or -90
+    const yAxisLabelRotation = -90; // try 90 and -90
+    const yAxisLabelYOffset = height * 0.66 + 20; // now far down to place Y axis labels
+    const yAxisLabel1XOffset = 15;
+    const yAxisLabel2XOffset = width + margin.left + margin.right - 20;
 
     // set dimensions of the svg element
     svg
@@ -623,7 +602,7 @@ class LineChart extends Component {
     // labels for the axes
     this.yAxisLabel1 = svg
       .append('g')
-      .attr('transform', `translate(15, ${height * 0.66})`)
+      .attr('transform', `translate(${yAxisLabel1XOffset}, ${yAxisLabelYOffset})`)
       .append('text')
       .attr('transform', `rotate(${yAxisLabelRotation})`)
       .attr('fill', primaryColor)
@@ -632,10 +611,10 @@ class LineChart extends Component {
       .text(''); // render() sets axis label dynamically
     this.yAxisLabel2 = svg
       .append('g')
-      .attr('transform', `translate(${width + margin.left + margin.right - 20}, ${height * 0.66})`)
+      .attr('transform', `translate(${yAxisLabel2XOffset}, ${yAxisLabelYOffset})`)
       .append('text')
       .attr('transform', `rotate(${yAxisLabelRotation})`)
-      .attr('fill', secondaryColor)
+      .attr('fill', referenceColor)
       .attr('font-size', yAxisLabelFontSize)
       .attr('letter-spacing', yAxisLabelLetterSpacing)
       .text(''); // render() sets axis label dynamically

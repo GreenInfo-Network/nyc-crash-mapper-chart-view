@@ -2,18 +2,15 @@ import * as lodashString from 'lodash/string';
 
 // formats the label for the geographic type
 export const entityTypeDisplay = (entityType, prettycase) => {
-  if (entityType === 'nypd_precinct') {
-    return 'NYPD Precinct';
+  const typename = entityType.replace(/_/g, ' ');
+  const giveback = prettycase ? lodashString.startCase(lodashString.camelCase(typename)) : typename;
+
+  switch (entityType) {
+    case 'nypd_precinct':
+      return 'NYPD Precinct';
+    default:
+      return giveback;
   }
-  if (
-    entityType !== 'neighborhood' &&
-    entityType !== 'borough' &&
-    entityType !== 'community_board'
-  ) {
-    const typename = entityType.replace(/_/g, ' ');
-    return prettycase ? lodashString.startCase(lodashString.camelCase(typename)) : typename;
-  }
-  return '';
 };
 
 // formats the label for the entity key/id
