@@ -24,6 +24,7 @@ class Sidebar extends Component {
     this.state = {
       filterByTypeHeight: null,
       filterByBoundaryHeight: null,
+      filterByCustomAreaHeight: null,
     };
 
     // ref to component's self
@@ -53,10 +54,18 @@ class Sidebar extends Component {
     // the sparkline list & controller take up remaining sidebar height not used by the collapsable containers
     // as such its height needs to be calculated any time the 2 collapsable containers open/close
     // but, those containers have headers at fixed heights which never close hence the two extra 43
-    const { filterByTypeHeight, filterByBoundaryHeight } = this.state;
+    const { filterByTypeHeight } = this.state;
+    const { filterByBoundaryHeight } = this.state;
+    const { filterByCustomAreaHeight } = this.state;
 
     if (this.sidebar) {
-      return this.sidebar.offsetHeight - filterByTypeHeight - filterByBoundaryHeight - 43 - 43;
+      return (
+        this.sidebar.offsetHeight -
+        filterByTypeHeight -
+        filterByBoundaryHeight -
+        filterByCustomAreaHeight -
+        150
+      );
     }
     return null;
   }
