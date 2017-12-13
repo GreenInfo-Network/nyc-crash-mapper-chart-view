@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import * as pt from '../common/reactPropTypeDefs';
 import { setReferenceEntity, fetchEntityData } from '../actions';
+import { REFERENCE_ENTITY_NAMES } from '../common/labelFormatters';
 
 const mapStateToProps = ({ entities, data, customGeography }) => ({
   reference: entities.reference,
@@ -78,15 +79,15 @@ class ReferenceEntitySelect extends Component {
     const { reference } = this.props;
     const { customGeography } = this.props;
     const options = [
-      { value: 'citywide', label: 'Citywide' },
-      { value: 'manhattan', label: 'Manhattan' },
-      { value: 'bronx', label: 'The Bronx' },
-      { value: 'brooklyn', label: 'Brooklyn' },
-      { value: 'queens', label: 'Queens' },
-      { value: 'staten island', label: 'Staten Island' },
+      { value: 'citywide', label: REFERENCE_ENTITY_NAMES.citywide },
+      { value: 'manhattan', label: REFERENCE_ENTITY_NAMES.manhattan },
+      { value: 'bronx', label: REFERENCE_ENTITY_NAMES.bronx },
+      { value: 'brooklyn', label: REFERENCE_ENTITY_NAMES.brooklyn },
+      { value: 'queens', label: REFERENCE_ENTITY_NAMES.queens },
+      { value: 'staten island', label: REFERENCE_ENTITY_NAMES['staten island'] },
     ];
     if (customGeography.length) {
-      options.push({ value: 'custom', label: 'Custom Geography' });
+      options.push({ value: 'custom', label: REFERENCE_ENTITY_NAMES.custom });
     }
 
     return (

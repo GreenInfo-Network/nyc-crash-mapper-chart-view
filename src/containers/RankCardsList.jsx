@@ -8,7 +8,7 @@ import rankedListSelector from '../common/reduxSelectorsRankedList';
 import toggleEntity from '../common/toggleEntity';
 import * as pt from '../common/reactPropTypeDefs';
 import styleVars from '../common/styleVars';
-import entityTypeDisplay, { entityIdDisplay } from '../common/labelFormatters';
+import { entityTypeDisplay, entityIdDisplay } from '../common/labelFormatters';
 
 import RankCard from '../components/RankCards/RankCard';
 

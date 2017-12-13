@@ -1,5 +1,7 @@
+import * as lodashString from 'lodash/string';
+
 // formats the label for the geographic type
-const entityTypeDisplay = entityType => {
+export const entityTypeDisplay = (entityType, prettycase) => {
   if (entityType === 'nypd_precinct') {
     return 'NYPD Precinct';
   }
@@ -8,7 +10,8 @@ const entityTypeDisplay = entityType => {
     entityType !== 'borough' &&
     entityType !== 'community_board'
   ) {
-    return entityType.replace(/_/g, ' ');
+    const typename = entityType.replace(/_/g, ' ');
+    return prettycase ? lodashString.startCase(lodashString.camelCase(typename)) : typename;
   }
   return '';
 };
@@ -33,6 +36,16 @@ export const entityIdDisplay = (entityType, id) => {
   }
 
   return id;
+};
+
+export const REFERENCE_ENTITY_NAMES = {
+  citywide: 'Citywide',
+  custom: 'Custom Geography',
+  manhattan: 'Manhattan',
+  bronx: 'The Bronx',
+  brooklyn: 'Brooklyn',
+  queens: 'Queens',
+  'staten island': 'Staten Island',
 };
 
 export default entityTypeDisplay;
