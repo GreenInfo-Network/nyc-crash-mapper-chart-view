@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import EntitySelector from './EntitySelector';
 import * as pt from '../../common/reactPropTypeDefs';
 import styleVars from '../../common/styleVars';
-import entityTypeDisplay, { entityIdDisplay } from '../../common/labelFormatters';
+import { entityTypeDisplay, entityIdDisplay } from '../../common/labelFormatters';
 
 /**
  * Class that houses the Entity Selector components

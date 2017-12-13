@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
 import styleVars from '../../common/styleVars';
-import entityTypeDisplay from '../../common/labelFormatters';
+import { entityTypeDisplay, REFERENCE_ENTITY_NAMES } from '../../common/labelFormatters';
 
 /** Class that renders the line chart for selected geographic entities using D3
 */
@@ -51,7 +51,7 @@ class LineChart extends Component {
 
     this.container = null; // ref to containing div
     this.svg = null; // ref to svg element
-    this.margin = { top: 10, right: 50, bottom: 20, left: 25 };
+    this.margin = { top: 10, right: 75, bottom: 20, left: 60 };
 
     this.yAxis = d3.axisLeft();
     this.yAxis2 = d3.axisRight();
@@ -104,6 +104,7 @@ class LineChart extends Component {
       keySecondary,
       keyReference,
       referenceValues,
+      entityType,
       startDate,
       endDate,
       yMax,
@@ -148,6 +149,18 @@ class LineChart extends Component {
       if (appHeight !== prevProps.appHeight || appWidth !== prevProps.appWidth) {
         this.resizeChart();
       }
+    }
+
+    // update the Y axis labels to show the selected area type + reference area name
+    if (chartExists) {
+      const entityLabel = entityTypeDisplay(entityType, true);
+
+      const label1 = keyPrimary ? `Crashes per ${entityLabel}` : '';
+      const inword = keyReference === 'citywide' ? '' : 'in'; // don't say "Crashes in Citywide"
+      const label2 = `Crashes ${inword} ${REFERENCE_ENTITY_NAMES[keyReference]}`;
+
+      this.yAxisLabel1.text(label1);
+      this.yAxisLabel2.text(label2);
     }
   }
 
@@ -552,7 +565,8 @@ class LineChart extends Component {
 
   initChart() {
     // initially render / set up the chart with, scales, axises, & grid lines; but no lines
-    const { period, referenceValues, referenceColor, y2Max, startDate, endDate } = this.props;
+    const { period, referenceValues, y2Max, startDate, endDate } = this.props;
+    const { primaryColor, referenceColor } = this.props;
     const { width, height } = this.getContainerSize();
     const margin = this.margin;
     const xScale = this.xScale;
@@ -562,6 +576,13 @@ class LineChart extends Component {
     const yAxis2 = this.yAxis2;
     const xAxis = this.xAxis;
     const svg = d3.select(this.svg);
+
+    const yAxisLabelFontSize = '15px';
+    const yAxisLabelLetterSpacing = 0.1;
+    const yAxisLabelRotation = -90; // try 90 and -90
+    const yAxisLabelYOffset = height * 0.66 + 20; // now far down to place Y axis labels
+    const yAxisLabel1XOffset = 15;
+    const yAxisLabel2XOffset = width + margin.left + margin.right - 20;
 
     // set dimensions of the svg element
     svg
@@ -577,6 +598,26 @@ class LineChart extends Component {
     xAxis.scale(xScale);
     yAxis.scale(yScale);
     yAxis2.scale(yScale2);
+
+    // labels for the axes
+    this.yAxisLabel1 = svg
+      .append('g')
+      .attr('transform', `translate(${yAxisLabel1XOffset}, ${yAxisLabelYOffset})`)
+      .append('text')
+      .attr('transform', `rotate(${yAxisLabelRotation})`)
+      .attr('fill', primaryColor)
+      .attr('font-size', yAxisLabelFontSize)
+      .attr('letter-spacing', yAxisLabelLetterSpacing)
+      .text(''); // render() sets axis label dynamically
+    this.yAxisLabel2 = svg
+      .append('g')
+      .attr('transform', `translate(${yAxisLabel2XOffset}, ${yAxisLabelYOffset})`)
+      .append('text')
+      .attr('transform', `rotate(${yAxisLabelRotation})`)
+      .attr('fill', referenceColor)
+      .attr('font-size', yAxisLabelFontSize)
+      .attr('letter-spacing', yAxisLabelLetterSpacing)
+      .text(''); // render() sets axis label dynamically
 
     // main svg group element
     const g = svg

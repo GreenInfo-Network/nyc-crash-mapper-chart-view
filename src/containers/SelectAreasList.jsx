@@ -8,7 +8,7 @@ import toggleEntity from '../common/toggleEntity';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
-import entityTypeDisplay, { entityIdDisplay } from '../common/labelFormatters';
+import { entityTypeDisplay, entityIdDisplay } from '../common/labelFormatters';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;

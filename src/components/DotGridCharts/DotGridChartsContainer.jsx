@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as pt from '../../common/reactPropTypeDefs';
-import entityTypeDisplay, { entityIdDisplay } from '../../common/labelFormatters';
+import { entityTypeDisplay, entityIdDisplay } from '../../common/labelFormatters';
 import DotGridWrapper from '../../containers/DotGridWrapper';
 import DotGridTitle from './DotGridTitle';
 
