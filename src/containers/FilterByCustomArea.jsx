@@ -56,7 +56,7 @@ class FilterByCustomArea extends Component {
     const button1 = !this.props.customGeography.length ? (
       <ul className="filter-list">
         <li>
-          <button className="med filter-options-button roboto-medium active">
+          <button className="med filter-options-button roboto-medium">
             <a href={mainmapurl} className="active">
               draw area
             </a>
