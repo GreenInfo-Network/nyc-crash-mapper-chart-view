@@ -36,6 +36,7 @@ export default function(state = entitiesInitalState, action) {
     case SET_ENTITY_TYPE:
       return {
         ...entitiesInitalState,
+        reference: state.reference,
         entityType: action.entityType,
       };
 
