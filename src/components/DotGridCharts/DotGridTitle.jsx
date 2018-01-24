@@ -5,13 +5,13 @@ import { timeFormat } from 'd3';
 import * as pt from '../../common/reactPropTypeDefs';
 
 const DotGridTitle = props => {
-  const { entityLabel, keyLabel, dateRanges } = props;
+  const { keyLabel, dateRanges } = props;
   const { period1, period2 } = dateRanges;
   const formatTime = timeFormat('%b %Y');
 
   return (
     <div className="DotGridTitle">
-      <h5>{`${entityLabel} ${keyLabel}`}</h5>
+      <h5>{keyLabel}</h5>
       <div className="date-ranges">
         <div>
           <h6 className="period">Period A</h6>
