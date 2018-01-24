@@ -168,14 +168,13 @@ class DotGridWrapper extends Component {
       // total up injuries and fatalities if they were included in crash type filters
       const injuredTotal = test.includes(personInjuredStr)
         ? d3.sum(filtered, d => d[personInjuredStr])
-        : undefined;
+        : 0;
       const killedTotal = test.includes(personKilledStr)
         ? d3.sum(filtered, d => d[personKilledStr])
-        : undefined;
+        : 0;
 
       // use the total of both injury & fatality totals for a "grand total" to calculate the grid
       let harmedTotal = 0;
-
       if (injuredTotal && killedTotal) {
         harmedTotal = injuredTotal + killedTotal;
       } else if (injuredTotal && !killedTotal) {
