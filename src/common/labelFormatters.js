@@ -48,7 +48,17 @@ export const entityNameDisplay = (entityType, id) => {
   }
 
   // most other cases just return "Area Type ID"
-  return `${entityTypeDisplay(entityType, true)} ${id}`;
+  // but a few just return the name without the prefix
+  let label = '';
+  switch (entityType) {
+    case 'neighborhood':
+    case 'borough':
+      label = id;
+      break;
+    default:
+      label = `${entityTypeDisplay(entityType, true)} ${id}`;
+  }
+  return label;
 };
 
 export const REFERENCE_ENTITY_NAMES = {

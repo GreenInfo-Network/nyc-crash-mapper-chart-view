@@ -5,7 +5,11 @@ import * as d3 from 'd3';
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
 import styleVars from '../../common/styleVars';
-import { entityTypeDisplay, REFERENCE_ENTITY_NAMES } from '../../common/labelFormatters';
+import {
+  entityTypeDisplay,
+  entityNameDisplay,
+  REFERENCE_ENTITY_NAMES,
+} from '../../common/labelFormatters';
 
 /** Class that renders the line chart for selected geographic entities using D3
 */
@@ -196,9 +200,10 @@ class LineChart extends Component {
     // notice the "let" here, this value can be modified if tooltip text exceeds its default width
     let tooltipWidth = styleVars['linechart-tooltip-w'];
     const tooltipHeight = styleVars['linechart-tooltip-h'];
-    const entityLabel = entityTypeDisplay(entityType);
     const xScale = this.xScale;
     const bisectDate = this.bisectDate;
+    const labelPrimary = entityNameDisplay(entityType, keyPrimary);
+    const labelSecondary = entityNameDisplay(entityType, keySecondary);
 
     function lookUpDatum(date, values) {
       // use d3's bisector to find the object in values array closest to a given date
@@ -259,11 +264,12 @@ class LineChart extends Component {
       if (keyPrimary !== '' && primaryValues.length) {
         const k = lookUpDatum(xValue, primaryValues);
         const y = calcYPos('primary');
+
         tooltip
           .select('text.tooltip-primary')
           .attr('x', '10px')
           .attr('y', `${y}px`)
-          .text(`${entityLabel} ${keyPrimary} total: ${formatNumber(k.count)}`);
+          .text(`${labelPrimary} total: ${formatNumber(k.count)}`);
       } else {
         // if a user deselected the entity then set it's text to be empty
         tooltip.select('text.tooltip-primary').text('');
@@ -273,11 +279,12 @@ class LineChart extends Component {
       if (keySecondary !== '' && secondaryValues.length) {
         const n = lookUpDatum(xValue, secondaryValues);
         const y = calcYPos('secondary');
+
         tooltip
           .select('text.tooltip-secondary')
           .attr('x', '10px')
           .attr('y', `${y}px`)
-          .text(`${entityLabel} ${keySecondary} total: ${formatNumber(n.count)}`);
+          .text(`${labelSecondary} total: ${formatNumber(n.count)}`);
       } else {
         // if a user deselected the entity then set it's text to be empty
         tooltip.select('text.tooltip-secondary').text('');
