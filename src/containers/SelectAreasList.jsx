@@ -8,7 +8,7 @@ import toggleEntity from '../common/toggleEntity';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
-import { entityTypeDisplay, entityIdDisplay } from '../common/labelFormatters';
+import { entityTypeDisplay, entityIdDisplay, entityNameDisplay } from '../common/labelFormatters';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -108,7 +108,6 @@ class SelectAreasList extends Component {
   renderListItems() {
     // eslint-disable-next-line
     const { entityType, primary, secondary, ranked, response } = this.props;
-    const entityLabel = entityTypeDisplay(entityType);
 
     if (!ranked.length) return null;
 
@@ -131,7 +130,9 @@ class SelectAreasList extends Component {
       })
       .map(entity => {
         const { key } = entity;
-        const idLabel = entityIdDisplay(entityType, key);
+        const typelabel = entityTypeDisplay(entityType);
+        const idkey = entityIdDisplay(entityType, key);
+        const namelabel = entityNameDisplay(entityType, key);
 
         // class names for list items
         const listItemClass = classNames({
@@ -144,12 +145,12 @@ class SelectAreasList extends Component {
           // store some data-xxx properties so we can filter on them later
           // eslint-disable-next-line
           <li
-            key={idLabel}
-            data-search={`${entityLabel} ${idLabel}`}
+            key={idkey}
+            data-search={`${typelabel} ${idkey}`}
             className={listItemClass}
             onClick={() => this.handleListItemClick(key)}
           >
-            <h6 style={{ padding: 0 }}>{`${entityLabel} ${idLabel}`}</h6>
+            <h6 style={{ padding: 0 }}>{namelabel}</h6>
           </li>
         );
       });

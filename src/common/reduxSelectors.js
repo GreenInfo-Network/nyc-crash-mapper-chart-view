@@ -14,6 +14,9 @@ export const entityDataSelector = createSelector(
   entityAllDataSelector,
   entityTypeSelector,
   (allData, entityType) => {
+    if (!allData[entityType]) {
+      allData[entityType] = {};
+    }
     if (!allData[entityType].response) {
       return { response: [] };
     }

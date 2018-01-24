@@ -38,6 +38,7 @@ class FilterByBoundary extends Component {
       { value: 'city_council', label: 'City Council' },
       { value: 'neighborhood', label: 'Neighborhood (NTA)' },
       { value: 'nypd_precinct', label: 'NYPD Precinct' },
+      { value: 'intersection', label: 'Intersection' },
     ];
 
     return (
