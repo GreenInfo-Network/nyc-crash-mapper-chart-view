@@ -8,7 +8,7 @@ import toggleEntity from '../common/toggleEntity';
 import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
-import { entityTypeDisplay, entityIdDisplay, entityNameDisplay } from '../common/labelFormatters';
+import { entityIdDisplay, entityNameDisplay } from '../common/labelFormatters';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -130,7 +130,6 @@ class SelectAreasList extends Component {
       })
       .map(entity => {
         const { key } = entity;
-        const typelabel = entityTypeDisplay(entityType);
         const idkey = entityIdDisplay(entityType, key);
         const namelabel = entityNameDisplay(entityType, key);
 
@@ -142,11 +141,11 @@ class SelectAreasList extends Component {
         });
 
         return (
-          // store some data-xxx properties so we can filter on them later
+          // data-search is used by filterListItems() and should be the readable label
           // eslint-disable-next-line
           <li
             key={idkey}
-            data-search={`${typelabel} ${idkey}`}
+            data-search={`${namelabel}`}
             className={listItemClass}
             onClick={() => this.handleListItemClick(key)}
           >
