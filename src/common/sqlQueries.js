@@ -57,7 +57,7 @@ export const sqlIntersection = () => {
   const maxintersections = 500;
   return sls`
     SELECT
-      CONCAT(intersections.name, '|', intersections.cartodb_id) AS intersection,
+      CONCAT(intersections.borough, ', ', intersections.name, '|', intersections.cartodb_id) AS intersection,
       COUNT(c.cartodb_id) as total_crashes,
       SUM(c.number_of_cyclist_injured) as cyclist_injured,
       SUM(c.number_of_cyclist_killed) as cyclist_killed,
@@ -70,7 +70,7 @@ export const sqlIntersection = () => {
       c.year || '-' || LPAD(c.month::text, 2, '0') as year_month
     FROM
       crashes_all_prod c,
-      (SELECT * FROM nyc_intersections WHERE crashcount IS NOT NULL ORDER BY crashcount DESC LIMIT ${maxintersections}) intersections
+      (SELECT * FROM nyc_intersections WHERE crashcount IS NOT NULL AND borough != '' ORDER BY crashcount DESC LIMIT ${maxintersections}) intersections
     WHERE
       c.the_geom IS NOT NULL AND ST_CONTAINS(intersections.the_geom, c.the_geom)
     GROUP BY year_month, intersection
