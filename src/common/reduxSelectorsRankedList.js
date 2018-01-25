@@ -9,14 +9,16 @@ import { createSelector } from 'reselect';
 import * as d3 from 'd3';
 import { entityDataSelector, filterTypeFieldsSelector, entityTypeSelector } from './reduxSelectors';
 
-// memoized selector that returns dates for 1. the previous full month of data and 2. 36 months prior to that
+// memoized selector that returns dates for 1. the previous full month of data and 2. 24 months prior to that
+// TIP: per issue 81, this is not 3 years but 2 years
+// BUT it would be tedious to change all of these hardcoded "ThreeYears" names, so just be aware
 export const lastThreeYearsSelector = createSelector(entityDataSelector, data => {
   const { response } = data;
   const latestDate = response[response.length - 1].year_month;
   const thisMonth = new Date(latestDate);
   thisMonth.setDate(1);
   const threeYearsAgo = new Date(thisMonth);
-  threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+  threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 2);
 
   return {
     endDate: thisMonth,
