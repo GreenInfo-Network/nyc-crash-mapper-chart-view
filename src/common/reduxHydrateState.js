@@ -18,6 +18,7 @@ const validGeographies = [
   'community_board',
   'neighborhood',
   'nypd_precinct',
+  'intersection',
 ];
 const validRefGeos = [
   'citywide',

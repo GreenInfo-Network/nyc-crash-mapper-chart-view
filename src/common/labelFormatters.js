@@ -23,8 +23,15 @@ export const entityIdDisplay = (entityType, id) => {
     return `${boroughs[+split[0]]} ${number}`;
   }
 
+  // intersections are weird, and have name|id concatenated so we can have unique IDs with non-unique names
+  // see also sqlQueries.js sqlIntersection()
+  if (id && entityType === 'intersection') {
+    return id.split('|')[1];
+  }
+
   // left pad numbers so that they can be more easily used for text search
-  if (id && typeof +id === 'number') {
+  // but don't re-pad if it already has a leading 0
+  if (id && typeof +id === 'number' && id.toString().substr(0, 1) !== '0') {
     return +id < 10 ? `0${id}` : id.toString();
   }
 
@@ -33,6 +40,26 @@ export const entityIdDisplay = (entityType, id) => {
   }
 
   return id;
+};
+
+export const entityNameDisplay = (entityType, id) => {
+  // this separation of ID and Label was specific to intersection types
+  if (id && entityType === 'intersection') {
+    return id.split('|')[0];
+  }
+
+  // most other cases just return "Area Type ID"
+  // but a few just return the name without the prefix
+  let label = '';
+  switch (entityType) {
+    case 'neighborhood':
+    case 'borough':
+      label = id;
+      break;
+    default:
+      label = `${entityTypeDisplay(entityType, true)} ${id}`;
+  }
+  return label;
 };
 
 export const REFERENCE_ENTITY_NAMES = {

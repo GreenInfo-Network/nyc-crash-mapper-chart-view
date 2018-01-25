@@ -44,6 +44,40 @@ export const sqlByGeo = geo =>
     ORDER BY year_month asc, ${geo} asc
   `;
 
+export const sqlIntersection = () => {
+  // tip for writing more "what places exist?" queries in the future
+  // - the "geo" given to trigger this query, is presumed to be the name of a field,
+  // e.g. "intersection" query should have a "intersection" field, being a unique ID ("key")
+
+  // specific to Intersections though:
+  // they do not have unique names, e.g. SMITH ST & OAK AVE could intersect multiple times
+  // so our unique ID is concat'd name|id
+  // labelFormatters.js entityIdDisplay() and entityLabelDisplay() tease these apart for label purposes vs ID purposes
+
+  const maxintersections = 500;
+  return sls`
+    SELECT
+      CONCAT(intersections.borough, ', ', intersections.name, '|', intersections.cartodb_id) AS intersection,
+      COUNT(c.cartodb_id) as total_crashes,
+      SUM(c.number_of_cyclist_injured) as cyclist_injured,
+      SUM(c.number_of_cyclist_killed) as cyclist_killed,
+      SUM(c.number_of_motorist_injured) as motorist_injured,
+      SUM(c.number_of_motorist_killed) as motorist_killed,
+      SUM(c.number_of_pedestrian_injured) as pedestrian_injured,
+      SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
+      SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
+      SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
+      c.year || '-' || LPAD(c.month::text, 2, '0') as year_month
+    FROM
+      crashes_all_prod c,
+      (SELECT * FROM nyc_intersections WHERE crashcount IS NOT NULL AND borough != '' ORDER BY crashcount DESC LIMIT ${maxintersections}) intersections
+    WHERE
+      c.the_geom IS NOT NULL AND ST_CONTAINS(intersections.the_geom, c.the_geom)
+    GROUP BY year_month, intersection
+    ORDER BY year_month asc, intersection asc
+  `;
+};
+
 export const sqlCustomGeography = latlngs => {
   // latlngs param is a "coordinatelist" e.g. from customGeography
   // compose WKT to find crashes contained within this polygonal area

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as pt from '../../common/reactPropTypeDefs';
-import { entityTypeDisplay, entityIdDisplay } from '../../common/labelFormatters';
+import { entityTypeDisplay, entityNameDisplay } from '../../common/labelFormatters';
 import DotGridWrapper from '../../containers/DotGridWrapper';
 import DotGridTitle from './DotGridTitle';
 
@@ -34,8 +34,8 @@ class DotGridChartsContainer extends Component {
     const { entityType, keyPrimary, keySecondary, dateRanges } = this.props;
     const { customGeography } = this.props;
     const entityLabel = entityTypeDisplay(entityType);
-    const keyLabelPrimary = entityIdDisplay(entityType, keyPrimary);
-    const keyLabelSecondary = entityIdDisplay(entityType, keySecondary);
+    const keyLabelPrimary = entityNameDisplay(entityType, keyPrimary);
+    const keyLabelSecondary = entityNameDisplay(entityType, keySecondary);
 
     return (
       <div className="DotGridChartsContainer scroll">

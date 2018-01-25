@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import EntitySelector from './EntitySelector';
 import * as pt from '../../common/reactPropTypeDefs';
 import styleVars from '../../common/styleVars';
-import { entityTypeDisplay, entityIdDisplay } from '../../common/labelFormatters';
+import {
+  entityTypeDisplay,
+  entityIdDisplay,
+  entityNameDisplay,
+} from '../../common/labelFormatters';
 
 /**
  * Class that houses the Entity Selector components
@@ -57,14 +61,16 @@ class EntitySelections extends Component {
           chartView={chartView}
           color={primary.color}
           entityType={entityTypeDisplay(entityType)}
-          entity={entityIdDisplay(entityType, primary.key)}
+          entityLabel={entityNameDisplay(entityType, primary.key)}
+          entityId={entityIdDisplay(entityType, primary.key)}
           deselectEntity={deselectPrimaryEntity}
         />
         <EntitySelector
           chartView={chartView}
           color={secondary.color}
           entityType={entityTypeDisplay(entityType)}
-          entity={entityIdDisplay(entityType, secondary.key)}
+          entityLabel={entityNameDisplay(entityType, secondary.key)}
+          entityId={entityIdDisplay(entityType, secondary.key)}
           deselectEntity={deselectSecondaryEntity}
         />
       </div>

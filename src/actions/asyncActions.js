@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sqlByGeo, sqlCitywide, sqlCustomGeography } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide, sqlIntersection, sqlCustomGeography } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
@@ -61,6 +61,9 @@ export default function fetchEntityData(entityType, additionalData) {
       break;
     case 'custom':
       sql = sqlCustomGeography(additionalData);
+      break;
+    case 'intersection':
+      sql = sqlIntersection(additionalData);
       break;
     default:
       sql = sqlByGeo(entityType);
