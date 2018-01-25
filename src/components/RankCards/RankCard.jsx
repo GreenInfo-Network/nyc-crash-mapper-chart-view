@@ -54,15 +54,7 @@ class RankCard extends Component {
   }
 
   render() {
-    const {
-      entity,
-      entityLabel,
-      idLabel,
-      rankTotal,
-      primaryKey,
-      secondaryKey,
-      handleClick,
-    } = this.props;
+    const { entity, entityLabel, rankTotal, primaryKey, secondaryKey, handleClick } = this.props;
     const { key, rank, totalInjured, totalKilled } = entity;
 
     // class names for list items
@@ -83,7 +75,7 @@ class RankCard extends Component {
         <h6>
           <span className="rank-pos">{rank}</span> / {rankTotal}
         </h6>
-        <h6 className="rank-entity-type">{`${entityLabel} ${idLabel}`}</h6>
+        <h6 className="rank-entity-type">{entityLabel}</h6>
         <p>{`${formatNumber(totalInjured)} injuries, ${formatNumber(totalKilled)} fatalities`}</p>
         {this.renderSVG()}
       </div>

@@ -30,7 +30,8 @@ export const entityIdDisplay = (entityType, id) => {
   }
 
   // left pad numbers so that they can be more easily used for text search
-  if (id && typeof +id === 'number') {
+  // but don't re-pad if it already has a leading 0
+  if (id && typeof +id === 'number' && id.toString().substr(0, 1) !== '0') {
     return +id < 10 ? `0${id}` : id.toString();
   }
 
