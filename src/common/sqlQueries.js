@@ -57,7 +57,7 @@ export const sqlIntersection = () => {
   const maxintersections = 500;
   return sls`
     SELECT
-      CONCAT(intersections.borough, ', ', intersections.name, '|', intersections.cartodb_id) AS intersection,
+      CONCAT(UPPER(intersections.borough), ', ', intersections.name, '|', intersections.cartodb_id) AS intersection,
       COUNT(c.cartodb_id) as total_crashes,
       SUM(c.number_of_cyclist_injured) as cyclist_injured,
       SUM(c.number_of_cyclist_killed) as cyclist_killed,
