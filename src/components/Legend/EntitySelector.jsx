@@ -2,12 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import * as pt from '../../common/reactPropTypeDefs';
-
 const EntitySelector = props => {
-  const { chartView, color, entityType, entity, deselectEntity } = props;
+  const { chartView, color, entityId, entityLabel, deselectEntity } = props;
   const colorKeyStyle = {
-    backgroundColor: entity ? color : null,
+    backgroundColor: entityId ? color : null,
   };
   const colorKeyClassNames = classNames({
     'color-key': true,
@@ -15,7 +13,7 @@ const EntitySelector = props => {
     square: chartView === 'rank',
   });
 
-  if (!entity) {
+  if (!entityId) {
     return null;
   }
 
@@ -23,7 +21,7 @@ const EntitySelector = props => {
     <div className="EntitySelector">
       <div className="flex-wrapper">
         <span className={colorKeyClassNames} style={colorKeyStyle} />
-        <h6>{entity ? `${entityType.replace(/_/g, ' ')} ${entity}` : '(none selected)'}</h6>
+        <h6>{entityLabel}</h6>
         {deselectEntity && (
           <button className="deselect" onClick={() => deselectEntity()}>
             {'×'}
@@ -37,14 +35,14 @@ const EntitySelector = props => {
 EntitySelector.propTypes = {
   chartView: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
-  entityType: PropTypes.string,
-  entity: pt.key,
+  entityId: PropTypes.string,
+  entityLabel: PropTypes.string,
   deselectEntity: PropTypes.func,
 };
 
 EntitySelector.defaultProps = {
-  entityType: '',
-  entity: null,
+  entityId: null,
+  entityLabel: null,
   deselectEntity: null,
 };
 
