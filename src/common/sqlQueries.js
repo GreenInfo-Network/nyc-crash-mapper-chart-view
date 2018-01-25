@@ -54,7 +54,7 @@ export const sqlIntersection = () => {
   // so our unique ID is concat'd name|id
   // labelFormatters.js entityIdDisplay() and entityLabelDisplay() tease these apart for label purposes vs ID purposes
 
-  const maxintersections = 1000;
+  const maxintersections = 500;
   return sls`
     SELECT
       CONCAT(intersections.name, '|', intersections.cartodb_id) AS intersection,
