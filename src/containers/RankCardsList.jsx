@@ -73,7 +73,6 @@ class RankCardsList extends Component {
         const { props } = li;
         const { entity, entityLabel } = props;
         const searchTerm = `${entityLabel} ${entity.key}`;
-        console.log([ 'GDA filter=', searchTerm, filterTerm ]);  // eslint-disable-line
         return searchTerm.toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1;
       });
     }
@@ -165,6 +164,7 @@ class RankCardsList extends Component {
         <RankCard
           key={entity.key}
           entity={entity}
+          entityType={entityType}
           entityLabel={entityNameDisplay(entityType, entity.key)}
           idLabel={entityIdDisplay(entityType, entity.key)}
           rankTotal={total}

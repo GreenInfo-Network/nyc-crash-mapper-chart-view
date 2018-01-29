@@ -54,7 +54,8 @@ class RankCard extends Component {
   }
 
   render() {
-    const { entity, entityLabel, rankTotal, primaryKey, secondaryKey, handleClick } = this.props;
+    const { entity, entityLabel, entityType } = this.props;
+    const { rankTotal, primaryKey, secondaryKey, handleClick } = this.props;
     const { key, rank, totalInjured, totalKilled } = entity;
 
     // class names for list items
@@ -63,6 +64,20 @@ class RankCard extends Component {
       'primary-active': key === primaryKey,
       'secondary-active': key === secondaryKey,
     });
+
+    // issue 85: this specific case of RankCard for Intersection,
+    // clients wants comma-separated borough name separated by newline instead
+    let displayLabel = <span>{entityLabel}</span>;
+    if (entityType === 'intersection') {
+      const splitup = entityLabel.match(/^([^,]+), (.+)$/);
+      displayLabel = (
+        <span>
+          {splitup[1]}
+          <br />
+          {splitup[2]}
+        </span>
+      );
+    }
 
     return (
       <div
@@ -75,7 +90,7 @@ class RankCard extends Component {
         <h6>
           <span className="rank-pos">{rank}</span> / {rankTotal}
         </h6>
-        <h6 className="rank-entity-type">{entityLabel}</h6>
+        <h6 className="rank-entity-type">{displayLabel}</h6>
         <p>{`${formatNumber(totalInjured)} injuries, ${formatNumber(totalKilled)} fatalities`}</p>
         {this.renderSVG()}
       </div>
@@ -85,6 +100,7 @@ class RankCard extends Component {
 
 RankCard.propTypes = {
   entity: pt.entity,
+  entityType: PropTypes.string,
   entityLabel: PropTypes.string,
   idLabel: PropTypes.string,
   handleClick: PropTypes.func.isRequired,
@@ -100,6 +116,7 @@ RankCard.propTypes = {
 
 RankCard.defaultProps = {
   entity: {},
+  entityType: '',
   entityLabel: '',
   idLabel: '',
   rankTotal: null,
