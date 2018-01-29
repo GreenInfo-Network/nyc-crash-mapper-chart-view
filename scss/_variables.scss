@@ -19,7 +19,7 @@ $entity-citywide: #999 !default;
 // possible UI color values
 $marine: #105b63 !default;
 $marine-light: lighten($marine, 10) !default;
-$marine-header: rgba(23, 131, 143, .7) !default;
+$marine-header: rgba(23, 131, 143, .8) !default;  /* 0.7 opac on Map, but 0.8 here for visual match (issue 86) */
 
 $off-white: #fffad5 !default;
 $grey: #4d4d4d !default;
