@@ -29,6 +29,13 @@
 
     &.rank-entity-type {
       font-size: 1.8rem;
+      line-height: 2rem;
+    }
+
+    span {  /* the words in the title, then a sub-title (intersections) */
+      span {
+        font-size: 1.4rem;
+      }
     }
   }
 

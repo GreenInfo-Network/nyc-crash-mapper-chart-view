@@ -67,6 +67,7 @@ class RankCard extends Component {
 
     // issue 85: this specific case of RankCard for Intersection,
     // clients wants comma-separated borough name separated by newline instead
+    // issue 87: and client wants the second half of such a split-up to be in a smaller font
     let displayLabel = <span>{entityLabel}</span>;
     if (entityType === 'intersection') {
       const splitup = entityLabel.match(/^([^,]+), (.+)$/);
@@ -74,7 +75,7 @@ class RankCard extends Component {
         <span>
           {splitup[1]}
           <br />
-          {splitup[2]}
+          <span>{splitup[2]}</span>
         </span>
       );
     }
