@@ -1,6 +1,8 @@
 .About {
   height: 100%;
   padding: 20px;
+  background-color: $grey-lighter;
+  color: $marine;
 
   h6 {
     font-weight: bolder;
@@ -26,6 +28,7 @@
   }
 
   a {
-    color: $ui-teal;
+    /* color: $ui-teal; */
+    color: #1eaedb;
   }
 }
