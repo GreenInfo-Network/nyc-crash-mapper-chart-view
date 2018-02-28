@@ -18,6 +18,7 @@ import RankCardsControls from '../components/RankCards/RankCardsControls';
 import Legend from '../containers/Legend';
 import Message from '../components/Message';
 import About from '../components/About';
+import Help from '../components/Help';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -112,6 +113,9 @@ class App extends Component {
 
       case 'about':
         return <About />;
+
+      case 'help':
+        return <Help />;
 
       default:
         return null;

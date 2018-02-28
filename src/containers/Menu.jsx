@@ -67,6 +67,7 @@ const Menu = props => {
     { type: 'view', value: 'compare', label: 'Compare' },
     { type: 'view', value: 'rank', label: 'Rank' },
     { type: 'view', value: 'about', label: 'About' },
+    { type: 'view', value: 'help', label: 'Help' },
   ];
 
   const handleViewClick = value => {
