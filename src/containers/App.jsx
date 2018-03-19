@@ -68,6 +68,7 @@ class App extends Component {
     const { entityType } = this.props;
     const { customGeography } = this.props;
 
+    // load the selected entity
     this.props.fetchEntityData(entityType);
 
     // we will be wanting this as our baselines for both Compare and Trend
@@ -75,6 +76,10 @@ class App extends Component {
     if (customGeography.length) {
       this.props.fetchEntityData('custom', customGeography);
     }
+
+    // as of issue 58, we want citywide data to be had for both Trend and Compare
+    // so start loading it now
+    this.props.fetchEntityData('citywide');
   }
 
   componentWillReceiveProps(nextProps) {
