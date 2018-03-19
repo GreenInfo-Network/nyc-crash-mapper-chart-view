@@ -53,36 +53,43 @@ const DotGridChart = props => {
   };
 
   // TO DO: replace SVG with Canvas? Boroughs take a while to render...
+  const chartTop = (
+    <div>
+      <PersonIcon className="PersonIcon" width="35px" height="35px" />
+      <div style={{ display: 'inline-block' }}>
+        <h6 style={killedTotalStyle}>
+          {`${personType} killed: `}
+          <strong>{formatNumber(killedTotal)}</strong>
+        </h6>
+        <h6 style={injuredTotalStyle}>
+          {`${personType} injured: `}
+          <strong>{formatNumber(injuredTotal)}</strong>
+        </h6>
+      </div>
+    </div>
+  );
+  const chartDots = props.drawdots ? (
+    <svg width={gridWidth} height={gridHeight + 10}>
+      <g transform={`translate(${translateFactor}, ${translateFactor})`}>
+        {grid.map((d, i) => (
+          <circle
+            key={i}
+            cx={d.x}
+            cy={d.y}
+            r={radius}
+            stroke={colorScale(personType)}
+            strokeWidth={strokeWidth}
+            fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
+          />
+        ))}
+      </g>
+    </svg>
+  ) : null;
+
   return (
     <div className="DotGridChart">
-      <div>
-        <PersonIcon className="PersonIcon" width="35px" height="35px" />
-        <div style={{ display: 'inline-block' }}>
-          <h6 style={killedTotalStyle}>
-            {`${personType} killed: `}
-            <strong>{formatNumber(killedTotal)}</strong>
-          </h6>
-          <h6 style={injuredTotalStyle}>
-            {`${personType} injured: `}
-            <strong>{formatNumber(injuredTotal)}</strong>
-          </h6>
-        </div>
-      </div>
-      <svg width={gridWidth} height={gridHeight + 10}>
-        <g transform={`translate(${translateFactor}, ${translateFactor})`}>
-          {grid.map((d, i) => (
-            <circle
-              key={i}
-              cx={d.x}
-              cy={d.y}
-              r={radius}
-              stroke={colorScale(personType)}
-              strokeWidth={strokeWidth}
-              fill={i + 1 <= killedTotal ? colorScale(personType) : 'none'}
-            />
-          ))}
-        </g>
-      </svg>
+      {chartTop}
+      {chartDots}
     </div>
   );
 };
@@ -92,12 +99,14 @@ DotGridChart.propTypes = {
   radius: PropTypes.number,
   strokeWidth: PropTypes.number,
   data: PropTypes.shape({}),
+  drawdots: PropTypes.bool,
 };
 
 DotGridChart.defaultProps = {
   radius: 5,
   strokeWidth: 2,
   data: {},
+  drawdots: true,
 };
 
 export default DotGridChart;

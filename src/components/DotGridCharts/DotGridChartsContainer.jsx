@@ -40,13 +40,72 @@ class DotGridChartsContainer extends Component {
 
     return (
       <div className="DotGridChartsContainer scroll">
+        <DotGridTitle keyLabel={'Citywide'} {...{ dateRanges, keyPrimary: '', entityLabel: '' }} />
+        <div className="dot-grid-row">
+          <DotGridSums entityType={'citywide'} period={'period1'} />
+          <DotGridSums entityType={'citywide'} period={'period2'} />
+        </div>
+        <div className="dot-grid-row">
+          <DotGridWrapper
+            entityType={'citywide'}
+            period={'period1'}
+            title={'Period A'}
+            radius={this.circleRadius}
+            strokeWidth={this.strokeWidth}
+            personType="pedestrian"
+          />
+          <DotGridWrapper
+            entityType={'citywide'}
+            period={'period2'}
+            title={'Period B'}
+            radius={this.circleRadius}
+            strokeWidth={this.strokeWidth}
+            personType="pedestrian"
+          />
+        </div>
+        <div className="dot-grid-row">
+          <DotGridWrapper
+            entityType={'citywide'}
+            period={'period1'}
+            title={'Period A'}
+            radius={this.circleRadius}
+            strokeWidth={this.strokeWidth}
+            personType="cyclist"
+          />
+          <DotGridWrapper
+            entityType={'citywide'}
+            period={'period2'}
+            title={'Period B'}
+            radius={this.circleRadius}
+            strokeWidth={this.strokeWidth}
+            personType="cyclist"
+          />
+        </div>
+        <div className="dot-grid-row">
+          <DotGridWrapper
+            entityType={'citywide'}
+            period={'period1'}
+            title={'Period A'}
+            radius={this.circleRadius}
+            strokeWidth={this.strokeWidth}
+            personType="motorist"
+          />
+          <DotGridWrapper
+            entityType={'citywide'}
+            period={'period2'}
+            title={'Period B'}
+            radius={this.circleRadius}
+            strokeWidth={this.strokeWidth}
+            personType="motorist"
+          />
+        </div>
+
         {customGeography.length ? (
           <DotGridTitle
             keyLabel={'Custom Geography'}
             {...{ dateRanges, keyPrimary: '', entityLabel: '' }}
           />
         ) : null}
-
         {customGeography.length ? (
           <div className="dot-grid-row">
             <DotGridSums entityType={'custom'} period={'period1'} />
