@@ -32,14 +32,21 @@ const mapStateToProps = (state, props) => {
       throw new Error('DotGridSums got unexpected entityType');
   }
 
-  const totalinjured = values.reduce(
-    (sum, month) => sum + month.pedestrian_injured + month.cyclist_injured + month.motorist_injured,
-    0
-  );
-  const totalkilled = values.reduce(
-    (sum, month) => sum + month.pedestrian_killed + month.cyclist_killed + month.motorist_killed,
-    0
-  );
+  console.log([ 'GDA values=', values ]);  // eslint-disable-line
+  const totalinjured = values.reduce((sum, month) => {
+    let newadds = 0;
+    if (month.pedestrian_injured !== undefined) newadds += month.pedestrian_injured;
+    if (month.cyclist_injured !== undefined) newadds += month.cyclist_injured;
+    if (month.motorist_injured !== undefined) newadds += month.motorist_injured;
+    return sum + newadds;
+  }, 0);
+  const totalkilled = values.reduce((sum, month) => {
+    let newadds = 0;
+    if (month.pedestrian_killed !== undefined) newadds += month.pedestrian_killed;
+    if (month.cyclist_killed !== undefined) newadds += month.cyclist_killed;
+    if (month.motorist_killed !== undefined) newadds += month.motorist_killed;
+    return sum + newadds;
+  }, 0);
 
   return {
     filterType,
