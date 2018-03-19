@@ -7,9 +7,10 @@ import { formatNumber } from '../common/d3Utils';
 import * as pt from '../common/reactPropTypeDefs';
 import {
   dateRangesSelector,
-  primaryEntityValuesFilteredSelector,  // eslint-disable-line
-  secondaryEntityValuesFilteredSelector,  // eslint-disable-line
-  customGeographyValuesFilteredSelector,  // eslint-disable-line
+  primaryEntityValuesFilteredSelector,
+  secondaryEntityValuesFilteredSelector,
+  customGeographyValuesFilteredSelector,
+  referenceEntityValuesFilteredSelector,
 } from '../common/reduxSelectors';
 
 const mapStateToProps = (state, props) => {
@@ -25,6 +26,9 @@ const mapStateToProps = (state, props) => {
     case 'secondary':
       values = secondaryEntityValuesFilteredSelector(state, props);
       break;
+    case 'citywide':
+      values = referenceEntityValuesFilteredSelector(state, props);
+      break;
     case 'custom':
       values = customGeographyValuesFilteredSelector(state, props);
       break;
@@ -32,7 +36,6 @@ const mapStateToProps = (state, props) => {
       throw new Error('DotGridSums got unexpected entityType');
   }
 
-  console.log([ 'GDA values=', values ]);  // eslint-disable-line
   const totalinjured = values.reduce((sum, month) => {
     let newadds = 0;
     if (month.pedestrian_injured !== undefined) newadds += month.pedestrian_injured;

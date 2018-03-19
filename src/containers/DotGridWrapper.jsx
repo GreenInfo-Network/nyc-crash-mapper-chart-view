@@ -10,6 +10,7 @@ import {
   primaryEntityValuesFilteredSelector,
   secondaryEntityValuesFilteredSelector,
   customGeographyValuesFilteredSelector,
+  referenceEntityValuesFilteredSelector,
 } from '../common/reduxSelectors';
 
 import DotGridChart from '../components/DotGridCharts/DotGridChart';
@@ -26,6 +27,9 @@ const mapStateToProps = (state, props) => {
       break;
     case 'secondary':
       values = secondaryEntityValuesFilteredSelector(state, props);
+      break;
+    case 'citywide':
+      values = referenceEntityValuesFilteredSelector(state, props);
       break;
     case 'custom':
       values = customGeographyValuesFilteredSelector(state, props);
@@ -219,6 +223,8 @@ class DotGridWrapper extends Component {
     const { radius, strokeWidth, personType } = this.props;
     const { valuesTransformed } = this.state;
 
+    const drawdots = this.props.entityType !== 'citywide'; // issue 58, dots not certain; skip if citywide
+
     return (
       <div
         className="DotGridWrapper"
@@ -226,7 +232,11 @@ class DotGridWrapper extends Component {
           this.chartContainer = _;
         }}
       >
-        <DotGridChart data={valuesTransformed} {...{ radius, strokeWidth, personType }} />
+        <DotGridChart
+          data={valuesTransformed}
+          drawdots={drawdots}
+          {...{ radius, strokeWidth, personType }}
+        />
       </div>
     );
   }
