@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as pt from '../../common/reactPropTypeDefs';
 import { entityTypeDisplay, entityNameDisplay } from '../../common/labelFormatters';
 import DotGridWrapper from '../../containers/DotGridWrapper';
+import DotGridSums from '../../containers/DotGridSums';
 import DotGridTitle from './DotGridTitle';
 
 /**
@@ -46,6 +47,12 @@ class DotGridChartsContainer extends Component {
           />
         ) : null}
 
+        {customGeography.length ? (
+          <div className="dot-grid-row">
+            <DotGridSums entityType={'custom'} period={'period1'} />
+            <DotGridSums entityType={'custom'} period={'period2'} />
+          </div>
+        ) : null}
         {customGeography.length ? (
           <div className="dot-grid-row">
             <DotGridWrapper
@@ -118,6 +125,12 @@ class DotGridChartsContainer extends Component {
         )}
         {keyPrimary && (
           <div className="dot-grid-row">
+            <DotGridSums entityType={'primary'} period={'period1'} />
+            <DotGridSums entityType={'primary'} period={'period2'} />
+          </div>
+        )}
+        {keyPrimary && (
+          <div className="dot-grid-row">
             <DotGridWrapper
               entityType={'primary'}
               period={'period1'}
@@ -179,6 +192,12 @@ class DotGridChartsContainer extends Component {
 
         {keySecondary && (
           <DotGridTitle keyLabel={keyLabelSecondary} {...{ keyPrimary, dateRanges, entityLabel }} />
+        )}
+        {keySecondary && (
+          <div className="dot-grid-row">
+            <DotGridSums entityType={'secondary'} period={'period1'} />
+            <DotGridSums entityType={'secondary'} period={'period2'} />
+          </div>
         )}
         {keySecondary && (
           <div className="dot-grid-row">

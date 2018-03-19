@@ -1,0 +1,15 @@
+.DotGridSums {
+  width: 50%;
+  height: auto;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  color: #ddd;
+
+  &:last-child {
+    padding-right: 0;
+    padding-left: 10px;
+  }
+}
