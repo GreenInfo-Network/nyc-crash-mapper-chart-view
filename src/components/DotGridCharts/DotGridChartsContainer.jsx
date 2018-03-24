@@ -6,6 +6,7 @@ import { entityTypeDisplay, entityNameDisplay } from '../../common/labelFormatte
 import DotGridWrapper from '../../containers/DotGridWrapper';
 import DotGridSums from '../../containers/DotGridSums';
 import DotGridTitle from './DotGridTitle';
+import DotGridPeriodsHeader from './DotGridPeriodsHeader';
 
 /**
   * Class that houses the Dot Grid Wrapper components.
@@ -40,6 +41,8 @@ class DotGridChartsContainer extends Component {
 
     return (
       <div className="DotGridChartsContainer scroll">
+        <DotGridPeriodsHeader {...{ dateRanges }} />
+
         <DotGridTitle keyLabel={'Citywide'} {...{ dateRanges, keyPrimary: '', entityLabel: '' }} />
         <div className="dot-grid-row">
           <DotGridSums entityType={'citywide'} period={'period1'} />

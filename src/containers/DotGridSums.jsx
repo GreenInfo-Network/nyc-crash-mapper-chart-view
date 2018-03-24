@@ -86,11 +86,8 @@ class DotGridSums extends Component {
 
     return (
       <div className="DotGridSums">
-        <h6>
-          persons killed: {formatNumber(totalkilled)}
-          <br />
-          persons injured: {formatNumber(totalinjured)}
-        </h6>
+        <h6>{formatNumber(totalkilled)} killed</h6>
+        <h6>{formatNumber(totalinjured)} injured</h6>
       </div>
     );
   }

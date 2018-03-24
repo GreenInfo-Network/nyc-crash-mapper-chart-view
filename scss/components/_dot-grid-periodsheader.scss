@@ -1,0 +1,23 @@
+.DotGridPeriodsHeader {
+  width: 50%;
+  height: auto;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  color: #ddd;
+
+  &:first-child {
+    padding-right: 10px;
+    padding-left: 0;
+  }
+
+  h5 {
+    padding: 0;
+  }
+
+  h6 {
+    padding: 0;
+  }
+}

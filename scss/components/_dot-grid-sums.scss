@@ -12,4 +12,13 @@
     padding-right: 0;
     padding-left: 10px;
   }
+
+  h6 {
+    width: 50%;
+    display: inline-block;
+  }
+
+  h6:first-child {
+    padding-left: 45px;
+  }
 }
