@@ -120,8 +120,9 @@ class DotGridSums extends Component {
 
     // issue 99: for Period A (aka period1)
     // calculate %diffs from our injury/kill counts relative to that "other" period
-    const pctdiffkill = 100 * (otherkilled - totalkilled) / otherkilled;
-    const pctdiffinjr = 100 * (otherinjured - totalinjured) / otherinjured;
+    const pctdiffkill = 100 * (totalkilled - otherkilled) / otherkilled;
+    const pctdiffinjr = 100 * (totalinjured - otherinjured) / otherinjured;
+    console.log([totalkilled , otherkilled, pctdiffkill ]);  // eslint-disable-line
 
     let difftextkill = '';
     let difftextinjr = '';
@@ -130,12 +131,12 @@ class DotGridSums extends Component {
       difftextinjr = otherinjured === totalinjured ? 'no change' : '<1% change';
 
       if (Math.abs(pctdiffkill) >= 1.0) {
-        const sign = pctdiffinjr > 0 ? '+' : '-';
+        const sign = pctdiffkill > 0 ? '+' : '-';
         const number = Math.round(Math.abs(pctdiffkill)).toFixed(0);
         difftextkill = `${sign}${number}% change`;
       }
       if (Math.abs(pctdiffinjr) >= 1.0) {
-        const sign = pctdiffkill > 0 ? '+' : '-';
+        const sign = pctdiffinjr > 0 ? '+' : '-';
         const number = Math.round(Math.abs(pctdiffinjr)).toFixed(0);
         difftextinjr = `${sign}${number}% change`;
       }
