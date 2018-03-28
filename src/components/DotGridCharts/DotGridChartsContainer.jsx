@@ -84,7 +84,7 @@ class DotGridChartsContainer extends Component {
             personType="cyclist"
           />
         </div>
-        <div className="dot-grid-row">
+        <div className="dot-grid-row sectionbreak">
           <DotGridWrapper
             entityType={'citywide'}
             period={'period1'}
@@ -160,7 +160,7 @@ class DotGridChartsContainer extends Component {
           </div>
         ) : null}
         {customGeography.length ? (
-          <div className="dot-grid-row">
+          <div className="dot-grid-row sectionbreak">
             <DotGridWrapper
               entityType={'custom'}
               customGeography={customGeography}
