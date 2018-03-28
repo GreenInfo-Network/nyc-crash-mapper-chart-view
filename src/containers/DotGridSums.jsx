@@ -127,8 +127,8 @@ class DotGridSums extends Component {
     let difftextkill = '';
     let difftextinjr = '';
     if (period === 'period1') {
-      difftextkill = otherkilled === totalkilled ? 'no change' : '<1% change';
-      difftextinjr = otherinjured === totalinjured ? 'no change' : '<1% change';
+      difftextkill = otherkilled === totalkilled ? 'No change' : '<1% change';
+      difftextinjr = otherinjured === totalinjured ? 'No change' : '<1% change';
 
       if (Math.abs(pctdiffkill) >= 1.0) {
         const sign = pctdiffkill > 0 ? '+' : '-';
@@ -147,12 +147,12 @@ class DotGridSums extends Component {
         <h6>
           {formatNumber(totalkilled)} killed
           <br />
-          {difftextkill}
+          <span className="DotGridPercent">{difftextkill}</span>
         </h6>
         <h6>
           {formatNumber(totalinjured)} injured
           <br />
-          {difftextinjr}
+          <span className="DotGridPercent">{difftextinjr}</span>
         </h6>
       </div>
     );
