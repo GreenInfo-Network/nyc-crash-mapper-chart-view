@@ -24,6 +24,13 @@ const mapStateToProps = (state, props) => {
   const otherperiod = period === 'period1' ? 'period2' : 'period1';
   const otherprops = { ...props, period: otherperiod };
 
+  // issue 99: we want to report citywide, and it may not be our reference entity
+  // in fact, if custom geography exists it is presumed to be the reference entity
+  // so, override this into a custom state object to force citywide stats
+  // we declare it here even if we don't use it, cuz lint won't let us declare it in the switch
+  const citywidestate = { ...state };
+  citywidestate.entities.reference = 'citywide';
+
   let others = [];
   let values = [];
   switch (entityType) {
@@ -36,8 +43,8 @@ const mapStateToProps = (state, props) => {
       others = secondaryEntityValuesFilteredSelector(state, otherprops);
       break;
     case 'citywide':
-      values = referenceEntityValuesFilteredSelector(state, props);
-      others = referenceEntityValuesFilteredSelector(state, otherprops);
+      values = referenceEntityValuesFilteredSelector(citywidestate, props);
+      others = referenceEntityValuesFilteredSelector(citywidestate, otherprops);
       break;
     case 'custom':
       values = customGeographyValuesFilteredSelector(state, props);
@@ -122,7 +129,6 @@ class DotGridSums extends Component {
     // calculate %diffs from our injury/kill counts relative to that "other" period
     const pctdiffkill = 100 * (totalkilled - otherkilled) / otherkilled;
     const pctdiffinjr = 100 * (totalinjured - otherinjured) / otherinjured;
-    console.log([totalkilled , otherkilled, pctdiffkill ]);  // eslint-disable-line
 
     let difftextkill = '';
     let difftextinjr = '';
