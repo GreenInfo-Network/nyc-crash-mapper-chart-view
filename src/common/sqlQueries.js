@@ -22,11 +22,41 @@ export const sqlCitywide = () => sls`
 
 // Query that returns aggregated data by geography, such as Borough or City Council Districts
 // @param {string} geo Name of column for a given geography for use in the SQL group by clause
-export const sqlByGeo = geo =>
-  sls`
+export const sqlByGeo = geo => {
+  // more hacks around smoeone hardcoding the geography type as the would-be name field,
+  // cuz we now want to prefix with borough name; issue 103
+  let prefix;
+  switch (geo) {
+    case 'community_board':
+      prefix = 'Community Board';
+      break;
+    case 'city_council':
+      prefix = 'City Council';
+      break;
+    case 'nypd_precinct':
+      prefix = 'NYPD Precinct';
+      break;
+    default:
+      prefix = '';
+      break;
+  }
+
+  let namefield;
+  switch (geo) {
+    case 'community_board':
+    case 'neighborhood':
+    case 'nypd_precinct':
+      namefield = `CASE WHEN borough != '' THEN CONCAT(borough, ', ', '${prefix}', ' ', ${geo}) ELSE CONCAT(' No Borough, ', '${prefix}', ' ', ${geo}) END`;
+      break;
+    default:
+      namefield = `CONCAT('${prefix}', ' ', ${geo})`;
+      break;
+  }
+
+  const sql = sls`
     SELECT
       COUNT(c.cartodb_id) as total_crashes,
-      ${geo},
+      ${namefield} AS ${geo},
       SUM(c.number_of_cyclist_injured) as cyclist_injured,
       SUM(c.number_of_cyclist_killed) as cyclist_killed,
       SUM(c.number_of_motorist_injured) as motorist_injured,
@@ -40,9 +70,11 @@ export const sqlByGeo = geo =>
     WHERE ${geo} IS NOT NULL
     AND ${geo}::text != ''
     AND the_geom IS NOT NULL
-    GROUP BY year_month, ${geo}
-    ORDER BY year_month asc, ${geo} asc
+    GROUP BY year_month, ${namefield}
+    ORDER BY year_month asc, ${namefield} asc
   `;
+  return sql;
+};
 
 export const sqlIntersection = () => {
   // tip for writing more "what places exist?" queries in the future
