@@ -3,6 +3,7 @@ import { max } from 'd3';
 
 import LineChartWrapper from '../../containers/LineChartWrapper';
 import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
+import { formatDateMonth } from '../../common/d3Utils';
 
 /**
  * Class that houses the the Line Charts
@@ -45,6 +46,27 @@ class LineChartsContainer extends Component {
     const entitiesMax = max(y, d => d.count);
     const citywideMax = max(y2, d => d.count);
 
+    // introspect both charts' date ranges, and make a warning message if they're of different duration and/or months
+    const howmanymonths1 = period1Y.length;
+    const howmanymonths2 = period2Y.length;
+    const m1 = formatDateMonth(period1Y[0].year_month);
+    const m2 = formatDateMonth(period2Y[0].year_month);
+
+    let periodsequalwarning = null;
+    if (howmanymonths1 !== howmanymonths2) {
+      periodsequalwarning = (
+        <div className="PeriodsNotEqualWarning">
+          It's best to select two periods of the same duration.
+        </div>
+      );
+    } else if (m1 !== m2) {
+      periodsequalwarning = (
+        <div className="PeriodsNotEqualWarning">
+          It's best to select two periods of the same months.
+        </div>
+      );
+    }
+
     return (
       <div className="LineChartsContainer scroll" style={style}>
         <LineChartWrapper
@@ -55,6 +77,7 @@ class LineChartsContainer extends Component {
         >
           <ReferenceEntitySelect />
         </LineChartWrapper>
+        {periodsequalwarning}
         <LineChartWrapper
           period="period2"
           yMax={entitiesMax}
