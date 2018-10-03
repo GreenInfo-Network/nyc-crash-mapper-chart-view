@@ -344,8 +344,9 @@ class LineChart extends Component {
 
       // finally set the tooltip position
       if (d) {
-        const yOffset = xScale(d.year_month) + margin.left + rectXOffset;
-        tooltip.attr('transform', `translate(${yOffset}, 20)`);
+        let xOffset = xScale(d.year_month) + margin.left + rectXOffset;
+        if (xOffset < 0) xOffset = 0;
+        tooltip.attr('transform', `translate(${xOffset}, 20)`);
       }
     }
 
@@ -568,7 +569,6 @@ class LineChart extends Component {
     // re-aggregate the data series,
     // then re-calculate maximum value of the Y scale
     // this originally used yMax prop, but now that we're re-aggregating that doesn't work
-    console.log(referenceValues);
     this.referenceValuesAggregated = this.aggregateCrashSeries(referenceValues);
     this.primaryValuesAggregated = this.aggregateCrashSeries(primaryValues);
     this.secondaryValuesAggregated = this.aggregateCrashSeries(secondaryValues);
