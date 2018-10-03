@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import chunk from 'lodash/chunk';
 
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
@@ -28,6 +29,7 @@ class LineChart extends Component {
     referenceValues: PropTypes.arrayOf(PropTypes.object),
     startDate: pt.dateRange,
     endDate: pt.dateRange,
+    aggmonths: PropTypes.number.isRequired,
     primaryColor: PropTypes.string.isRequired,
     secondaryColor: PropTypes.string.isRequired,
     referenceColor: PropTypes.string.isRequired,
@@ -52,6 +54,10 @@ class LineChart extends Component {
 
   constructor() {
     super();
+
+    this.referenceValuesAggregated = []; // what we plot, derived from props.referenceValues
+    this.primaryValuesAggregated = [];
+    this.secondaryValuesAggregated = [];
 
     this.container = null; // ref to containing div
     this.svg = null; // ref to svg element
@@ -111,6 +117,7 @@ class LineChart extends Component {
       entityType,
       startDate,
       endDate,
+      aggmonths,
       yMax,
       y2Max,
     } = this.props;
@@ -139,8 +146,12 @@ class LineChart extends Component {
         this.updateChart();
       }
 
-      // if the start or end dates changed, update the chart
-      if (+startDate !== +prevProps.startDate || +endDate !== +prevProps.endDate) {
+      // if the start or end dates or months-per-tick changed, update the chart
+      if (
+        +startDate !== +prevProps.startDate ||
+        +endDate !== +prevProps.endDate ||
+        +aggmonths !== +prevProps.aggmonths
+      ) {
         this.updateChart();
       }
 
@@ -187,7 +198,6 @@ class LineChart extends Component {
       keyReference,
       keyPrimary,
       keySecondary,
-      referenceValues,
       primaryValues,
       secondaryValues,
     } = this.props;
@@ -204,6 +214,9 @@ class LineChart extends Component {
     const bisectDate = this.bisectDate;
     const labelPrimary = entityNameDisplay(entityType, keyPrimary);
     const labelSecondary = entityNameDisplay(entityType, keySecondary);
+    const referenceValuesAggregated = this.referenceValuesAggregated;
+    const primaryValuesAggregated = this.primaryValuesAggregated;
+    const secondaryValuesAggregated = this.secondaryValuesAggregated;
 
     function lookUpDatum(date, values) {
       // use d3's bisector to find the object in values array closest to a given date
@@ -242,15 +255,19 @@ class LineChart extends Component {
       // this grabs the corresponding date from the xScale, not necessary the date in the data
       const xValue = xScale.invert(mouseX);
       // use d3's bisector to find the closest datum to the date above
-      const d = lookUpDatum(xValue, referenceValues);
+      const d = lookUpDatum(xValue, referenceValuesAggregated);
 
       if (d) {
-        // write the formatted date for that datum
+        // write the formatted date for that datum, maybe showing a date or a range of dates
+        let text = formatDate(d.year_month);
+        if (d.end_date) {
+          text = `${formatDate(d.year_month)} - ${formatDate(d.end_date)}`;
+        }
         tooltip
           .select('text.tooltip-date')
           .attr('x', '10px')
           .attr('y', '20px')
-          .text(formatDate(d.year_month));
+          .text(text);
 
         // write out the total for the reference entity
         tooltip
@@ -262,7 +279,7 @@ class LineChart extends Component {
 
       // repeat the above steps for primary entity
       if (keyPrimary !== '' && primaryValues.length) {
-        const k = lookUpDatum(xValue, primaryValues);
+        const k = lookUpDatum(xValue, primaryValuesAggregated);
         const y = calcYPos('primary');
 
         tooltip
@@ -277,7 +294,7 @@ class LineChart extends Component {
 
       // repeat the above steps for secondary entity
       if (keySecondary !== '' && secondaryValues.length) {
-        const n = lookUpDatum(xValue, secondaryValues);
+        const n = lookUpDatum(xValue, secondaryValuesAggregated);
         const y = calcYPos('secondary');
 
         tooltip
@@ -451,6 +468,76 @@ class LineChart extends Component {
     this.initTooltips();
   }
 
+  aggregateCrashSeries(seriesdata) {
+    const { aggmonths } = this.props;
+
+    if (aggmonths === 1) return seriesdata; // no aggregation, hand it back as-is
+
+    // chunk the time series by X months
+    // take the first month as the entry we keep for plotting
+    // enhance it with the crash counts from the rest of the chunk (where present),
+    // and an ending date for label/tooltip purposes
+    const aggregated = [];
+    chunk(seriesdata, aggmonths).forEach(monthsblock => {
+      const plotthis = {
+        year_month: monthsblock[0].year_month,
+        end_date: monthsblock[monthsblock.length - 1].year_month,
+        count: monthsblock[0].count,
+        cyclist_injured: monthsblock[0].cyclist_injured,
+        cyclist_killed: monthsblock[0].cyclist_killed,
+        motorist_injured: monthsblock[0].motorist_injured,
+        motorist_killed: monthsblock[0].motorist_killed,
+        pedestrian_injured: monthsblock[0].pedestrian_injured,
+        pedestrian_killed: monthsblock[0].pedestrian_killed,
+      };
+
+      if (plotthis.count !== undefined) {
+        plotthis.count = monthsblock.reduce((sum, thismonth) => sum + thismonth.count, 0);
+      }
+      if (plotthis.cyclist_injured !== undefined) {
+        plotthis.cyclist_injured = monthsblock.reduce(
+          (sum, thismonth) => sum + thismonth.cyclist_injured,
+          0
+        );
+      }
+      if (plotthis.cyclist_killed !== undefined) {
+        plotthis.cyclist_killed = monthsblock.reduce(
+          (sum, thismonth) => sum + thismonth.cyclist_killed,
+          0
+        );
+      }
+      if (plotthis.pedestrian_injured !== undefined) {
+        plotthis.pedestrian_injured = monthsblock.reduce(
+          (sum, thismonth) => sum + thismonth.pedestrian_injured,
+          0
+        );
+      }
+      if (plotthis.pedestrian_killed !== undefined) {
+        plotthis.pedestrian_killed = monthsblock.reduce(
+          (sum, thismonth) => sum + thismonth.pedestrian_killed,
+          0
+        );
+      }
+      if (plotthis.motorist_injured !== undefined) {
+        plotthis.motorist_injured = monthsblock.reduce(
+          (sum, thismonth) => sum + thismonth.motorist_injured,
+          0
+        );
+      }
+      if (plotthis.motorist_killed !== undefined) {
+        plotthis.motorist_killed = monthsblock.reduce(
+          (sum, thismonth) => sum + thismonth.motorist_killed,
+          0
+        );
+      }
+
+      // done with this aggregate chunk of time
+      aggregated.push(plotthis);
+    });
+
+    return aggregated;
+  }
+
   updateChart() {
     // adds or removes data to / from the chart
     const {
@@ -461,25 +548,12 @@ class LineChart extends Component {
       keySecondary,
       primaryColor,
       secondaryColor,
-      yMax,
-      y2Max,
       period,
       startDate,
       endDate,
     } = this.props;
     const { width, height } = this.getContainerSize();
-    const entities = [
-      {
-        values: primaryValues,
-        key: keyPrimary,
-        color: primaryColor,
-      },
-      {
-        values: secondaryValues,
-        key: keySecondary,
-        color: secondaryColor,
-      },
-    ];
+
     const xScale = this.xScale;
     const yScale = this.yScale;
     const yScale2 = this.yScale2;
@@ -490,6 +564,37 @@ class LineChart extends Component {
     const lineGenerator2 = this.lineGenerator2;
     const svg = d3.select(this.svg);
     const g = svg.select('g.g-parent');
+
+    // re-aggregate the data series,
+    // then re-calculate maximum value of the Y scale
+    // this originally used yMax prop, but now that we're re-aggregating that doesn't work
+    this.referenceValuesAggregated = this.aggregateCrashSeries(referenceValues);
+    this.primaryValuesAggregated = this.aggregateCrashSeries(primaryValues);
+    this.secondaryValuesAggregated = this.aggregateCrashSeries(secondaryValues);
+
+    const maxyReference = this.referenceValuesAggregated.map(plotthis => plotthis.count);
+    const maxyPrimary = this.primaryValuesAggregated.map(plotthis => plotthis.count);
+    const maxySecondary = this.secondaryValuesAggregated.map(plotthis => plotthis.count);
+    const yScaleMaximum = Math.max(
+      Math.max(...maxyReference),
+      Math.max(...maxyPrimary),
+      Math.max(...maxySecondary)
+    );
+    const yScaleArea = Math.max(Math.max(...maxyPrimary), Math.max(...maxySecondary));
+
+    const entities = [
+      {
+        values: this.primaryValuesAggregated,
+        key: keyPrimary,
+        color: primaryColor,
+      },
+      {
+        values: this.secondaryValuesAggregated,
+        key: keySecondary,
+        color: secondaryColor,
+      },
+    ];
+
     // transition for updates
     const t = g
       .transition()
@@ -499,11 +604,11 @@ class LineChart extends Component {
     // update xScale domain
     xScale.domain([startDate, endDate]);
 
-    // update yScale domain
-    yScale.domain([0, yMax]);
+    // update yScale domain for primary/secondary areas
+    yScale.domain([0, yScaleArea]);
 
     // update citywide yScale domain
-    yScale2.domain([0, y2Max]);
+    yScale2.domain([0, yScaleMaximum]);
 
     // update scales in line drawing function
     lineGenerator.x(d => xScale(d.year_month)).y(d => yScale(d.count));
@@ -533,7 +638,7 @@ class LineChart extends Component {
     // transition the reference line
     g
       .selectAll('.line-citywide')
-      .data([referenceValues])
+      .data([this.referenceValuesAggregated])
       .transition(t)
       .attr('d', d => lineGenerator2(d));
 
@@ -551,6 +656,7 @@ class LineChart extends Component {
       .remove();
 
     // update existing lines
+    // GDA is this what redraws the selected area's line?
     lines
       .transition(t)
       .attr('d', d => lineGenerator(d.values))
@@ -558,6 +664,7 @@ class LineChart extends Component {
       .attr('clip-path', `url(#clip-${period})`);
 
     // create new lines
+    // GDA is this what redraws the selected area's line?
     lines
       .enter()
       .append('path')

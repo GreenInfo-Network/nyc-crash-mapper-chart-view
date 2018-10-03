@@ -17,8 +17,10 @@ class LineChartsContainer extends Component {
       period2Y: [],
       period1Y2: [],
       period2Y2: [],
+      aggmonths: 3, // GDA
     };
     this.setPeriodYValue = this.setPeriodYValue.bind(this);
+    this.handleChangeAggMonths = this.handleChangeAggMonths.bind(this);
   }
 
   setPeriodYValue(type, values) {
@@ -29,8 +31,14 @@ class LineChartsContainer extends Component {
     }
   }
 
+  handleChangeAggMonths(event) {
+    this.setState({
+      aggmonths: event.target.value,
+    });
+  }
+
   render() {
-    const { period1Y, period2Y, period1Y2, period2Y2 } = this.state;
+    const { period1Y, period2Y, period1Y2, period2Y2, aggmonths } = this.state;
 
     const style = {
       height: '100%',
@@ -45,6 +53,22 @@ class LineChartsContainer extends Component {
     const entitiesMax = max(y, d => d.count);
     const citywideMax = max(y2, d => d.count);
 
+    const xaxisselector = (
+      <span className="TrendMonthsAggSelector">
+        <label htmlFor="trend-months-agg-selector">Aggregate Every</label>
+        <select
+          id="trend-months-agg-selector"
+          value={aggmonths}
+          onChange={this.handleChangeAggMonths}
+        >
+          <option value="1">Month</option>
+          <option value="3">3 Months</option>
+          <option value="6">6 Months</option>
+          <option value="12">12 Months</option>
+        </select>
+      </span>
+    );
+
     return (
       <div className="LineChartsContainer scroll" style={style}>
         <LineChartWrapper
@@ -52,7 +76,9 @@ class LineChartsContainer extends Component {
           yMax={entitiesMax}
           y2Max={citywideMax}
           setMaxY={this.setPeriodYValue}
+          aggmonths={parseInt(aggmonths, 10)}
         >
+          {xaxisselector}
           <ReferenceEntitySelect />
         </LineChartWrapper>
         <LineChartWrapper
@@ -60,6 +86,7 @@ class LineChartsContainer extends Component {
           yMax={entitiesMax}
           y2Max={citywideMax}
           setMaxY={this.setPeriodYValue}
+          aggmonths={parseInt(aggmonths, 10)}
         />
       </div>
     );

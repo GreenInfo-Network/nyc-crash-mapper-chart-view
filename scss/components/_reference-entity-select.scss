@@ -9,9 +9,26 @@
   label {
     margin-right: 10px;
     text-transform: uppercase;
+    vertical-align: text-top;
   }
 
   select {
+    color: $marine-light;
+    background-color: $off-white;
+    text-align: left;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    font-size: 11px;
+  }
+}
+
+.TrendMonthsAggSelector {
+  label {
+    vertical-align: text-top;
+  }
+
+  select {
+    margin-left: 1em;
     color: $marine-light;
     background-color: $off-white;
     text-align: left;

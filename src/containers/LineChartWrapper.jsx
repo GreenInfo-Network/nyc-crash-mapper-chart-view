@@ -132,6 +132,7 @@ class LineChartWrapper extends Component {
       colorSecondary,
       startDate,
       endDate,
+      aggmonths,
       yMax,
       y2Max,
     } = this.props;
@@ -159,6 +160,7 @@ class LineChartWrapper extends Component {
           referenceColor={styleVars['reference-color']}
           startDate={startDate}
           endDate={endDate}
+          aggmonths={aggmonths}
           yMax={yMax}
           y2Max={y2Max}
         />
@@ -186,6 +188,7 @@ LineChartWrapper.propTypes = {
   colorSecondary: PropTypes.string.isRequired,
   startDate: pt.date.isRequired,
   endDate: pt.date.isRequired,
+  aggmonths: PropTypes.number.isRequired,
   yMax: PropTypes.number,
   y2Max: PropTypes.number,
   setMaxY: PropTypes.func.isRequired,
