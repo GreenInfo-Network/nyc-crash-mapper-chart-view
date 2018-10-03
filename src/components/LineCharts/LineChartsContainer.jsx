@@ -17,7 +17,7 @@ class LineChartsContainer extends Component {
       period2Y: [],
       period1Y2: [],
       period2Y2: [],
-      aggmonths: 3, // GDA
+      aggmonths: 1,
     };
     this.setPeriodYValue = this.setPeriodYValue.bind(this);
     this.handleChangeAggMonths = this.handleChangeAggMonths.bind(this);

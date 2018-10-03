@@ -568,6 +568,7 @@ class LineChart extends Component {
     // re-aggregate the data series,
     // then re-calculate maximum value of the Y scale
     // this originally used yMax prop, but now that we're re-aggregating that doesn't work
+    console.log(referenceValues);
     this.referenceValuesAggregated = this.aggregateCrashSeries(referenceValues);
     this.primaryValuesAggregated = this.aggregateCrashSeries(primaryValues);
     this.secondaryValuesAggregated = this.aggregateCrashSeries(secondaryValues);
