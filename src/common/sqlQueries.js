@@ -23,8 +23,8 @@ export const sqlCitywide = () => sls`
 // Query that returns aggregated data by geography, such as Borough or City Council Districts
 // @param {string} geo Name of column for a given geography for use in the SQL group by clause
 export const sqlByGeo = geo => {
-  // more hacks around smoeone hardcoding the geography type as the would-be name field,
-  // cuz we now want to prefix with borough name; issue 103
+  // more hacks around someone hardcoding the geography type as the would-be name field,
+  // so we can prefix with borough name and skip any which lack a borough name; issue 103
   let prefix;
   switch (geo) {
     case 'community_board':
@@ -42,14 +42,17 @@ export const sqlByGeo = geo => {
   }
 
   let namefield;
+  let excludenoborough;
   switch (geo) {
     case 'community_board':
     case 'neighborhood':
     case 'nypd_precinct':
       namefield = `CASE WHEN borough != '' THEN CONCAT(borough, ', ', '${prefix}', ' ', ${geo}) ELSE CONCAT(' No Borough, ', '${prefix}', ' ', ${geo}) END`;
+      excludenoborough = `AND borough IS NOT NULL AND borough != ''`;
       break;
     default:
       namefield = `CONCAT('${prefix}', ' ', ${geo})`;
+      excludenoborough = '';
       break;
   }
 
@@ -67,9 +70,11 @@ export const sqlByGeo = geo => {
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
       year || '-' || LPAD(month::text, 2, '0') as year_month
     FROM crashes_all_prod c
-    WHERE ${geo} IS NOT NULL
-    AND ${geo}::text != ''
-    AND the_geom IS NOT NULL
+    WHERE
+      the_geom IS NOT NULL
+      AND
+      ${geo} IS NOT NULL AND ${geo}::text != ''
+      ${excludenoborough}
     GROUP BY year_month, ${namefield}
     ORDER BY year_month asc, ${namefield} asc
   `;
