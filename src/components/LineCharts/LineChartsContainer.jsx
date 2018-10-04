@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { max } from 'd3';
+import { connect } from 'react-redux';
+
+import { setTrendAggregation } from '../../actions';
 
 import LineChartWrapper from '../../containers/LineChartWrapper';
 import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
+
+const mapStateToProps = ({ aggmonths }) => ({
+  aggmonths,
+});
 
 /**
  * Class that houses the the Line Charts
@@ -10,6 +18,15 @@ import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
    and reference entity, so that both charts share the same y domains
  */
 class LineChartsContainer extends Component {
+  static propTypes = {
+    aggmonths: PropTypes.number.isRequired,
+    setTrendAggregation: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    aggmonths: 1,
+  };
+
   constructor() {
     super();
     this.state = {
@@ -17,7 +34,6 @@ class LineChartsContainer extends Component {
       period2Y: [],
       period1Y2: [],
       period2Y2: [],
-      aggmonths: 1,
     };
     this.setPeriodYValue = this.setPeriodYValue.bind(this);
     this.handleChangeAggMonths = this.handleChangeAggMonths.bind(this);
@@ -32,13 +48,13 @@ class LineChartsContainer extends Component {
   }
 
   handleChangeAggMonths(event) {
-    this.setState({
-      aggmonths: event.target.value,
-    });
+    const months = parseInt(event.target.value, 10);
+    this.props.setTrendAggregation(months);
   }
 
   render() {
-    const { period1Y, period2Y, period1Y2, period2Y2, aggmonths } = this.state;
+    const { period1Y, period2Y, period1Y2, period2Y2 } = this.state;
+    const { aggmonths } = this.props;
 
     const style = {
       height: '100%',
@@ -93,4 +109,6 @@ class LineChartsContainer extends Component {
   }
 }
 
-export default LineChartsContainer;
+export default connect(mapStateToProps, {
+  setTrendAggregation,
+})(LineChartsContainer);

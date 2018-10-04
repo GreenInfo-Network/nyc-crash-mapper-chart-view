@@ -657,7 +657,6 @@ class LineChart extends Component {
       .remove();
 
     // update existing lines
-    // GDA is this what redraws the selected area's line?
     lines
       .transition(t)
       .attr('d', d => lineGenerator(d.values))
@@ -665,7 +664,6 @@ class LineChart extends Component {
       .attr('clip-path', `url(#clip-${period})`);
 
     // create new lines
-    // GDA is this what redraws the selected area's line?
     lines
       .enter()
       .append('path')

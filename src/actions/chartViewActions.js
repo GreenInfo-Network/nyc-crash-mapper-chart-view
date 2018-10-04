@@ -1,8 +1,11 @@
-import { CHART_VIEW_TOGGLE } from '../common/actionTypes';
+import { CHART_VIEW_TOGGLE, TREND_AGGREGATION_CHANGED } from '../common/actionTypes';
 
-const toggleChartView = view => ({
+export const toggleChartView = view => ({
   type: CHART_VIEW_TOGGLE,
   view,
 });
 
-export default toggleChartView;
+export const setTrendAggregation = aggmonths => ({
+  type: TREND_AGGREGATION_CHANGED,
+  aggmonths,
+});

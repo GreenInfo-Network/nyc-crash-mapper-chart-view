@@ -30,6 +30,7 @@ export const REFERENCE_ENTITY_SELECT = 'REFERENCE_ENTITY_SELECT';
 
 // toggle chart view (trend, compare, rank)
 export const CHART_VIEW_TOGGLE = 'CHART_VIEW_TOGGLE';
+export const TREND_AGGREGATION_CHANGED = 'TREND_AGGREGATION_CHANGED';
 
 // filtering and sorting geo entities
 // currently applies only to list in sidebar and rank view
