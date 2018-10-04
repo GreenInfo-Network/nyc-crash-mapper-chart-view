@@ -4,4 +4,8 @@
   max-height: 500px;
   padding: 20px;
   padding-bottom: 10px;
+
+  &:last-child {
+    padding-top: 0;
+  }
 }

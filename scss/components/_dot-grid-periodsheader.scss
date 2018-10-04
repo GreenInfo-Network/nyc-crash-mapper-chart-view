@@ -19,5 +19,9 @@
 
   h6 {
     padding: 0;
+
+    &.PeriodsNotEqualWarning {
+      font-size: 75%;
+    }
   }
 }

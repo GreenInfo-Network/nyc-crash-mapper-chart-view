@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import { max } from 'd3';
 import { connect } from 'react-redux';
 
-import { setTrendAggregation } from '../../actions';
+import { setTrendAggregation, setDateRangeGroupOne, setDateRangeGroupTwo } from '../../actions';
 
 import LineChartWrapper from '../../containers/LineChartWrapper';
 import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
+import { formatDateMonth, findDateDiffInMonths } from '../../common/d3Utils';
 
-const mapStateToProps = ({ trendAggMonths }) => ({
+const mapStateToProps = ({ dateRanges, trendAggMonths }) => ({
+  periodA: dateRanges.period1,
+  periodB: dateRanges.period2,
   trendAggMonths,
 });
 
@@ -21,10 +24,19 @@ class LineChartsContainer extends Component {
   static propTypes = {
     trendAggMonths: PropTypes.number.isRequired,
     setTrendAggregation: PropTypes.func.isRequired,
+    periodA: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
+    periodB: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
   };
 
   static defaultProps = {
-    trendAggMonths: 1,
+    periodA: {},
+    periodB: {},
   };
 
   constructor() {
@@ -55,6 +67,7 @@ class LineChartsContainer extends Component {
   render() {
     const { period1Y, period2Y, period1Y2, period2Y2 } = this.state;
     const { trendAggMonths } = this.props;
+    const { periodA, periodB } = this.props;
 
     const style = {
       height: '100%',
@@ -85,6 +98,35 @@ class LineChartsContainer extends Component {
       </span>
     );
 
+    // inspect the period A and B date ranges
+    // make a warning message if they're of different duration and/or months
+    let howmanymonthsA = 0;
+    let howmanymonthsB = 0;
+    let startmonthA = '';
+    let startmonthB = '';
+    let periodsequalwarning = null;
+
+    if (periodA && periodB) {
+      howmanymonthsA = findDateDiffInMonths(periodA.startDate, periodA.endDate);
+      howmanymonthsB = findDateDiffInMonths(periodB.startDate, periodB.endDate);
+      startmonthA = formatDateMonth(periodA.startDate);
+      startmonthB = formatDateMonth(periodB.startDate);
+    }
+
+    if (howmanymonthsA !== howmanymonthsB) {
+      periodsequalwarning = (
+        <div className="PeriodsNotEqualWarning">
+          It's best to select two periods of the same duration.
+        </div>
+      );
+    } else if (startmonthA !== startmonthB) {
+      periodsequalwarning = (
+        <div className="PeriodsNotEqualWarning">
+          It's best to select two periods of the same months.
+        </div>
+      );
+    }
+
     return (
       <div className="LineChartsContainer scroll" style={style}>
         <LineChartWrapper
@@ -97,6 +139,7 @@ class LineChartsContainer extends Component {
           {xaxisselector}
           <ReferenceEntitySelect />
         </LineChartWrapper>
+        {periodsequalwarning}
         <LineChartWrapper
           period="period2"
           yMax={entitiesMax}
@@ -111,4 +154,6 @@ class LineChartsContainer extends Component {
 
 export default connect(mapStateToProps, {
   setTrendAggregation,
+  setDateRangeGroupOne,
+  setDateRangeGroupTwo,
 })(LineChartsContainer);
