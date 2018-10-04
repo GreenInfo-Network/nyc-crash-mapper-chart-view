@@ -5,7 +5,7 @@ export const toggleChartView = view => ({
   view,
 });
 
-export const setTrendAggregation = aggmonths => ({
+export const setTrendAggregation = trendAggMonths => ({
   type: TREND_AGGREGATION_CHANGED,
-  aggmonths,
+  trendAggMonths,
 });

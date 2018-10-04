@@ -10,7 +10,7 @@ import { formatDateYM } from './d3Utils';
 export default function(state) {
   const { dateRanges, chartView, entities, filterType } = state;
   const { customGeography } = state;
-  const { aggmonths } = state;
+  const { trendAggMonths } = state;
   const { period1, period2 } = dateRanges;
   const { entityType, primary, secondary, reference } = entities;
   const { injury, fatality } = filterType;
@@ -32,7 +32,7 @@ export default function(state) {
     mfat: fatality.motorist,
     pfat: fatality.pedestrian,
     view: chartView,
-    aggmonths,
+    trendAggMonths,
   };
 
   // only if it exists; it's normal for it not to exist; see customGeographyCeducer

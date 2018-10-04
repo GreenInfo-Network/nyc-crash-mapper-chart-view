@@ -29,7 +29,7 @@ class LineChart extends Component {
     referenceValues: PropTypes.arrayOf(PropTypes.object),
     startDate: pt.dateRange,
     endDate: pt.dateRange,
-    aggmonths: PropTypes.number.isRequired,
+    trendAggMonths: PropTypes.number.isRequired,
     primaryColor: PropTypes.string.isRequired,
     secondaryColor: PropTypes.string.isRequired,
     referenceColor: PropTypes.string.isRequired,
@@ -117,7 +117,7 @@ class LineChart extends Component {
       entityType,
       startDate,
       endDate,
-      aggmonths,
+      trendAggMonths,
       yMax,
       y2Max,
     } = this.props;
@@ -150,7 +150,7 @@ class LineChart extends Component {
       if (
         +startDate !== +prevProps.startDate ||
         +endDate !== +prevProps.endDate ||
-        +aggmonths !== +prevProps.aggmonths
+        +trendAggMonths !== +prevProps.trendAggMonths
       ) {
         this.updateChart();
       }
@@ -470,16 +470,16 @@ class LineChart extends Component {
   }
 
   aggregateCrashSeries(seriesdata) {
-    const { aggmonths } = this.props;
+    const { trendAggMonths } = this.props;
 
-    if (aggmonths === 1) return seriesdata; // no aggregation, hand it back as-is
+    if (trendAggMonths === 1) return seriesdata; // no aggregation, hand it back as-is
 
     // chunk the time series by X months
     // take the first month as the entry we keep for plotting
     // enhance it with the crash counts from the rest of the chunk (where present),
     // and an ending date for label/tooltip purposes
     const aggregated = [];
-    chunk(seriesdata, aggmonths).forEach(monthsblock => {
+    chunk(seriesdata, trendAggMonths).forEach(monthsblock => {
       const plotthis = {
         year_month: monthsblock[0].year_month,
         end_date: monthsblock[monthsblock.length - 1].year_month,

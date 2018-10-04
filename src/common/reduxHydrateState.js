@@ -186,7 +186,7 @@ const createInitialState = p => {
     chartView: setValidView(p.view),
     filterType: setValidFilterTypes(p),
     customGeography: p.lngLats,
-    aggmonths: p.aggmonths,
+    trendAggMonths: p.trendAggMonths,
   };
 };
 

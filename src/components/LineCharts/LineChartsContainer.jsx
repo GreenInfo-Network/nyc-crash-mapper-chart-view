@@ -8,8 +8,8 @@ import { setTrendAggregation } from '../../actions';
 import LineChartWrapper from '../../containers/LineChartWrapper';
 import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
 
-const mapStateToProps = ({ aggmonths }) => ({
-  aggmonths,
+const mapStateToProps = ({ trendAggMonths }) => ({
+  trendAggMonths,
 });
 
 /**
@@ -19,12 +19,12 @@ const mapStateToProps = ({ aggmonths }) => ({
  */
 class LineChartsContainer extends Component {
   static propTypes = {
-    aggmonths: PropTypes.number.isRequired,
+    trendAggMonths: PropTypes.number.isRequired,
     setTrendAggregation: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    aggmonths: 1,
+    trendAggMonths: 1,
   };
 
   constructor() {
@@ -54,7 +54,7 @@ class LineChartsContainer extends Component {
 
   render() {
     const { period1Y, period2Y, period1Y2, period2Y2 } = this.state;
-    const { aggmonths } = this.props;
+    const { trendAggMonths } = this.props;
 
     const style = {
       height: '100%',
@@ -74,7 +74,7 @@ class LineChartsContainer extends Component {
         <label htmlFor="trend-months-agg-selector">Aggregate Every</label>
         <select
           id="trend-months-agg-selector"
-          value={aggmonths}
+          value={trendAggMonths}
           onChange={this.handleChangeAggMonths}
         >
           <option value="1">Month</option>
@@ -92,7 +92,7 @@ class LineChartsContainer extends Component {
           yMax={entitiesMax}
           y2Max={citywideMax}
           setMaxY={this.setPeriodYValue}
-          aggmonths={parseInt(aggmonths, 10)}
+          trendAggMonths={parseInt(trendAggMonths, 10)}
         >
           {xaxisselector}
           <ReferenceEntitySelect />
@@ -102,7 +102,7 @@ class LineChartsContainer extends Component {
           yMax={entitiesMax}
           y2Max={citywideMax}
           setMaxY={this.setPeriodYValue}
-          aggmonths={parseInt(aggmonths, 10)}
+          trendAggMonths={parseInt(trendAggMonths, 10)}
         />
       </div>
     );

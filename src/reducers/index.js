@@ -6,7 +6,7 @@ import entities from './entitiesReducer';
 import data from './dataReducer';
 import dateRanges from './dateRangeReducer';
 import chartView from './chartViewReducer';
-import aggmonths from './trendAggregationReducer';
+import trendAggMonths from './trendAggregationReducer';
 import customGeography from './customGeographyReducer';
 
 // breakpoints to match Skeleton CSS's
@@ -29,7 +29,7 @@ const browser = createResponsiveStateReducer(
 const rootReducer = combineReducers({
   browser,
   chartView,
-  aggmonths,
+  trendAggMonths,
   data,
   dateRanges,
   entities,
