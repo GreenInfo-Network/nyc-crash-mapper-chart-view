@@ -474,12 +474,20 @@ class LineChart extends Component {
 
     if (trendAggMonths === 1) return seriesdata; // no aggregation, hand it back as-is
 
-    // chunk the time series by X months
+    // reverse the sequence, chunk the time series by X months, reverse it again
+    // thus, any "remainder" forming a undersized block will be at the start of time, not the present day
     // take the first month as the entry we keep for plotting
     // enhance it with the crash counts from the rest of the chunk (where present),
     // and an ending date for label/tooltip purposes
+
+    const usethisseries = seriesdata.slice();
+    usethisseries.reverse();
+    console.log(['GDA usethis=', usethisseries]);
+
     const aggregated = [];
-    chunk(seriesdata, trendAggMonths).forEach(monthsblock => {
+    chunk(usethisseries, trendAggMonths).forEach(monthsblock => {
+      monthsblock.reverse(); // swap them back into chrono sequence
+
       const plotthis = {
         year_month: monthsblock[0].year_month,
         end_date: monthsblock[monthsblock.length - 1].year_month,
@@ -535,6 +543,8 @@ class LineChart extends Component {
       // done with this aggregate chunk of time
       aggregated.push(plotthis);
     });
+
+    aggregated.reverse(); // reverse the blocks back into chrono sequence
 
     return aggregated;
   }
