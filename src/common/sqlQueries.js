@@ -51,7 +51,11 @@ export const sqlByGeo = geo => {
       excludenoborough = `AND borough IS NOT NULL AND borough != ''`;
       break;
     default:
-      namefield = `CONCAT('${prefix}', ' ', ${geo})`;
+      if (prefix) {
+        namefield = `CONCAT('${prefix}', ' ', ${geo})`;
+      } else {
+        namefield = geo;
+      }
       excludenoborough = '';
       break;
   }
