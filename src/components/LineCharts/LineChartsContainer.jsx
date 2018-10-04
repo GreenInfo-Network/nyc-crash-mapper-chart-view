@@ -84,7 +84,7 @@ class LineChartsContainer extends Component {
 
     const xaxisselector = (
       <span className="TrendMonthsAggSelector">
-        <label htmlFor="trend-months-agg-selector">Aggregate Every</label>
+        <label htmlFor="trend-months-agg-selector">AGGREGATE EVERY</label>
         <select
           id="trend-months-agg-selector"
           value={trendAggMonths}
