@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import { max } from 'd3';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { setDateRangeGroupOne, setDateRangeGroupTwo } from '../../actions';
 
 import LineChartWrapper from '../../containers/LineChartWrapper';
 import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
-import { formatDateMonth } from '../../common/d3Utils';
+import { formatDateMonth, findDateDiffInMonths } from '../../common/d3Utils';
+
+const mapStateToProps = ({ dateRanges }) => ({
+  periodA: dateRanges.period1,
+  periodB: dateRanges.period2,
+});
 
 /**
  * Class that houses the the Line Charts
@@ -11,6 +20,22 @@ import { formatDateMonth } from '../../common/d3Utils';
    and reference entity, so that both charts share the same y domains
  */
 class LineChartsContainer extends Component {
+  static propTypes = {
+    periodA: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
+    periodB: PropTypes.shape({
+      endDate: PropTypes.instanceOf(Date),
+      startDate: PropTypes.instanceOf(Date),
+    }),
+  };
+
+  static defaultProps = {
+    periodA: {},
+    periodB: {},
+  };
+
   constructor() {
     super();
     this.state = {
@@ -32,6 +57,7 @@ class LineChartsContainer extends Component {
 
   render() {
     const { period1Y, period2Y, period1Y2, period2Y2 } = this.state;
+    const { periodA, periodB } = this.props;
 
     const style = {
       height: '100%',
@@ -46,20 +72,28 @@ class LineChartsContainer extends Component {
     const entitiesMax = max(y, d => d.count);
     const citywideMax = max(y2, d => d.count);
 
-    // introspect both charts' date ranges, and make a warning message if they're of different duration and/or months
-    const howmanymonths1 = period1Y.length;
-    const howmanymonths2 = period2Y.length;
-    const m1 = formatDateMonth(period1Y[0].year_month);
-    const m2 = formatDateMonth(period2Y[0].year_month);
-
+    // inspect the period A and B date ranges
+    // make a warning message if they're of different duration and/or months
+    let howmanymonthsA = 0;
+    let howmanymonthsB = 0;
+    let startmonthA = '';
+    let startmonthB = '';
     let periodsequalwarning = null;
-    if (howmanymonths1 !== howmanymonths2) {
+
+    if (periodA && periodB) {
+      howmanymonthsA = findDateDiffInMonths(periodA.startDate, periodA.endDate);
+      howmanymonthsB = findDateDiffInMonths(periodB.startDate, periodB.endDate);
+      startmonthA = formatDateMonth(periodA.startDate);
+      startmonthB = formatDateMonth(periodB.startDate);
+    }
+
+    if (howmanymonthsA !== howmanymonthsB) {
       periodsequalwarning = (
         <div className="PeriodsNotEqualWarning">
           It's best to select two periods of the same duration.
         </div>
       );
-    } else if (m1 !== m2) {
+    } else if (startmonthA !== startmonthB) {
       periodsequalwarning = (
         <div className="PeriodsNotEqualWarning">
           It's best to select two periods of the same months.
@@ -89,4 +123,7 @@ class LineChartsContainer extends Component {
   }
 }
 
-export default LineChartsContainer;
+export default connect(mapStateToProps, {
+  setDateRangeGroupOne,
+  setDateRangeGroupTwo,
+})(LineChartsContainer);
