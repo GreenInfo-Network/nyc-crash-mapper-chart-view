@@ -5,7 +5,6 @@ import chunk from 'lodash/chunk';
 
 import * as pt from '../../common/reactPropTypeDefs';
 import { formatDate, formatNumber } from '../../common/d3Utils';
-import styleVars from '../../common/styleVars';
 import {
   entityTypeDisplay,
   entityNameDisplay,
@@ -209,8 +208,6 @@ class LineChart extends Component {
     const tooltip = svg.select('g.tooltip');
     const tooltipLine = svg.select('g.g-parent').select('line.tooltip-line');
     // notice the "let" here, this value can be modified if tooltip text exceeds its default width
-    let tooltipWidth = styleVars['linechart-tooltip-w'];
-    const tooltipHeight = styleVars['linechart-tooltip-h'];
     const xScale = this.xScale;
     const bisectDate = this.bisectDate;
     const labelPrimary = entityNameDisplay(entityType, keyPrimary);
@@ -311,29 +308,28 @@ class LineChart extends Component {
         tooltip.select('text.tooltip-secondary').text('');
       }
 
-      // alter the rectangle's width & height if a primary or secondary entity are selected
-      if (keyPrimary || keySecondary) {
-        const h1 = calcYPos('primary');
-        const h2 = calcYPos('secondary');
-        const h = h2 > h1 ? h2 : h1;
-        tooltip.select('rect').attr('height', `${h + 10}px`);
-        // iterate over all text elements to find the one with the largest width
-        const textElements = tooltip.selectAll('text');
-        // eslint-disable-next-line
-        textElements.each(function() {
-          const c = d3
-            .select(this)
-            .node()
-            .getBoundingClientRect();
-          // reset value for the width of the tooltip's rect if text is longer then the default minus padding
-          tooltipWidth = c.width > tooltipWidth - 20 ? (tooltipWidth = c.width + 20) : tooltipWidth;
-        });
-        // set the tooltip's rect width based on the largest text width if needed
-        tooltip.select('rect').attr('width', `${tooltipWidth}px`);
-      } else {
-        tooltip.select('rect').attr('height', `${tooltipHeight}px`);
-        tooltip.select('rect').attr('width', `${tooltipWidth}px`);
-      }
+      // alter the rectangle's width to be that of the longest text
+      // and height to accommodate lines of text
+      let tooltipWidth = 0;
+      let tooltipHeight = 20;
+
+      tooltip.selectAll('text').each(function textelementgetwidth() {
+        const r = d3
+          .select(this)
+          .node()
+          .getBoundingClientRect();
+
+        if (r.width > tooltipWidth) tooltipWidth = r.width;
+
+        tooltipHeight += r.height * 1.3;
+      });
+
+      tooltipWidth += 20;
+
+      tooltip
+        .select('rect')
+        .attr('height', `${tooltipHeight}px`)
+        .attr('width', `${tooltipWidth}px`);
 
       // adjust the tooltip's vertical reference line
       if (d) {
