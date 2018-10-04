@@ -7,7 +7,7 @@ import { setTrendAggregation, setDateRangeGroupOne, setDateRangeGroupTwo } from 
 
 import LineChartWrapper from '../../containers/LineChartWrapper';
 import ReferenceEntitySelect from '../../containers/ReferenceEntitySelect';
-import { formatDateMonth, findDateDiffInMonths } from '../../common/d3Utils';
+import { formatDateMonth } from '../../common/d3Utils';
 
 const mapStateToProps = ({ dateRanges, trendAggMonths }) => ({
   periodA: dateRanges.period1,
@@ -100,29 +100,19 @@ class LineChartsContainer extends Component {
 
     // inspect the period A and B date ranges
     // make a warning message if they're of different duration and/or months
-    let howmanymonthsA = 0;
-    let howmanymonthsB = 0;
     let startmonthA = '';
     let startmonthB = '';
     let periodsequalwarning = null;
 
     if (periodA && periodB) {
-      howmanymonthsA = findDateDiffInMonths(periodA.startDate, periodA.endDate);
-      howmanymonthsB = findDateDiffInMonths(periodB.startDate, periodB.endDate);
       startmonthA = formatDateMonth(periodA.startDate);
       startmonthB = formatDateMonth(periodB.startDate);
     }
 
-    if (howmanymonthsA !== howmanymonthsB) {
+    if (startmonthA !== startmonthB) {
       periodsequalwarning = (
         <div className="PeriodsNotEqualWarning">
-          It's best to select two periods of the same duration.
-        </div>
-      );
-    } else if (startmonthA !== startmonthB) {
-      periodsequalwarning = (
-        <div className="PeriodsNotEqualWarning">
-          It's best to select two periods of the same months.
+          It's best to select two periods starting in the same month.
         </div>
       );
     }
