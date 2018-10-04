@@ -482,7 +482,6 @@ class LineChart extends Component {
 
     const usethisseries = seriesdata.slice();
     usethisseries.reverse();
-    console.log(['GDA usethis=', usethisseries]);
 
     const aggregated = [];
     chunk(usethisseries, trendAggMonths).forEach(monthsblock => {
