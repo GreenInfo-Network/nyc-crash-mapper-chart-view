@@ -200,6 +200,7 @@ class LineChart extends Component {
       keySecondary,
       primaryValues,
       secondaryValues,
+      trendAggMonths,
     } = this.props;
     const margin = this.margin;
     const { width } = this.getContainerSize();
@@ -260,8 +261,11 @@ class LineChart extends Component {
       if (d) {
         // write the formatted date for that datum, maybe showing a date or a range of dates
         let text = formatDate(d.year_month);
-        if (d.end_date) {
-          text = `${formatDate(d.year_month)} - ${formatDate(d.end_date)}`;
+        if (d.start_date && d.end_date && d.blocklength) {
+          text = `${formatDate(d.start_date)} - ${formatDate(d.end_date)}`;
+          if (d.blocklength !== trendAggMonths) {
+            text += ` (${d.blocklength} months)`;
+          }
         }
         tooltip
           .select('text.tooltip-date')
@@ -482,15 +486,17 @@ class LineChart extends Component {
 
     const usethisseries = seriesdata.slice();
     usethisseries.reverse();
-    console.log(['GDA usethis=', usethisseries]);
 
     const aggregated = [];
     chunk(usethisseries, trendAggMonths).forEach(monthsblock => {
       monthsblock.reverse(); // swap them back into chrono sequence
 
       const plotthis = {
-        year_month: monthsblock[0].year_month,
-        end_date: monthsblock[monthsblock.length - 1].year_month,
+        year_month: monthsblock[monthsblock.length - 1].year_month, // actual chart-plotting date
+        start_date: monthsblock[0].year_month, // for label: starting date
+        end_date: monthsblock[monthsblock.length - 1].year_month, // for label: ending date
+        blocklength: monthsblock.length, // for label, how many months in block
+        // these stats will get trashed by tallies below, but should exist so we know to tally them
         count: monthsblock[0].count,
         cyclist_injured: monthsblock[0].cyclist_injured,
         cyclist_killed: monthsblock[0].cyclist_killed,
