@@ -31,11 +31,22 @@ class SelectAreasController extends Component {
   render() {
     const { entityType, filterTerm, sparkLineListHeight } = this.props;
 
+    let searchtitle = entityType.replace(/_/, ' ');
+    switch (entityType) {
+      case 'assembly':
+      case 'senate':
+        searchtitle += ' districts';
+        break;
+      default:
+        searchtitle += 's';
+        break;
+    }
+
     return (
       <div className="SelectAreasController">
         <div className="select-areas-controls">
           <input
-            placeholder={`Search a ${entityType.replace(/_/, ' ')}`}
+            placeholder={`Search ${searchtitle}`}
             value={filterTerm}
             onChange={this.handleChange}
             type="text"
