@@ -17,6 +17,8 @@ const validGeographies = [
   'city_council',
   'community_board',
   'neighborhood',
+  'assembly',
+  'senate',
   'nypd_precinct',
   'intersection',
 ];

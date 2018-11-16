@@ -8,6 +8,8 @@ const defaultState = {
   citywide: {}, // ... citywide data
   community_board: {}, // ... community board data
   neighborhood: {}, // ... neighborhood (tabulation area) data
+  assembly: {}, // ... assembly district data
+  senate: {}, // ... senate district data
   nypd_precinct: {}, // ... nypd precinct data
   intersection: {}, // ... single street intersection data
   custom: {}, // ... customGeography data

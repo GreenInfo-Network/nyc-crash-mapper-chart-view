@@ -33,6 +33,12 @@ export const sqlByGeo = geo => {
     case 'city_council':
       prefix = 'City Council';
       break;
+    case 'assembly':
+      prefix = 'Assembly District';
+      break;
+    case 'senate':
+      prefix = 'Senate District';
+      break;
     case 'nypd_precinct':
       prefix = 'NYPD Precinct';
       break;
