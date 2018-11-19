@@ -20,9 +20,7 @@ export const sqlCitywide = () => sls`
   ORDER BY year asc, month asc
 `;
 
-// Query that returns aggregated data by geography, such as Borough or City Council Districts
-// @param {string} geo Name of column for a given geography for use in the SQL group by clause
-export const sqlByGeo = geo => {
+export const sqlNameField = geo => {
   // more hacks around someone hardcoding the geography type as the would-be name field,
   // so we can prefix with borough name and skip any which lack a borough name; issue 103
   let prefix;
@@ -48,13 +46,10 @@ export const sqlByGeo = geo => {
   }
 
   let namefield;
-  let excludenoborough;
   switch (geo) {
     case 'community_board':
-    case 'neighborhood':
     case 'nypd_precinct':
       namefield = `CASE WHEN borough != '' THEN CONCAT(borough, ', ', '${prefix}', ' ', ${geo}) ELSE CONCAT(' No Borough, ', '${prefix}', ' ', ${geo}) END`;
-      excludenoborough = `AND borough IS NOT NULL AND borough != ''`;
       break;
     default:
       if (prefix) {
@@ -62,9 +57,56 @@ export const sqlByGeo = geo => {
       } else {
         namefield = geo;
       }
-      excludenoborough = '';
       break;
   }
+
+  return namefield;
+};
+
+export const sqlExcludeBorough = geo => {
+  // more hacks around someone hardcoding the geography type as the would-be name field,
+  // so we can prefix with borough name and skip any which lack a borough name; issue 103
+  let excludenoborough = '';
+  switch (geo) {
+    case 'community_board':
+    case 'neighborhood':
+    case 'nypd_precinct':
+      excludenoborough = `AND borough IS NOT NULL AND borough != ''`;
+      break;
+    default:
+      break;
+  }
+
+  return excludenoborough;
+};
+
+export const sqlNameByGeoAndIdentifier = (geo, identifier) => {
+  // more hacks around someone hardcoding the geography type as the would-be name field,
+  // so we can prefix with borough name and skip any which lack a borough name; issue 103
+  // and so that per issue 97 we can resolve a geo & identifier onto a "identifier"
+  // as it appears in this Chart, e.g. district, 123 => "Borough, District Name 123"
+  const namefield = sqlNameField(geo);
+
+  let value = identifier;
+  const escaped = identifier.replace("'", "''");
+
+  switch (geo) {
+    case 'neighborhood':
+      value = `E'${escaped}'`;
+      break;
+    default:
+      break;
+  }
+
+  const sql = `SELECT ${namefield} AS areaname FROM crashes_all_prod WHERE ${geo}=${value}`;
+  return sql;
+};
+
+// Query that returns aggregated data by geography, such as Borough or City Council Districts
+// @param {string} geo Name of column for a given geography for use in the SQL group by clause
+export const sqlByGeo = geo => {
+  const namefield = sqlNameField(geo);
+  const excludenoborough = sqlExcludeBorough(geo);
 
   const sql = sls`
     SELECT
