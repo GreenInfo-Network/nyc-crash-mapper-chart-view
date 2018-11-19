@@ -88,11 +88,10 @@ export const sqlNameByGeoAndIdentifier = (geo, identifier) => {
   const namefield = sqlNameField(geo);
 
   let value = identifier;
-  const escaped = identifier.replace("'", "''");
 
   switch (geo) {
     case 'neighborhood':
-      value = `E'${escaped}'`;
+      value = `E'${identifier.replace("'", "''")}'`;
       break;
     default:
       break;
