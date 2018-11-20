@@ -66,16 +66,39 @@ class SelectAreasList extends Component {
     this.handleListItemClick = this.handleListItemClick.bind(this);
   }
 
-  componentDidMount() {
-    const { primary, entityType, response } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { secondary, primary, response, entityType } = nextProps;
 
-    // hack re issue 97; try and resolve an entity identifier from the Map
-    // which uses a totally different format: just the numeric ID, just the neighborhood name, etc.
-    // and we need to convert that to Chart format e.g. "Borough, Full Area Name 123"
-    //
-    // &primary= is the area identifier, perhaps in Map format
-    // and it's not straightforward to know what areas are "Map format" cuz Chart format is free text
-    // and we may be reading URLs that don't need the &primary fixed, e.g. from Chart
+    // if the app loads with a primary or secondary key specfied, and we receive an async response
+    // make sure to populate state.entities[type].values
+    if (response.length && !this.props.response.length) {
+      const entity = {};
+
+      if (primary.key) {
+        entity.key = primary.key;
+        entity.values = response.filter(d => d[entityType] === primary.key);
+        this.props.selectPrimaryEntity(entity);
+
+        this.rewritePrimaryIdentifierIfNecessary(nextProps);
+      }
+
+      if (secondary.key) {
+        entity.key = secondary.key;
+        entity.values = response.filter(d => d[entityType] === secondary.key);
+        this.props.selectSecondaryEntity(entity);
+      }
+    }
+  }
+
+  // hack re issue 97; try and resolve an entity identifier from the Map
+  // which uses a totally different format: just the numeric ID, just the neighborhood name, etc.
+  // and we need to convert that to Chart format e.g. "Borough, Full Area Name 123"
+  //
+  // &primary= is the area identifier, perhaps in Map format
+  // and it's not straightforward to know what areas are "Map format" cuz Chart format is free text
+  // and we may be reading URLs that don't need the &primary fixed, e.g. from Chart
+  rewritePrimaryIdentifierIfNecessary(newprops) {
+    const { primary, response, entityType } = newprops;
 
     let find_name_sql = '';
     if (typeof primary.key === 'number') {
@@ -102,34 +125,13 @@ class SelectAreasList extends Component {
         if (result.data.rows) {
           const newidentifier = result.data.rows[0].areaname;
 
-          this.props.selectPrimaryEntity({
+          const newentity = {
             key: newidentifier,
-            values: response.filter(d => d[entityType] === entityType),
-          });
+            values: response.filter(d => d[entityType] === newidentifier),
+          };
+          this.props.selectPrimaryEntity(newentity);
         }
       });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { secondary, primary, response, entityType } = nextProps;
-
-    // if the app loads with a primary or secondary key specfied, and we receive an async response
-    // make sure to populate state.entities[type].values
-    if (response.length && !this.props.response.length) {
-      const entity = {};
-
-      if (primary.key) {
-        entity.key = primary.key;
-        entity.values = response.filter(d => d[entityType] === primary.key);
-        this.props.selectPrimaryEntity(entity);
-      }
-
-      if (secondary.key) {
-        entity.key = secondary.key;
-        entity.values = response.filter(d => d[entityType] === secondary.key);
-        this.props.selectSecondaryEntity(entity);
-      }
     }
   }
 
