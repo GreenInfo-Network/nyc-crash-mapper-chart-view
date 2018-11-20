@@ -87,17 +87,18 @@ export const sqlNameByGeoAndIdentifier = (geo, identifier) => {
   // as it appears in this Chart, e.g. district, 123 => "Borough, District Name 123"
   const namefield = sqlNameField(geo);
 
-  let value = identifier;
+  let queryvalue = typeof identifier === 'number' ? identifier.toString() : identifier;
+  const escaped = `E'${queryvalue.replace("'", "''")}'`;
 
   switch (geo) {
     case 'neighborhood':
-      value = `E'${identifier.replace("'", "''")}'`;
+      queryvalue = escaped;
       break;
     default:
       break;
   }
 
-  const sql = `SELECT ${namefield} AS areaname FROM crashes_all_prod WHERE ${geo}=${value}`;
+  const sql = `SELECT ${namefield} AS areaname FROM crashes_all_prod WHERE ${geo}=${queryvalue}`;
   return sql;
 };
 
