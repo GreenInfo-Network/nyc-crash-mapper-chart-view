@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import axios from 'axios';
 
 import { selectPrimaryEntity, selectSecondaryEntity } from '../actions';
 import toggleEntity from '../common/toggleEntity';
@@ -9,6 +10,7 @@ import { entityDataSelector } from '../common/reduxSelectors';
 import rankedListSelector from '../common/reduxSelectorsRankedList';
 import * as pt from '../common/reactPropTypeDefs';
 import { entityIdDisplay, entityNameDisplay } from '../common/labelFormatters';
+import { sqlNameByGeoAndIdentifier } from '../common/sqlQueries.js';
 
 const mapStateToProps = state => {
   const { entities, filterType } = state;
@@ -76,6 +78,8 @@ class SelectAreasList extends Component {
         entity.key = primary.key;
         entity.values = response.filter(d => d[entityType] === primary.key);
         this.props.selectPrimaryEntity(entity);
+
+        this.rewritePrimaryIdentifierIfNecessary(nextProps);
       }
 
       if (secondary.key) {
@@ -83,6 +87,51 @@ class SelectAreasList extends Component {
         entity.values = response.filter(d => d[entityType] === secondary.key);
         this.props.selectSecondaryEntity(entity);
       }
+    }
+  }
+
+  // hack re issue 97; try and resolve an entity identifier from the Map
+  // which uses a totally different format: just the numeric ID, just the neighborhood name, etc.
+  // and we need to convert that to Chart format e.g. "Borough, Full Area Name 123"
+  //
+  // &primary= is the area identifier, perhaps in Map format
+  // and it's not straightforward to know what areas are "Map format" cuz Chart format is free text
+  // and we may be reading URLs that don't need the &primary fixed, e.g. from Chart
+  rewritePrimaryIdentifierIfNecessary(newprops) {
+    const { primary, response, entityType } = newprops;
+
+    let find_name_sql = '';
+    if (typeof primary.key === 'number') {
+      // all numeric = we know it needs to be resolved cuz it didn't come from Chart
+      // this is the majority of area types, when coming from Map
+      find_name_sql = sqlNameByGeoAndIdentifier(entityType, primary.key);
+    } else if (
+      entityType === 'neighborhood' &&
+      typeof primary.key === 'string' &&
+      primary.key.indexOf(',') === -1
+    ) {
+      // neighborhood and no comma = look up, Chart always adds borough-comma
+      find_name_sql = sqlNameByGeoAndIdentifier(entityType, primary.key);
+    }
+    // else, the name is fine as-is; basically this means borough and intersection
+
+    if (find_name_sql) {
+      axios({
+        method: 'get',
+        params: {
+          q: find_name_sql,
+        },
+      }).then(result => {
+        if (result.data.rows) {
+          const newidentifier = result.data.rows[0].areaname;
+
+          const newentity = {
+            key: newidentifier,
+            values: response.filter(d => d[entityType] === newidentifier),
+          };
+          this.props.selectPrimaryEntity(newentity);
+        }
+      });
     }
   }
 
