@@ -8,12 +8,14 @@ import { formatDateYM } from './d3Utils';
   * Parses the redux store to update browser history & url query params for stateful URLs
 */
 export default function(state) {
-  const { dateRanges, chartView, entities, filterType } = state;
+  const { dateRanges, chartView, entities } = state;
+  const { filterType, filterVehicle } = state;
   const { customGeography } = state;
   const { trendAggMonths } = state;
   const { period1, period2 } = dateRanges;
   const { entityType, primary, secondary, reference } = entities;
   const { injury, fatality } = filterType;
+  const { vehicle } = filterVehicle;
 
   // format the part of state we want to save in browser history state
   const historyState = {
@@ -33,6 +35,14 @@ export default function(state) {
     pfat: fatality.pedestrian,
     view: chartView,
     trendAggMonths,
+    vcar: vehicle.car,
+    vtruck: vehicle.truck,
+    vmotorcycle: vehicle.motorcycle,
+    vbicycle: vehicle.bicycle,
+    vsuv: vehicle.suv,
+    vbusvan: vehicle.busvan,
+    vscooter: vehicle.scooter,
+    vother: vehicle.other,
   };
 
   // only if it exists; it's normal for it not to exist; see customGeographyCeducer

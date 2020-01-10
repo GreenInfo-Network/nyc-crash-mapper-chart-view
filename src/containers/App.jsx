@@ -42,6 +42,7 @@ class App extends Component {
     keyPrimary: pt.key,
     keySecondary: pt.key,
     filterType: pt.filterType.isRequired,
+    filterVehicle: pt.filterVehicle.isRequired,
     anyFilterTypeSelected: PropTypes.bool.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
@@ -183,7 +184,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, chartView, dateRanges, entities, data, filterType, customGeography } = state;
+  const { browser, chartView, dateRanges, entities, data } = state;
+  const { filterType, filterVehicle, customGeography } = state;
   const { isFetchingData } = data;
   const entityData = entityDataSelector(state);
 
@@ -214,6 +216,7 @@ const mapStateToProps = state => {
     keyPrimary: entities.primary.key,
     keySecondary: entities.secondary.key,
     filterType,
+    filterVehicle,
     filterTerm: entities.filterTerm,
     chartView,
     anyFilterTypeSelected,
