@@ -1,25 +1,6 @@
 // this module contains template strings that form SQL queries that are passed to CARTO's SQL API
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
-// Query that returns aggregated data for entire city, note this will include data that hasn't been geocoded
-export const sqlCitywide = () => sls`
-  SELECT
-    COUNT(c.cartodb_id) as total_crashes,
-    SUM(c.number_of_cyclist_injured) as cyclist_injured,
-    SUM(c.number_of_cyclist_killed) as cyclist_killed,
-    SUM(c.number_of_motorist_injured) as motorist_injured,
-    SUM(c.number_of_motorist_killed) as motorist_killed,
-    SUM(c.number_of_pedestrian_injured) as pedestrian_injured,
-    SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
-    SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
-    SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
-    year || '-' || LPAD(month::text, 2, '0') as year_month
-  FROM
-    crashes_all_prod c
-  GROUP BY year, month
-  ORDER BY year asc, month asc
-`;
-
 export const sqlNameField = geo => {
   // more hacks around someone hardcoding the geography type as the would-be name field,
   // so we can prefix with borough name and skip any which lack a borough name; issue 103
@@ -74,6 +55,7 @@ export const sqlExcludeBorough = geo => {
       excludenoborough = `AND borough IS NOT NULL AND borough != ''`;
       break;
     default:
+      excludenoborough = 'TRUE';
       break;
   }
 
@@ -102,11 +84,73 @@ export const sqlNameByGeoAndIdentifier = (geo, identifier) => {
   return sql;
 };
 
+// SQL clause to filtr by vehicle type flags
+const vehicleFilterClause = vehicleFilter => {
+  const { vehicle } = vehicleFilter;
+
+  // compose the list of fields to OR together
+  const anyofthese = [];
+  if (vehicle.car) anyofthese.push('hasvehicle_car');
+  if (vehicle.truck) anyofthese.push('hasvehicle_truck');
+  if (vehicle.motorcycle) anyofthese.push('hasvehicle_motorcycle');
+  if (vehicle.bicycle) anyofthese.push('hasvehicle_bicycle');
+  if (vehicle.suv) anyofthese.push('hasvehicle_suv');
+  if (vehicle.busvan) anyofthese.push('hasvehicle_busvan');
+  if (vehicle.scooter) anyofthese.push('hasvehicle_scooter');
+
+  // other is really other OR unknown/unmatched
+  if (vehicle.other) {
+    anyofthese.push(sls`
+      hasvehicle_other OR (
+        NOT hasvehicle_car AND
+        NOT hasvehicle_truck AND
+        NOT hasvehicle_motorcycle AND
+        NOT hasvehicle_bicycle AND
+        NOT hasvehicle_suv AND
+        NOT hasvehicle_busvan AND
+        NOT hasvehicle_scooter AND
+        NOT hasvehicle_other
+      )
+    `);
+  }
+
+  const whereClause = anyofthese.length ? `(${anyofthese.join(' OR ')})` : 'TRUE';
+
+  return whereClause;
+};
+
+// Query that returns aggregated data for entire city, note this will include data that hasn't been geocoded
+export const sqlCitywide = vehicles => {
+  const vehicleclause = vehicleFilterClause(vehicles);
+
+  const sql = sls`
+  SELECT
+      COUNT(c.cartodb_id) as total_crashes,
+      SUM(c.number_of_cyclist_injured) as cyclist_injured,
+      SUM(c.number_of_cyclist_killed) as cyclist_killed,
+      SUM(c.number_of_motorist_injured) as motorist_injured,
+      SUM(c.number_of_motorist_killed) as motorist_killed,
+      SUM(c.number_of_pedestrian_injured) as pedestrian_injured,
+      SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
+      SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
+      SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
+      year || '-' || LPAD(month::text, 2, '0') as year_month
+    FROM
+      crashes_all_prod c
+    WHERE
+      ${vehicleclause}
+    GROUP BY year, month
+    ORDER BY year asc, month asc
+  `;
+  return sql;
+};
+
 // Query that returns aggregated data by geography, such as Borough or City Council Districts
 // @param {string} geo Name of column for a given geography for use in the SQL group by clause
-export const sqlByGeo = geo => {
+export const sqlByGeo = (geo, vehicles) => {
   const namefield = sqlNameField(geo);
   const excludenoborough = sqlExcludeBorough(geo);
+  const vehicleclause = vehicleFilterClause(vehicles);
 
   const sql = sls`
     SELECT
@@ -124,16 +168,16 @@ export const sqlByGeo = geo => {
     FROM crashes_all_prod c
     WHERE
       the_geom IS NOT NULL
-      AND
-      ${geo} IS NOT NULL AND ${geo}::text != ''
-      ${excludenoborough}
+      AND ${geo} IS NOT NULL AND ${geo}::text != ''
+      AND ${excludenoborough}
+      AND ${vehicleclause}
     GROUP BY year_month, ${namefield}
     ORDER BY year_month asc, ${namefield} asc
   `;
   return sql;
 };
 
-export const sqlIntersection = () => {
+export const sqlIntersection = vehicles => {
   // tip for writing more "what places exist?" queries in the future
   // - the "geo" given to trigger this query, is presumed to be the name of a field,
   // e.g. "intersection" query should have a "intersection" field, being a unique ID ("key")
@@ -142,9 +186,10 @@ export const sqlIntersection = () => {
   // they do not have unique names, e.g. SMITH ST & OAK AVE could intersect multiple times
   // so our unique ID is concat'd name|id
   // labelFormatters.js entityIdDisplay() and entityLabelDisplay() tease these apart for label purposes vs ID purposes
+  const vehicleclause = vehicleFilterClause(vehicles);
 
   const maxintersections = 500;
-  return sls`
+  const sql = sls`
     SELECT
       CONCAT(UPPER(intersections.borough), ', ', intersections.name, '|', intersections.cartodb_id) AS intersection,
       COUNT(c.cartodb_id) as total_crashes,
@@ -162,12 +207,14 @@ export const sqlIntersection = () => {
       (SELECT * FROM nyc_intersections WHERE crashcount IS NOT NULL AND borough != '' ORDER BY crashcount DESC LIMIT ${maxintersections}) intersections
     WHERE
       c.the_geom IS NOT NULL AND ST_CONTAINS(intersections.the_geom, c.the_geom)
+      AND ${vehicleclause}
     GROUP BY year_month, intersection
     ORDER BY year_month asc, intersection asc
   `;
+  return sql;
 };
 
-export const sqlCustomGeography = latlngs => {
+export const sqlCustomGeography = (latlngs, vehicles) => {
   // latlngs param is a "coordinatelist" e.g. from customGeography
   // compose WKT to find crashes contained within this polygonal area
   const wkt = sls`
@@ -177,7 +224,9 @@ export const sqlCustomGeography = latlngs => {
     )
   `;
 
-  return sls`
+  const vehicleclause = vehicleFilterClause(vehicles);
+
+  const sql = sls`
     SELECT
       COUNT(c.cartodb_id) as total_crashes,
       SUM(c.number_of_cyclist_injured) as cyclist_injured,
@@ -191,8 +240,11 @@ export const sqlCustomGeography = latlngs => {
       year || '-' || LPAD(month::text, 2, '0') as year_month
     FROM
       crashes_all_prod c
-    WHERE ST_CONTAINS(${wkt}, the_geom)
+    WHERE
+      ST_CONTAINS(${wkt}, the_geom)
+      AND ${vehicleclause}
     GROUP BY year, month
     ORDER BY year asc, month asc
   `;
+  return sql;
 };

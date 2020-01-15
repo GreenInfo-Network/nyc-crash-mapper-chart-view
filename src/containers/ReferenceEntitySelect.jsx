@@ -6,12 +6,13 @@ import * as pt from '../common/reactPropTypeDefs';
 import { setReferenceEntity, fetchEntityData } from '../actions';
 import { REFERENCE_ENTITY_NAMES } from '../common/labelFormatters';
 
-const mapStateToProps = ({ entities, data, customGeography }) => ({
+const mapStateToProps = ({ entities, data, customGeography, filterVehicle }) => ({
   reference: entities.reference,
   boroughData: data.borough,
   citywideData: data.citywide,
   customData: data.custom,
   customGeography,
+  filterVehicle,
 });
 
 /*
@@ -28,6 +29,7 @@ class ReferenceEntitySelect extends Component {
     setReferenceEntity: PropTypes.func.isRequired,
     fetchEntityData: PropTypes.func.isRequired,
     customGeography: pt.coordinatelist.isRequired,
+    filterVehicle: pt.filterVehicle.isRequired,
   };
 
   static defaultProps = {
@@ -44,31 +46,35 @@ class ReferenceEntitySelect extends Component {
   componentDidMount() {
     const { reference, boroughData, citywideData, customData } = this.props;
     const { customGeography } = this.props;
+    const { filterVehicle } = this.props;
 
     // if the app loaded with a reference entity other than citywide make sure to fetch it
     if (reference !== 'citywide' && reference !== 'custom' && !boroughData.response) {
-      this.props.fetchEntityData('borough');
+      this.props.fetchEntityData('borough', filterVehicle);
     }
 
     // vice versa for above
-    if (reference === 'citywide' && !citywideData.response) this.props.fetchEntityData(reference);
+    if (reference === 'citywide' && !citywideData.response)
+      this.props.fetchEntityData(reference, filterVehicle);
     else if (reference === 'custom' && !customData.response)
-      this.props.fetchEntityData(reference, customGeography);
+      this.props.fetchEntityData(reference, filterVehicle, customGeography);
   }
 
   componentWillReceiveProps(nextProps) {
     const { reference, boroughData, citywideData, customData } = nextProps;
     const { customGeography } = this.props;
+    const { filterVehicle } = this.props;
 
     // if user selected a borough, and we don't have borough data yet, make an async request for it
     if (reference !== 'citywide' && reference !== 'custom' && !boroughData.response) {
-      this.props.fetchEntityData('borough');
+      this.props.fetchEntityData('borough', filterVehicle);
     }
 
     // vice versa for above
-    if (reference === 'citywide' && !citywideData.response) this.props.fetchEntityData(reference);
+    if (reference === 'citywide' && !citywideData.response)
+      this.props.fetchEntityData(reference, filterVehicle);
     else if (reference === 'custom' && !customData.response)
-      this.props.fetchEntityData(reference, customGeography);
+      this.props.fetchEntityData(reference, filterVehicle, customGeography);
   }
 
   handleChange(event) {

@@ -53,20 +53,20 @@ const handleError = (type, error) => {
 // fetches aggregated crash data via the CARTO SQL API
 // @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
 // @param {mixed} additionalData Additional data relevant to the entity type, e.g. for "custom" a customGeography coordinatelist array
-export default function fetchEntityData(entityType, additionalData) {
+export default function fetchEntityData(entityType, vehicleFilter, additionalData) {
   let sql = '';
   switch (entityType) {
     case 'citywide':
-      sql = sqlCitywide();
+      sql = sqlCitywide(vehicleFilter);
       break;
     case 'custom':
-      sql = sqlCustomGeography(additionalData);
+      sql = sqlCustomGeography(vehicleFilter, additionalData);
       break;
     case 'intersection':
-      sql = sqlIntersection(additionalData);
+      sql = sqlIntersection(vehicleFilter, additionalData);
       break;
     default:
-      sql = sqlByGeo(entityType);
+      sql = sqlByGeo(entityType, vehicleFilter);
       break;
   }
 
