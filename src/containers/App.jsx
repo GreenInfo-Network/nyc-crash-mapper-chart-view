@@ -68,25 +68,23 @@ class App extends Component {
     // starting state, entityType is citywide
     const { entityType } = this.props;
     const { customGeography } = this.props;
-    const { filterVehicle } = this.props;
 
     // load the selected entity
-    this.props.fetchEntityData(entityType, filterVehicle);
+    this.props.fetchEntityData(entityType);
 
     // we will be wanting this as our baselines for both Compare and Trend
     // for Compare we need this ASAP so the component can come up
     if (customGeography.length) {
-      this.props.fetchEntityData('custom', filterVehicle, customGeography);
+      this.props.fetchEntityData('custom', customGeography);
     }
 
     // as of issue 58, we want citywide data to be had for both Trend and Compare
     // so start loading it now
-    this.props.fetchEntityData('citywide', filterVehicle);
+    this.props.fetchEntityData('citywide');
   }
 
   componentWillReceiveProps(nextProps) {
     const { entityData, entityType, isFetchingData } = nextProps;
-    const { filterVehicle } = this.props;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -97,16 +95,6 @@ class App extends Component {
       isFetchingData === 0
     ) {
       this.props.fetchEntityData(entityType);
-    }
-
-    // if the vehicle filter has changed, we have to reload the page to cause statistics to reload
-    // even when data are re-queried and come back with new filters, they don't propagate to all charts etc.
-    const vehicle_changed =
-      JSON.stringify(filterVehicle.vehicle) !== JSON.stringify(nextProps.filterVehicle.vehicle);
-    if (vehicle_changed) {
-      setTimeout(() => {
-        document.location.reload();
-      }, 0.25 * 1000);
     }
   }
 
