@@ -1,6 +1,37 @@
 // this module contains template strings that form SQL queries that are passed to CARTO's SQL API
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
+// creates the where clause that returns data for all vehicle types
+const getAllVehicleTypes = () => {
+  const vehicleTypeFields = [
+    'hasvehicle_car',
+    'hasvehicle_truck',
+    'hasvehicle_motorcycle',
+    'hasvehicle_bicycle',
+    'hasvehicle_suv',
+    'hasvehicle_busvan',
+    'hasvehicle_scooter',
+    'hasvehicle_other',
+  ];
+
+  const allDistinctTypes = vehicleTypeFields
+    .filter(type => type !== 'hasvehicle_other')
+    .join(' OR ');
+  const allOtherTypes = sls`
+    hasvehicle_other OR (
+      NOT hasvehicle_car AND
+      NOT hasvehicle_truck AND
+      NOT hasvehicle_motorcycle AND
+      NOT hasvehicle_bicycle AND
+      NOT hasvehicle_suv AND
+      NOT hasvehicle_busvan AND
+      NOT hasvehicle_scooter AND
+      NOT hasvehicle_other
+  )`;
+
+  return `${allDistinctTypes} OR ${allOtherTypes}`;
+};
+
 // Query that returns aggregated data for entire city, note this will include data that hasn't been geocoded
 export const sqlCitywide = () => sls`
   SELECT
@@ -16,6 +47,7 @@ export const sqlCitywide = () => sls`
     year || '-' || LPAD(month::text, 2, '0') as year_month
   FROM
     crashes_all_prod c
+  WHERE ${getAllVehicleTypes()}
   GROUP BY year, month
   ORDER BY year asc, month asc
 `;
