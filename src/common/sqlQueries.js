@@ -86,12 +86,9 @@ export const sqlNameByGeoAndIdentifier = (geo, identifier) => {
 
 // SQL clause to filtr by vehicle type flags
 const vehicleFilterClause = vehicleFilter => {
-  // when changing boundary type, this can go null briefly, and causes an error
-  if (!vehicleFilter) return 'TRUE';
-
-  // compose the list of fields to OR together
   const { vehicle } = vehicleFilter;
 
+  // compose the list of fields to OR together
   const anyofthese = [];
   if (vehicle.car) anyofthese.push('hasvehicle_car');
   if (vehicle.truck) anyofthese.push('hasvehicle_truck');
