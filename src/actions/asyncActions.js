@@ -69,7 +69,7 @@ export function fetchEntityData(entityType, vehicleFilter, additionalData) {
       sql = sqlCitywide(vehicleFilter);
       break;
     case 'custom':
-      sql = sqlCustomGeography(vehicleFilter, additionalData);
+      sql = sqlCustomGeography(additionalData, vehicleFilter);
       break;
     case 'intersection':
       sql = sqlIntersection(vehicleFilter, additionalData);
