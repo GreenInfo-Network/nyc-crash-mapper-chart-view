@@ -22,8 +22,9 @@ axios.defaults.validateStatus = function(status) {
 };
 
 // action that states we are making an async request
-const requestEntityData = () => ({
+const requestEntityData = entityType => ({
   type: ENTITY_DATA_REQUEST,
+  entityType,
 });
 
 // action that a async data request was successful
@@ -81,7 +82,7 @@ export function fetchEntityData(entityType, vehicleFilter, additionalData) {
 
   return dispatch => {
     // tell our app we are fetching data
-    dispatch(requestEntityData());
+    dispatch(requestEntityData(entityType));
 
     // use axios library to make the GET request to the CARTO API with the SQL query from above
     return axios({
