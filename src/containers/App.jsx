@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
 import { entityDataSelector } from '../common/reduxSelectors';
@@ -27,7 +28,7 @@ window.d3 = d3;
  * Class that houses all components for the Application
  * Splits UI into separate areas using CSS classes that correspond with CSS Grid layout
  * Handles making Carto API calls for geographies / entities
-*/
+ */
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
@@ -85,8 +86,7 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, entityType, isFetchingData } = nextProps;
-    const { filterVehicle } = this.props;
+    const { entityData, entityType, isFetchingData, filterVehicle } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -96,17 +96,12 @@ class App extends Component {
       !entityData.length &&
       isFetchingData === 0
     ) {
-      this.props.fetchEntityData(entityType);
+      this.props.fetchEntityData(entityType, filterVehicle);
     }
 
-    // if the vehicle filter has changed, we have to reload the page to cause statistics to reload
-    // even when data are re-queried and come back with new filters, they don't propagate to all charts etc.
-    const vehicle_changed =
-      JSON.stringify(filterVehicle.vehicle) !== JSON.stringify(nextProps.filterVehicle.vehicle);
-    if (vehicle_changed) {
-      setTimeout(() => {
-        document.location.reload();
-      }, 0.25 * 1000);
+    // when vehicle filters change, refresh data
+    if (!isEqual(filterVehicle.vehicle, this.props.filterVehicle.vehicle)) {
+      this.props.fetchEntityData(entityType, filterVehicle);
     }
   }
 
@@ -122,7 +117,14 @@ class App extends Component {
       case 'compare':
         return (
           <DotGridChartsContainer
-            {...{ dateRanges, entityType, keyPrimary, keySecondary, width, customGeography }}
+            {...{
+              dateRanges,
+              entityType,
+              keyPrimary,
+              keySecondary,
+              width,
+              customGeography,
+            }}
           />
         );
 
