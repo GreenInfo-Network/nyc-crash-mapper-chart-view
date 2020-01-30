@@ -16,7 +16,7 @@ export {
 
 export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
 
-export { clearEntityDataCache, fetchEntityData } from './asyncActions';
+export { clearEntitiesDataCache, fetchEntityData } from './asyncActions';
 
 export { toggleChartView, setTrendAggregation } from './chartViewActions';
 

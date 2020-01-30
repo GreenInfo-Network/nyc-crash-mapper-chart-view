@@ -3,7 +3,7 @@ import logger from 'redux-logger';
 import isEqual from 'lodash.isequal';
 
 import updateQueryParams from './common/updateBrowserHistory';
-import { clearEntityDataCache } from './actions';
+import { clearEntitiesDataCache } from './actions';
 
 const middleware = [thunkMiddleware];
 
@@ -24,7 +24,7 @@ const saveState = store => next => action => {
 
 middleware.push(saveState);
 
-const clearEntitiesCache = store => next => action => {
+const maybeClearDataCache = store => next => action => {
   const { filterVehicle: filterVehiclePrev } = store.getState();
   const result = next(action);
   const { filterVehicle: filterVehicleCur } = store.getState();
@@ -32,12 +32,12 @@ const clearEntitiesCache = store => next => action => {
   // diff the filterVehicle states to see if they changed
   if (!isEqual(filterVehiclePrev.vehicle, filterVehicleCur.vehicle)) {
     // if they're different clear all cached data so that charts re-render
-    store.dispatch(clearEntityDataCache());
+    store.dispatch(clearEntitiesDataCache());
   }
 
   return result;
 };
 
-middleware.push(clearEntitiesCache);
+middleware.push(maybeClearDataCache);
 
 export default middleware;

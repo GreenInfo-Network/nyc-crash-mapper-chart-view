@@ -55,7 +55,7 @@ const handleError = (type, error) => {
   };
 };
 
-export const clearEntityDataCache = () => ({
+export const clearEntitiesDataCache = () => ({
   type: CLEAR_ENTITIES_DATA_CACHE,
 });
 
