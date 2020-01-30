@@ -3,7 +3,12 @@ import { sqlByGeo, sqlCitywide, sqlIntersection, sqlCustomGeography } from '../c
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
-import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
+import {
+  ENTITY_DATA_REQUEST,
+  ENTITY_DATA_SUCCESS,
+  ENTITY_DATA_ERROR,
+  CLEAR_ENTITIES_DATA_CACHE,
+} from '../common/actionTypes';
 
 // CARTO SQL API endpoint
 const url = `https://${cartoUser}.carto.com/api/v2/sql`;
@@ -50,10 +55,14 @@ const handleError = (type, error) => {
   };
 };
 
+export const clearEntityDataCache = () => ({
+  type: CLEAR_ENTITIES_DATA_CACHE,
+});
+
 // fetches aggregated crash data via the CARTO SQL API
 // @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
 // @param {mixed} additionalData Additional data relevant to the entity type, e.g. for "custom" a customGeography coordinatelist array
-export default function fetchEntityData(entityType, vehicleFilter, additionalData) {
+export function fetchEntityData(entityType, vehicleFilter, additionalData) {
   let sql = '';
   switch (entityType) {
     case 'citywide':

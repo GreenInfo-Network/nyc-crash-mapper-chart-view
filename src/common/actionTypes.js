@@ -35,6 +35,9 @@ export const ENTITY_DATA_REQUEST = 'ENTITY_DATA_REQUEST';
 export const ENTITY_DATA_SUCCESS = 'ENTITY_DATA_SUCCESS';
 export const ENTITY_DATA_ERROR = 'ENTITY_DATA_ERROR';
 
+// clear cached entites data
+export const CLEAR_ENTITIES_DATA_CACHE = 'CLEAR_ENTITIES_DATA_CACHE';
+
 // select the entity used for the line chart reference line
 export const REFERENCE_ENTITY_SELECT = 'REFERENCE_ENTITY_SELECT';
 
