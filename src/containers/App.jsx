@@ -52,6 +52,8 @@ class App extends Component {
     filterEntitiesByName: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
     customGeography: pt.coordinatelist.isRequired,
+    citywideData: pt.data,
+    boroughData: pt.data
   };
 
   static defaultProps = {
@@ -67,9 +69,7 @@ class App extends Component {
   componentDidMount() {
     // DOM content loaded, make async data requests to start
     // starting state, entityType is citywide
-    const { entityType } = this.props;
-    const { customGeography } = this.props;
-    const { filterVehicle } = this.props;
+    const { entityType, customGeography, filterVehicle } = this.props;
 
     // load the selected entity
     this.props.fetchEntityData(entityType, filterVehicle);
@@ -83,10 +83,11 @@ class App extends Component {
     // as of issue 58, we want citywide data to be had for both Trend and Compare
     // so start loading it now
     this.props.fetchEntityData('citywide', filterVehicle);
+    this.props.fetchEntityData('borough', filterVehicle);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, entityType, isFetchingData, filterVehicle } = nextProps;
+    const { entityData, entityType, isFetchingData, filterVehicle, citywideData, boroughData } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -102,6 +103,14 @@ class App extends Component {
     // when vehicle filters change, refresh data
     if (!isEqual(filterVehicle.vehicle, this.props.filterVehicle.vehicle)) {
       this.props.fetchEntityData(entityType, filterVehicle);
+    }
+
+    if (!citywideData.response && this.props.citywideData.response && isFetchingData === 0) {
+      this.props.fetchEntityData('citywide', filterVehicle);
+    }
+
+    if (!boroughData.response && this.props.boroughData && isFetchingData === 0) {
+      this.props.fetchEntityData('borough', filterVehicle);
     }
   }
 
@@ -200,7 +209,7 @@ class App extends Component {
 const mapStateToProps = state => {
   const { browser, chartView, dateRanges, entities, data } = state;
   const { filterType, filterVehicle, customGeography } = state;
-  const { isFetchingData } = data;
+  const { isFetchingData, citywide, borough } = data;
   const entityData = entityDataSelector(state);
 
   // boolean that states whether or not any crash type filters are selected
@@ -235,6 +244,8 @@ const mapStateToProps = state => {
     chartView,
     anyFilterTypeSelected,
     customGeography,
+    citywideData: citywide,
+    boroughData: borough,
   };
 };
 
