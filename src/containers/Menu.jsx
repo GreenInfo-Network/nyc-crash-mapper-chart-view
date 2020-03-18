@@ -8,7 +8,7 @@ import * as pt from '../common/reactPropTypeDefs';
 import { toggleChartView } from '../actions';
 
 function mapStateToProps(state) {
-  const { chartView, entities, dateRanges, filterType } = state;
+  const { chartView, entities, dateRanges, filterType, filterVehicle } = state;
   const { customGeography } = state;
   const { primary, entityType } = entities;
   const { period1 } = dateRanges;
@@ -25,6 +25,14 @@ function mapStateToProps(state) {
     cfat: fatality.cyclist,
     mfat: fatality.motorist,
     pfat: fatality.pedestrian,
+    vcar: filterVehicle.vehicle.car,
+    vtruck: filterVehicle.vehicle.truck,
+    vmotorcycle: filterVehicle.vehicle.motorcycle,
+    vbicycle: filterVehicle.vehicle.bicycle,
+    vsuv: filterVehicle.vehicle.suv,
+    vbusvan: filterVehicle.vehicle.busvan,
+    vscooter: filterVehicle.vehicle.scooter,
+    vother: filterVehicle.vehicle.other,
     endDate: formatDateYM(period1.endDate), // only need the string representation here
     startDate: formatDateYM(period1.startDate), // only need the string representation here
     identifier: primary.key,
@@ -44,6 +52,14 @@ const Menu = props => {
     cfat: props.cfat,
     mfat: props.mfat,
     pfat: props.pfat,
+    vcar: props.vcar,
+    vtruck: props.vtruck,
+    vmotorcycle: props.vmotorcycle,
+    vbicycle: props.vbicycle,
+    vsuv: props.vsuv,
+    vbusvan: props.vbusvan,
+    vscooter: props.vscooter,
+    vother: props.vother,
     endDate: props.endDate,
     startDate: props.startDate,
   };
