@@ -101,7 +101,7 @@ class Sidebar extends Component {
         <hr />
 
         <OptionsContainer
-          title={'Filter By Vehicle Type'}
+          title={'Filter By Vehicle Type Involved'}
           onMeasure={({ height }) => this.updateCollapsedHeight('filterByVehicleHeight', height)}
         >
           <FilterByVehicle />
