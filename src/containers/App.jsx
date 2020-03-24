@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import isEqual from 'lodash.isequal';
 
 import * as actions from '../actions';
 import { entityDataSelector } from '../common/reduxSelectors';
@@ -27,7 +28,7 @@ window.d3 = d3;
  * Class that houses all components for the Application
  * Splits UI into separate areas using CSS classes that correspond with CSS Grid layout
  * Handles making Carto API calls for geographies / entities
-*/
+ */
 class App extends Component {
   static propTypes = {
     entityData: PropTypes.arrayOf(PropTypes.object),
@@ -42,6 +43,7 @@ class App extends Component {
     keyPrimary: pt.key,
     keySecondary: pt.key,
     filterType: pt.filterType.isRequired,
+    filterVehicle: pt.filterVehicle.isRequired,
     anyFilterTypeSelected: PropTypes.bool.isRequired,
     setDateRangeGroupOne: PropTypes.func.isRequired,
     setDateRangeGroupTwo: PropTypes.func.isRequired,
@@ -50,6 +52,8 @@ class App extends Component {
     filterEntitiesByName: PropTypes.func.isRequired,
     width: PropTypes.number.isRequired,
     customGeography: pt.coordinatelist.isRequired,
+    citywideData: pt.data,
+    boroughData: pt.data
   };
 
   static defaultProps = {
@@ -65,25 +69,25 @@ class App extends Component {
   componentDidMount() {
     // DOM content loaded, make async data requests to start
     // starting state, entityType is citywide
-    const { entityType } = this.props;
-    const { customGeography } = this.props;
+    const { entityType, customGeography, filterVehicle } = this.props;
 
     // load the selected entity
-    this.props.fetchEntityData(entityType);
+    this.props.fetchEntityData(entityType, filterVehicle);
 
     // we will be wanting this as our baselines for both Compare and Trend
     // for Compare we need this ASAP so the component can come up
     if (customGeography.length) {
-      this.props.fetchEntityData('custom', customGeography);
+      this.props.fetchEntityData('custom', filterVehicle, customGeography);
     }
 
     // as of issue 58, we want citywide data to be had for both Trend and Compare
     // so start loading it now
-    this.props.fetchEntityData('citywide');
+    this.props.fetchEntityData('citywide', filterVehicle);
+    this.props.fetchEntityData('borough', filterVehicle);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { entityData, entityType, isFetchingData } = nextProps;
+    const { entityData, entityType, isFetchingData, filterVehicle, citywideData, boroughData } = nextProps;
 
     // user toggled geographic entity and no data has been cached
     // make a API call to get the data
@@ -93,7 +97,20 @@ class App extends Component {
       !entityData.length &&
       isFetchingData === 0
     ) {
-      this.props.fetchEntityData(entityType);
+      this.props.fetchEntityData(entityType, filterVehicle);
+    }
+
+    // when vehicle filters change, refresh data
+    if (!isEqual(filterVehicle.vehicle, this.props.filterVehicle.vehicle)) {
+      this.props.fetchEntityData(entityType, filterVehicle);
+    }
+
+    if (!citywideData.response && this.props.citywideData.response && isFetchingData === 0) {
+      this.props.fetchEntityData('citywide', filterVehicle);
+    }
+
+    if (!boroughData.response && this.props.boroughData && isFetchingData === 0) {
+      this.props.fetchEntityData('borough', filterVehicle);
     }
   }
 
@@ -109,7 +126,14 @@ class App extends Component {
       case 'compare':
         return (
           <DotGridChartsContainer
-            {...{ dateRanges, entityType, keyPrimary, keySecondary, width, customGeography }}
+            {...{
+              dateRanges,
+              entityType,
+              keyPrimary,
+              keySecondary,
+              width,
+              customGeography,
+            }}
           />
         );
 
@@ -183,8 +207,9 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { browser, chartView, dateRanges, entities, data, filterType, customGeography } = state;
-  const { isFetchingData } = data;
+  const { browser, chartView, dateRanges, entities, data } = state;
+  const { filterType, filterVehicle, customGeography } = state;
+  const { isFetchingData, citywide, borough } = data;
   const entityData = entityDataSelector(state);
 
   // boolean that states whether or not any crash type filters are selected
@@ -214,10 +239,13 @@ const mapStateToProps = state => {
     keyPrimary: entities.primary.key,
     keySecondary: entities.secondary.key,
     filterType,
+    filterVehicle,
     filterTerm: entities.filterTerm,
     chartView,
     anyFilterTypeSelected,
     customGeography,
+    citywideData: citywide,
+    boroughData: borough,
   };
 };
 

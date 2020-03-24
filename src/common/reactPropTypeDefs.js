@@ -38,6 +38,20 @@ export const filterType = PropTypes.shape({
   noInjuryFatality: PropTypes.bool.isRequired,
 });
 
+// represents the filterVehicle part of the Redux store
+export const filterVehicle = PropTypes.shape({
+  vehicle: PropTypes.shape({
+    car: PropTypes.bool.isRequired,
+    truck: PropTypes.bool.isRequired,
+    motorcycle: PropTypes.bool.isRequired,
+    bicycle: PropTypes.bool.isRequired,
+    suv: PropTypes.bool.isRequired,
+    busvan: PropTypes.bool.isRequired,
+    scooter: PropTypes.bool.isRequired,
+    other: PropTypes.bool.isRequired,
+  }),
+});
+
 // represents object with unique key and filtered values for primary and secondary entities
 export const valuesByDateRange = PropTypes.shape({
   primary: entity,

@@ -5,6 +5,7 @@ import SelectAreasController from './SelectAreasController';
 import OptionsContainer from './OptionsContainer';
 import FilterByCustomArea from '../../containers/FilterByCustomArea';
 import FilterByType from '../../containers/FilterByType';
+import FilterByVehicle from '../../containers/FilterByVehicle';
 import FilterByBoundary from '../../containers/FilterByBoundary';
 
 class Sidebar extends Component {
@@ -23,6 +24,7 @@ class Sidebar extends Component {
     super();
     this.state = {
       filterByTypeHeight: null,
+      filterByVehicleHeight: null,
       filterByBoundaryHeight: null,
       filterByCustomAreaHeight: null,
     };
@@ -55,6 +57,7 @@ class Sidebar extends Component {
     // as such its height needs to be calculated any time the 2 collapsable containers open/close
     // but, those containers have headers at fixed heights which never close hence the two extra 43
     const { filterByTypeHeight } = this.state;
+    const { filterByVehicleHeight } = this.state;
     const { filterByBoundaryHeight } = this.state;
     const { filterByCustomAreaHeight } = this.state;
 
@@ -62,6 +65,7 @@ class Sidebar extends Component {
       return (
         this.sidebar.offsetHeight -
         filterByTypeHeight -
+        filterByVehicleHeight -
         filterByBoundaryHeight -
         filterByCustomAreaHeight -
         150
@@ -88,10 +92,19 @@ class Sidebar extends Component {
         <hr />
 
         <OptionsContainer
-          title={'Filter By Type'}
+          title={'Filter By Crash Type'}
           onMeasure={({ height }) => this.updateCollapsedHeight('filterByTypeHeight', height)}
         >
           <FilterByType />
+        </OptionsContainer>
+
+        <hr />
+
+        <OptionsContainer
+          title={'Filter By Vehicle Type Involved'}
+          onMeasure={({ height }) => this.updateCollapsedHeight('filterByVehicleHeight', height)}
+        >
+          <FilterByVehicle />
         </OptionsContainer>
 
         <hr />

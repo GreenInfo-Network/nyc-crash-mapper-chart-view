@@ -3,7 +3,12 @@ import { sqlByGeo, sqlCitywide, sqlIntersection, sqlCustomGeography } from '../c
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
-import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
+import {
+  ENTITY_DATA_REQUEST,
+  ENTITY_DATA_SUCCESS,
+  ENTITY_DATA_ERROR,
+  CLEAR_ENTITIES_DATA_CACHE,
+} from '../common/actionTypes';
 
 // CARTO SQL API endpoint
 const url = `https://${cartoUser}.carto.com/api/v2/sql`;
@@ -17,8 +22,9 @@ axios.defaults.validateStatus = function(status) {
 };
 
 // action that states we are making an async request
-const requestEntityData = () => ({
+const requestEntityData = entityType => ({
   type: ENTITY_DATA_REQUEST,
+  entityType,
 });
 
 // action that a async data request was successful
@@ -50,29 +56,33 @@ const handleError = (type, error) => {
   };
 };
 
+export const clearEntitiesDataCache = () => ({
+  type: CLEAR_ENTITIES_DATA_CACHE,
+});
+
 // fetches aggregated crash data via the CARTO SQL API
 // @param {string} entityType The geographic type to fetch data for (borough, city_council, citywide, etc.)
 // @param {mixed} additionalData Additional data relevant to the entity type, e.g. for "custom" a customGeography coordinatelist array
-export default function fetchEntityData(entityType, additionalData) {
+export function fetchEntityData(entityType, vehicleFilter, additionalData) {
   let sql = '';
   switch (entityType) {
     case 'citywide':
-      sql = sqlCitywide();
+      sql = sqlCitywide(vehicleFilter);
       break;
     case 'custom':
-      sql = sqlCustomGeography(additionalData);
+      sql = sqlCustomGeography(additionalData, vehicleFilter);
       break;
     case 'intersection':
-      sql = sqlIntersection(additionalData);
+      sql = sqlIntersection(vehicleFilter, additionalData);
       break;
     default:
-      sql = sqlByGeo(entityType);
+      sql = sqlByGeo(entityType, vehicleFilter);
       break;
   }
 
   return dispatch => {
     // tell our app we are fetching data
-    dispatch(requestEntityData());
+    dispatch(requestEntityData(entityType));
 
     // use axios library to make the GET request to the CARTO API with the SQL query from above
     return axios({

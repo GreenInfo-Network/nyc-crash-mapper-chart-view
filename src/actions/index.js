@@ -1,5 +1,7 @@
 export { filterByTypeInjury, filterByTypeFatality, filterByNoInjFat } from './filterByTypeActions';
 
+export { filterByVehicle } from './filterByVehicleActions';
+
 export {
   setEntityType,
   selectPrimaryEntity,
@@ -14,7 +16,7 @@ export {
 
 export { setDateRangeGroupOne, setDateRangeGroupTwo } from './dateRangeActions';
 
-export fetchEntityData from './asyncActions';
+export { clearEntitiesDataCache, fetchEntityData } from './asyncActions';
 
 export { toggleChartView, setTrendAggregation } from './chartViewActions';
 

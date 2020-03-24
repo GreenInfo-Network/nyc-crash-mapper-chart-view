@@ -137,6 +137,24 @@ const setValidFilterTypes = types => {
   };
 };
 
+// load URL params into the filterVehicle state
+const setVehicleFiltersFromUrlParams = urlparams => {
+  const { vcar, vtruck, vmotorcycle, vbicycle, vsuv, vbusvan, vscooter, vother } = urlparams;
+
+  return {
+    vehicle: {
+      car: isBool(vcar) ? vcar : true,
+      truck: isBool(vtruck) ? vtruck : true,
+      motorcycle: isBool(vmotorcycle) ? vmotorcycle : true,
+      bicycle: isBool(vbicycle) ? vbicycle : true,
+      suv: isBool(vsuv) ? vsuv : true,
+      busvan: isBool(vbusvan) ? vbusvan : true,
+      scooter: isBool(vscooter) ? vscooter : true,
+      other: isBool(vother) ? vother : true,
+    },
+  };
+};
+
 // parses the URL query params
 // returns an object for key values of each param
 const parseQueryParams = () => {
@@ -187,6 +205,7 @@ const createInitialState = p => {
     },
     chartView: setValidView(p.view),
     filterType: setValidFilterTypes(p),
+    filterVehicle: setVehicleFiltersFromUrlParams(p),
     customGeography: p.lngLats,
     trendAggMonths: p.trendAggMonths,
   };

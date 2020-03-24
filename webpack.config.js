@@ -39,9 +39,6 @@ module.exports = {
           {
             loader: 'babel-loader',
           },
-          {
-            loader: 'eslint-loader',
-          },
         ],
       },
       // Use Sass and transpile to CSS
@@ -68,11 +65,9 @@ module.exports = {
           },
           // allows for importing variables via JS or JSON files
           {
-            loader: "@epegzz/sass-vars-loader",
+            loader: '@epegzz/sass-vars-loader',
             options: {
-              files: [
-                path.resolve(__dirname, 'src/common/styleVars.js'),
-              ],
+              files: [path.resolve(__dirname, 'src/common/styleVars.js')],
             },
           },
         ],
@@ -94,7 +89,7 @@ module.exports = {
               icon: true,
             },
           },
-        ]
+        ],
       },
       // load images
       // url-loader will base64 encode images smaller than options.limit

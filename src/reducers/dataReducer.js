@@ -1,4 +1,9 @@
-import { ENTITY_DATA_REQUEST, ENTITY_DATA_SUCCESS, ENTITY_DATA_ERROR } from '../common/actionTypes';
+import {
+  ENTITY_DATA_REQUEST,
+  ENTITY_DATA_SUCCESS,
+  ENTITY_DATA_ERROR,
+  CLEAR_ENTITIES_DATA_CACHE,
+} from '../common/actionTypes';
 
 const defaultState = {
   fetchError: null, // any error from the charts data request
@@ -43,6 +48,13 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         fetchError: action.error,
+      };
+
+    case CLEAR_ENTITIES_DATA_CACHE:
+      return {
+        ...defaultState,
+        fetchError: state.fetchError,
+        isFetchingData: state.isFetchingData,
       };
 
     default:
