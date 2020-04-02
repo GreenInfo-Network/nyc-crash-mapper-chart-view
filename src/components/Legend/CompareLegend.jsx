@@ -4,7 +4,7 @@ import { scaleOrdinal } from 'd3';
 export default () => {
   const persons = ['pedestrian', 'cyclist', 'motorist'];
   const harms = ['fatality', 'injury'];
-  const colorScale = scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C']).domain(persons);
+  const colorScale = scaleOrdinal(['#FFDB65', '#FF972A', '#D96246']).domain(persons);
   const radius = 5; // radius of circles
   const width = 500; // width of SVG
   const offset = 150; // width of each circle label

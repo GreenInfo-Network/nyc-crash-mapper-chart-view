@@ -37,7 +37,7 @@ const DotGridChart = props => {
 
   // color scale
   const colorScale = d3
-    .scaleOrdinal(['#FFDB65', '#FF972A', '#FE7B8C'])
+    .scaleOrdinal(['#FFDB65', '#FF972A', '#D96246'])
     .domain(['pedestrian', 'cyclist', 'motorist']);
   // offset of SVG group element
   const translateFactor = radius + strokeWidth;
