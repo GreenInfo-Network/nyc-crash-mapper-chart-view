@@ -31,7 +31,7 @@ const validRefGeos = [
   'brooklyn',
   'staten island',
 ];
-const validViews = ['trend', 'compare', 'rank'];
+const validViews = ['trend', 'compare', 'vehicle', 'rank'];
 
 // set up some default / fallback dates
 const p1EndDefault = new Date();

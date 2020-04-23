@@ -20,4 +20,4 @@ export { clearEntitiesDataCache, fetchEntityData } from './asyncActions';
 
 export { toggleChartView, setTrendAggregation } from './chartViewActions';
 
-export clearCustomGeography from './customGeographyActions';
+export { clearCustomGeography } from './customGeographyActions';

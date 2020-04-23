@@ -38,25 +38,85 @@ export const filterTypeFieldsSelector = createSelector(filterTypeSelector, filte
   // look up hash that maps each filterType value to a field name in the data
   const lookup = {
     injury: {
-      cyclist: 'cyclist_injured',
-      motorist: 'motorist_injured',
-      pedestrian: 'pedestrian_injured',
+      cyclist: [
+        'cyclist_injured',
+        'cyclist_injured_bybike',
+        'cyclist_injured_byscooter',
+        'cyclist_injured_bymotorcycle',
+        'cyclist_injured_bybusvan',
+        'cyclist_injured_bycar',
+        'cyclist_injured_bysuv',
+        'cyclist_injured_bytruck',
+        'cyclist_injured_byother',
+      ],
+      motorist: [
+        'motorist_injured',
+        'motorist_injured_bybike',
+        'motorist_injured_byscooter',
+        'motorist_injured_bymotorcycle',
+        'motorist_injured_bybusvan',
+        'motorist_injured_bycar',
+        'motorist_injured_bysuv',
+        'motorist_injured_bytruck',
+        'motorist_injured_byother',
+      ],
+      pedestrian: [
+        'pedestrian_injured',
+        'pedestrian_injured_bybike',
+        'pedestrian_injured_byscooter',
+        'pedestrian_injured_bymotorcycle',
+        'pedestrian_injured_bybusvan',
+        'pedestrian_injured_bycar',
+        'pedestrian_injured_bysuv',
+        'pedestrian_injured_bytruck',
+        'pedestrian_injured_byother',
+      ],
     },
     fatality: {
-      cyclist: 'cyclist_killed',
-      motorist: 'motorist_killed',
-      pedestrian: 'pedestrian_killed',
+      cyclist: [
+        'cyclist_killed',
+        'cyclist_killed_bybike',
+        'cyclist_killed_byscooter',
+        'cyclist_killed_bymotorcycle',
+        'cyclist_killed_bybusvan',
+        'cyclist_killed_bycar',
+        'cyclist_killed_bysuv',
+        'cyclist_killed_bytruck',
+        'cyclist_killed_byother',
+      ],
+      motorist: [
+        'motorist_killed',
+        'motorist_killed_bybike',
+        'motorist_killed_byscooter',
+        'motorist_killed_bymotorcycle',
+        'motorist_killed_bybusvan',
+        'motorist_killed_bycar',
+        'motorist_killed_bysuv',
+        'motorist_killed_bytruck',
+        'motorist_killed_byother',
+      ],
+      pedestrian: [
+        'pedestrian_killed',
+        'pedestrian_killed_bybike',
+        'pedestrian_killed_byscooter',
+        'pedestrian_killed_bymotorcycle',
+        'pedestrian_killed_bybusvan',
+        'pedestrian_killed_bycar',
+        'pedestrian_killed_bysuv',
+        'pedestrian_killed_bytruck',
+        'pedestrian_killed_byother',
+      ],
     },
   };
 
   // array to contain the desired field names from above inner properties
-  const fields = [];
+  let fields = [];
 
   // populate above with desired field names
   Object.keys(filterType).forEach(type => {
     Object.keys(filterType[type]).forEach(subtype => {
       if (filterType[type][subtype]) {
-        fields.push(lookup[type][subtype]);
+        fields = fields.concat(lookup[type][subtype]);
       }
     });
   });
@@ -140,7 +200,10 @@ const reduceValuesByType = (values, fields) =>
     Object.keys(cur)
       .filter(key => fields.includes(key))
       .forEach(key => {
-        o.count += cur[key];
+        // count shoudl not include sub injuries and fatalities such as 'cyclist_injured_bybike'
+        if (!key.includes('_by')) {
+          o.count += cur[key];
+        }
         o[key] = cur[key];
       });
 

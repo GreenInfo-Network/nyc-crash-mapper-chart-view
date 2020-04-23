@@ -20,6 +20,7 @@ import Legend from '../containers/Legend';
 import Message from '../components/Message';
 import About from '../components/About';
 import Help from '../components/Help';
+import PieChartsContainer from '../components/PieCharts/PieChartsContainer';
 
 // for debugging & messing around
 window.d3 = d3;
@@ -122,6 +123,20 @@ class App extends Component {
     switch (chartView) {
       case 'trend':
         return <LineChartsContainer />;
+
+      case 'vehicle':
+        return (
+          <PieChartsContainer
+            {...{
+              dateRanges,
+              entityType,
+              keyPrimary,
+              keySecondary,
+              width,
+              customGeography,
+            }}
+          />
+        );
 
       case 'compare':
         return (
