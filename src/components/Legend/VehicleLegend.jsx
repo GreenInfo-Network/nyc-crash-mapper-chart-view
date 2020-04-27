@@ -6,13 +6,15 @@ export default () => {
 
   return (
     <div className="VehicleLegend">
-      {vehicles.map((vehicle, i) => (
-        <div className="vehicle-icon" key={i} style={{ background: colors[i] }}>
-          <img src={`../../../assets/icons/${vehicle}.svg`} alt="vehicle" />
+      <div className="legend-icons">
+        {vehicles.map((vehicle, i) => (
+          <div className="vehicle-icon" key={i} style={{ background: colors[i] }}>
+            <img src={`../../../assets/icons/${vehicle}.svg`} alt="vehicle" />
+          </div>
+        ))}
+        <div className="vehicle-icon other-icon">
+          <span>Other</span>
         </div>
-      ))}
-      <div className="vehicle-icon other-icon">
-        <span>Other</span>
       </div>
     </div>
   );
