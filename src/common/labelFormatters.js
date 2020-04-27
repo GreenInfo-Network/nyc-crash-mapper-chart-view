@@ -61,7 +61,7 @@ export const crashTypeDisplay = typeName => {
 
 export const crashValueDisplay = value => {
   if (value && Number(value)) {
-    return Number(value).toFixed(1);
+    return Number(value).toFixed(0);
   }
   return 0;
 };

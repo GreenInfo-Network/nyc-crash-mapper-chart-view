@@ -15,28 +15,65 @@ import {
 import BarChart from '../components/PieCharts/BarChart';
 import PieChart from '../components/PieCharts/PieChart';
 
+const calcTotal = (values, damageType) => {
+  if (damageType === 'injured') {
+    const totalinjured = values.reduce((sum, month) => {
+      let newadds = 0;
+      if (month.pedestrian_injured !== undefined) newadds += month.pedestrian_injured;
+      if (month.cyclist_injured !== undefined) newadds += month.cyclist_injured;
+      if (month.motorist_injured !== undefined) newadds += month.motorist_injured;
+      return sum + newadds;
+    }, 0);
+    return totalinjured;
+  }
+  const totalkilled = values.reduce((sum, month) => {
+    let newadds = 0;
+    if (month.pedestrian_killed !== undefined) newadds += month.pedestrian_killed;
+    if (month.cyclist_killed !== undefined) newadds += month.cyclist_killed;
+    if (month.motorist_killed !== undefined) newadds += month.motorist_killed;
+    return sum + newadds;
+  }, 0);
+  return totalkilled;
+};
+
 const mapStateToProps = (state, props) => {
   const { browser, filterType } = state;
   const { entityType, period, damageType } = props;
   const dateRange = dateRangesSelector(state, props);
 
-  let values = [];
-  switch (entityType) {
-    case 'primary':
-      values = primaryEntityValuesFilteredSelector(state, props);
-      break;
-    case 'secondary':
-      values = secondaryEntityValuesFilteredSelector(state, props);
-      break;
-    case 'citywide':
-      values = referenceEntityValuesFilteredSelector(state, props);
-      break;
-    case 'custom':
-      values = customGeographyValuesFilteredSelector(state, props);
-      break;
-    default:
-      throw new Error('DotGridWrapper got unexpected entityType');
-  }
+  const allValues = {
+    period1: [],
+    period2: [],
+  };
+  ['period1', 'period2'].forEach(p => {
+    let values = [];
+    const newProps = { ...props, period: p };
+    switch (entityType) {
+      case 'primary':
+        values = primaryEntityValuesFilteredSelector(state, newProps);
+        break;
+      case 'secondary':
+        values = secondaryEntityValuesFilteredSelector(state, newProps);
+        break;
+      case 'citywide':
+        values = referenceEntityValuesFilteredSelector(state, newProps);
+        break;
+      case 'custom':
+        values = customGeographyValuesFilteredSelector(state, newProps);
+        break;
+      default:
+        throw new Error('DotGridWrapper got unexpected entityType');
+    }
+    allValues[p] = values;
+  });
+  const totals = {
+    period1: calcTotal(allValues.period1, damageType),
+    period2: calcTotal(allValues.period2, damageType),
+  };
+  const maxTotal = Math.max(totals.period1, totals.period2);
+  const currentTotal = totals[period];
+  const heightRate = currentTotal / maxTotal;
+  const values = allValues[period];
 
   return {
     appWidth: browser.width,
@@ -47,6 +84,7 @@ const mapStateToProps = (state, props) => {
     entityType,
     values,
     damageType,
+    heightRate,
   };
 };
 
@@ -73,6 +111,7 @@ class PieChartWrapper extends Component {
     width: PropTypes.number,
     title: PropTypes.string,
     damageType: PropTypes.string.isRequired,
+    heightRate: PropTypes.number,
   };
 
   static defaultProps = {
@@ -82,6 +121,7 @@ class PieChartWrapper extends Component {
     radius: 30,
     width: 20,
     title: '',
+    heightRate: 1,
   };
 
   constructor() {
@@ -95,16 +135,16 @@ class PieChartWrapper extends Component {
   }
 
   componentDidMount() {
-    const { values, filterType, damageType } = this.props;
+    const { values, filterType, damageType, heightRate } = this.props;
 
     // if we already have filtered values, group them so the chart can be drawn
     if (values.length) {
-      this.groupEntityData(filterType, values, damageType);
+      this.groupEntityData(filterType, values, damageType, heightRate);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { appWidth, values, filterType, startDate, endDate, damageType } = nextProps;
+    const { appWidth, values, filterType, startDate, endDate, damageType, heightRate } = nextProps;
 
     // if we receive filtered values
     if (values.length) {
@@ -121,7 +161,7 @@ class PieChartWrapper extends Component {
         appWidth !== this.props.appWidth
       ) {
         // group them so the chart can be drawn
-        this.groupEntityData(filterType, values, damageType);
+        this.groupEntityData(filterType, values, damageType, heightRate);
       }
     }
 
@@ -143,9 +183,9 @@ class PieChartWrapper extends Component {
     };
   }
 
-  groupEntityData(filterType, values, damageType) {
+  groupEntityData(filterType, values, damageType, heightRate) {
     const barChartWidth = 30;
-    const barChartHeight = 200;
+    const barChartHeight = heightRate ? 200 * heightRate : 200;
     const pieChartRadius = 50;
     const detailedDataStr = '_by';
     const barChartValues = cloneDeep(values)

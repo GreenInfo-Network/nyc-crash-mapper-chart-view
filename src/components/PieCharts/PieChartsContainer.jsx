@@ -240,7 +240,6 @@ class PieChartsContainer extends Component {
             />
           </div>
         )}
-
         {/* Custom Geography */}
         {customGeography.length ? (
           <PieChartTitle
@@ -248,13 +247,13 @@ class PieChartsContainer extends Component {
             {...{ keyPrimary: '', dateRanges, entityLabel: '' }}
           />
         ) : null}
-        {customGeography.length && (
+        {customGeography.length > 0 && (
           <div className="pie-chart-row">
             <PieChartSums entityType={'custom'} period={'period1'} damageType={'injured'} />
             <PieChartSums entityType={'custom'} period={'period2'} damageType={'injured'} />
           </div>
         )}
-        {customGeography.length && (
+        {customGeography.length > 0 && (
           <div className="pie-chart-row">
             <PieChartWrapper
               entityType={'custom'}
@@ -276,13 +275,13 @@ class PieChartsContainer extends Component {
             />
           </div>
         )}
-        {customGeography.length && (
+        {customGeography.length > 0 && (
           <div className="pie-chart-row">
             <PieChartSums entityType={'custom'} period={'period1'} damageType={'killed'} />
             <PieChartSums entityType={'custom'} period={'period2'} damageType={'killed'} />
           </div>
         )}
-        {customGeography.length && (
+        {customGeography.length > 0 && (
           <div className="pie-chart-row">
             <PieChartWrapper
               entityType={'custom'}
