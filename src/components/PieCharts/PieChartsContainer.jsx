@@ -63,6 +63,64 @@ class PieChartsContainer extends Component {
     return (
       <div className="PieChartsContainer scroll">
         {periodsHeader}
+        {!keyPrimary && !keySecondary && (
+          <PieChartTitle
+            keyLabel={'Citywide'}
+            {...{ keyPrimary: '', dateRanges, entityLabel: '' }}
+          />
+        )}
+        {!keyPrimary && !keySecondary && (
+          <div className="pie-chart-row">
+            <PieChartSums entityType={'citywide'} period={'period1'} damageType={'injured'} />
+            <PieChartSums entityType={'citywide'} period={'period2'} damageType={'injured'} />
+          </div>
+        )}
+        {!keyPrimary && !keySecondary && (
+          <div className="pie-chart-row">
+            <PieChartWrapper
+              entityType={'citywide'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="injured"
+            />
+            <PieChartWrapper
+              entityType={'citywide'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="injured"
+            />
+          </div>
+        )}
+        {!keyPrimary && !keySecondary && (
+          <div className="pie-chart-row">
+            <PieChartSums entityType={'citywide'} period={'period1'} damageType={'killed'} />
+            <PieChartSums entityType={'citywide'} period={'period2'} damageType={'killed'} />
+          </div>
+        )}
+        {!keyPrimary && !keySecondary && (
+          <div className="pie-chart-row">
+            <PieChartWrapper
+              entityType={'citywide'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="killed"
+            />
+            <PieChartWrapper
+              entityType={'citywide'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="killed"
+            />
+          </div>
+        )}
         {keyPrimary && (
           <PieChartTitle keyLabel={keyLabelPrimary} {...{ keyPrimary, dateRanges, entityLabel }} />
         )}
