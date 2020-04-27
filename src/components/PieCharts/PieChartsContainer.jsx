@@ -24,7 +24,7 @@ class PieChartsContainer extends Component {
   };
 
   render() {
-    const { keyPrimary, keySecondary, entityType, dateRanges } = this.props;
+    const { keyPrimary, keySecondary, entityType, dateRanges, customGeography } = this.props;
     const { period1, period2 } = dateRanges;
 
     const entityLabel = entityTypeDisplay(entityType);
@@ -36,6 +36,8 @@ class PieChartsContainer extends Component {
 
     const howmanymonths2 = findDateDiffInMonths(period2.startDate, period2.endDate);
     const monthsword2 = howmanymonths2 > 1 ? 'months' : 'month';
+
+    const defaultView = !keyPrimary && !keySecondary && !customGeography.length;
 
     const periodsHeader = (
       <div className="pie-grid-row">
@@ -63,19 +65,19 @@ class PieChartsContainer extends Component {
     return (
       <div className="PieChartsContainer scroll">
         {periodsHeader}
-        {!keyPrimary && !keySecondary && (
+        {defaultView && (
           <PieChartTitle
             keyLabel={'Citywide'}
             {...{ keyPrimary: '', dateRanges, entityLabel: '' }}
           />
         )}
-        {!keyPrimary && !keySecondary && (
+        {defaultView && (
           <div className="pie-chart-row">
             <PieChartSums entityType={'citywide'} period={'period1'} damageType={'injured'} />
             <PieChartSums entityType={'citywide'} period={'period2'} damageType={'injured'} />
           </div>
         )}
-        {!keyPrimary && !keySecondary && (
+        {defaultView && (
           <div className="pie-chart-row">
             <PieChartWrapper
               entityType={'citywide'}
@@ -95,13 +97,13 @@ class PieChartsContainer extends Component {
             />
           </div>
         )}
-        {!keyPrimary && !keySecondary && (
+        {defaultView && (
           <div className="pie-chart-row">
             <PieChartSums entityType={'citywide'} period={'period1'} damageType={'killed'} />
             <PieChartSums entityType={'citywide'} period={'period2'} damageType={'killed'} />
           </div>
         )}
-        {!keyPrimary && !keySecondary && (
+        {defaultView && (
           <div className="pie-chart-row">
             <PieChartWrapper
               entityType={'citywide'}
@@ -121,6 +123,8 @@ class PieChartsContainer extends Component {
             />
           </div>
         )}
+
+        {/* If Key Primary exists... */}
         {keyPrimary && (
           <PieChartTitle keyLabel={keyLabelPrimary} {...{ keyPrimary, dateRanges, entityLabel }} />
         )}
@@ -177,6 +181,7 @@ class PieChartsContainer extends Component {
           </div>
         )}
 
+        {/* If Key Secondary exists... */}
         {keySecondary && (
           <PieChartTitle
             keyLabel={keyLabelSecondary}
@@ -232,6 +237,70 @@ class PieChartsContainer extends Component {
               radius={this.circleRadius}
               width={this.width}
               damageType="killed"
+            />
+          </div>
+        )}
+
+        {/* Custom Geography */}
+        {customGeography.length ? (
+          <PieChartTitle
+            keyLabel={'Custom Geography'}
+            {...{ keyPrimary: '', dateRanges, entityLabel: '' }}
+          />
+        ) : null}
+        {customGeography.length && (
+          <div className="pie-chart-row">
+            <PieChartSums entityType={'custom'} period={'period1'} damageType={'injured'} />
+            <PieChartSums entityType={'custom'} period={'period2'} damageType={'injured'} />
+          </div>
+        )}
+        {customGeography.length && (
+          <div className="pie-chart-row">
+            <PieChartWrapper
+              entityType={'custom'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="injured"
+              customGeography={customGeography}
+            />
+            <PieChartWrapper
+              entityType={'custom'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="injured"
+              customGeography={customGeography}
+            />
+          </div>
+        )}
+        {customGeography.length && (
+          <div className="pie-chart-row">
+            <PieChartSums entityType={'custom'} period={'period1'} damageType={'killed'} />
+            <PieChartSums entityType={'custom'} period={'period2'} damageType={'killed'} />
+          </div>
+        )}
+        {customGeography.length && (
+          <div className="pie-chart-row">
+            <PieChartWrapper
+              entityType={'custom'}
+              period={'period1'}
+              title={'Period A'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="killed"
+              customGeography={customGeography}
+            />
+            <PieChartWrapper
+              entityType={'custom'}
+              period={'period2'}
+              title={'Period B'}
+              radius={this.circleRadius}
+              width={this.width}
+              damageType="killed"
+              customGeography={customGeography}
             />
           </div>
         )}
