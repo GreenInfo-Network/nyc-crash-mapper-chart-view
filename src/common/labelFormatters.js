@@ -50,6 +50,7 @@ export const crashTypeDisplay = typeName => {
   if (typeName && typeof typeName === 'string') {
     const res = typeName
       .replace('_by', '_by_')
+      .replace('busvan', 'bus-Van')
       .split('_')
       .map(name => capitalizeFirstLetter(name))
       .join(' ');
