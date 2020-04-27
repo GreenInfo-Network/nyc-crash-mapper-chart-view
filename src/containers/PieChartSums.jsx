@@ -99,12 +99,9 @@ class PieChartSums extends Component {
     const injured = this.props.damageType === 'injured';
 
     return (
-      <div className="pieChartSums">
-        {injured ? (
-          <h6>INJURIES {formatNumber(totalinjured)}</h6>
-        ) : (
-          <h6>DEATHS {formatNumber(totalkilled)}</h6>
-        )}
+      <div className="PieChartSums">
+        <h6> {injured ? 'INJURIES' : 'DEATHS'} </h6>
+        <h5>( {injured ? formatNumber(totalinjured) : formatNumber(totalkilled)} )</h5>
       </div>
     );
   }
