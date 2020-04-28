@@ -80,6 +80,7 @@ const Menu = props => {
   const items = [
     { type: 'link', value: `http://${hostname}/#/?${queryParams}`, label: 'Map' },
     { type: 'view', value: 'trend', label: 'Trend' },
+    { type: 'view', value: 'vehicle', label: 'Vehicle' },
     { type: 'view', value: 'compare', label: 'Compare' },
     { type: 'view', value: 'rank', label: 'Rank' },
     { type: 'view', value: 'about', label: 'About' },

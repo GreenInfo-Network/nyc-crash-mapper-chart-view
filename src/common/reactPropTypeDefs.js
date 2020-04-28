@@ -81,3 +81,38 @@ export const data = PropTypes.shape({
 
 // coordinate list, e.g. that specifying a list of [ lat, lng ] arrays, forming a polygonal shape
 export const coordinatelist = PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number));
+
+// bar chart data type
+export const barChartData = PropTypes.shape({
+  cyclist_injured: PropTypes.number,
+  motorist_injured: PropTypes.number,
+  pedestrian_injured: PropTypes.number,
+});
+
+// pie chart data type
+export const pieChartData = PropTypes.shape({
+  cyclist_injured_bybike: PropTypes.number,
+  motorist_injured_bybike: PropTypes.number,
+  pedestrian_injured_bybike: PropTypes.number,
+  cyclist_injured_byscooter: PropTypes.number,
+  motorist_injured_byscooter: PropTypes.number,
+  pedestrian_injured_byscooter: PropTypes.number,
+  cyclist_injured_bymotorcycle: PropTypes.number,
+  motorist_injured_bymotorcycle: PropTypes.number,
+  pedestrian_injured_bymotorcycle: PropTypes.number,
+  cyclist_injured_bybusvan: PropTypes.number,
+  motorist_injured_bybusvan: PropTypes.number,
+  pedestrian_injured_bybusvan: PropTypes.number,
+  cyclist_injured_bycar: PropTypes.number,
+  motorist_injured_bycar: PropTypes.number,
+  pedestrian_injured_bycar: PropTypes.number,
+  cyclist_injured_bysuv: PropTypes.number,
+  motorist_injured_bysuv: PropTypes.number,
+  pedestrian_injured_bysuv: PropTypes.number,
+  cyclist_injured_bytruck: PropTypes.number,
+  motorist_injured_bytruck: PropTypes.number,
+  pedestrian_injured_bytruck: PropTypes.number,
+  cyclist_injured_byother: PropTypes.number,
+  motorist_injured_byother: PropTypes.number,
+  pedestrian_injured_byother: PropTypes.number,
+});

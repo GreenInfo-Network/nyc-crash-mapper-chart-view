@@ -53,7 +53,7 @@ const mapStateToProps = (state, props) => {
 /*
  * Class that wraps the Dot Grid Chart connecting it to parts of the Redux Store
  * Unlike the Line Charts, each Dot Grid Chart gets a single geo entity, time period, and person type
-*/
+ */
 class DotGridWrapper extends Component {
   static propTypes = {
     appWidth: PropTypes.number.isRequired,

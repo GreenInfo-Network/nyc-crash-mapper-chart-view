@@ -34,6 +34,11 @@
 @import 'components/line-chart-wrapper';
 @import 'components/line-chart';
 @import 'components/line-chart-title';
+@import 'components/pie-chart';
+@import 'components/pie-charts-container';
+@import 'components/pie-chart-title';
+@import 'components/pie-chart-sums';
+@import 'components/pie-chart-wrapper';
 @import 'components/dot-grid-charts-container';
 @import 'components/dot-grid-chart';
 @import 'components/dot-grid-wrapper';
@@ -43,6 +48,7 @@
 @import 'components/timeline';
 @import 'components/legend';
 @import 'components/compare-legend';
+@import 'components/vehicle-legend';
 @import 'components/reference-entity-select';
 @import 'components/rank-cards-container';
 @import 'components/rank-cards-controls';

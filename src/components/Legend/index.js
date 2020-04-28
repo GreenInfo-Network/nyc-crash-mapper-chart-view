@@ -6,6 +6,7 @@ import * as pt from '../../common/reactPropTypeDefs';
 import EntitySelections from './EntitySelections';
 import CompareLegend from './CompareLegend';
 import Logos from './Logos';
+import VehicleLegend from './VehicleLegend';
 
 const Legend = props => {
   const { entities, deselectPrimaryEntity, deselectSecondaryEntity, chartView } = props;
@@ -25,6 +26,9 @@ const Legend = props => {
             deselectSecondaryEntity={deselectSecondaryEntity}
           />
         );
+
+      case 'vehicle':
+        return <VehicleLegend />;
 
       case 'rank':
         return (

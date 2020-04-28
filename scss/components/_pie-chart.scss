@@ -1,0 +1,30 @@
+.PieChart {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  width: 130px;
+
+  .total {
+    width: 100%;
+    text-align: center;
+    color: #3d3d3d;
+    font-size: 13px;
+    margin-top: 5px;
+    border-radius: 2px;
+  }
+
+  .person-icon {
+    width: 35px;
+    height: 35px;
+    padding: 5px;
+    border-radius: 50%;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      height: 100%;
+    }
+  }
+}

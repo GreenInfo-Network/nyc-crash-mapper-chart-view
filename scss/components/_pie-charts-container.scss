@@ -1,0 +1,54 @@
+.PieChartsContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 15px;
+
+  .pie-grid-row {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  h5 {
+    text-transform: capitalize;
+    padding: 20px 20px 0;
+    color: $ui-text-grey;
+
+    &.select-entity {
+      text-align: center;
+    }
+  }
+
+  .PieGridPeriodsHeader {
+    width: 50%;
+    height: auto;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+    color: #ddd;
+
+    &:first-child {
+      padding-right: 10px;
+      padding-left: 0;
+    }
+
+    h5 {
+      padding: 0;
+    }
+
+    h6 {
+      padding: 0;
+
+      span {
+        font-size: 75%;
+      }
+    }
+  }
+
+  .pie-chart-row {
+    display: flex;
+    padding: 0 20px;
+  }
+}

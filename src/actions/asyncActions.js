@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sqlByGeo, sqlCitywide, sqlIntersection, sqlCustomGeography } from '../common/sqlQueries';
+import { sqlByGeo, sqlCitywide, sqlIntersection, sqlCustomGeography, sqlVehicle } from '../common/sqlQueries';
 
 import { cartoUser } from '../common/config';
 import { parseDate } from '../common/d3Utils';
@@ -83,7 +83,6 @@ export function fetchEntityData(entityType, vehicleFilter, additionalData) {
   return dispatch => {
     // tell our app we are fetching data
     dispatch(requestEntityData(entityType));
-
     // use axios library to make the GET request to the CARTO API with the SQL query from above
     return axios({
       method: 'get',

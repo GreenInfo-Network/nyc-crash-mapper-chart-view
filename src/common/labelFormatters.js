@@ -42,6 +42,30 @@ export const entityIdDisplay = (entityType, id) => {
   return id;
 };
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export const crashTypeDisplay = typeName => {
+  if (typeName && typeof typeName === 'string') {
+    const res = typeName
+      .replace('_by', '_by_')
+      .replace('busvan', 'bus-Van')
+      .split('_')
+      .map(name => capitalizeFirstLetter(name))
+      .join(' ');
+    return res;
+  }
+  return '';
+};
+
+export const crashValueDisplay = value => {
+  if (value && Number(value)) {
+    return Number(value).toFixed(0);
+  }
+  return 0;
+};
+
 export const entityNameDisplay = (entityType, id) => {
   // this separation of ID and Label was specific to intersection types
   if (id && entityType === 'intersection') {

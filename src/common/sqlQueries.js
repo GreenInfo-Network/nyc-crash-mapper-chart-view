@@ -1,6 +1,73 @@
 // this module contains template strings that form SQL queries that are passed to CARTO's SQL API
 import sls from 'single-line-string'; // sls turns a multiline string into a single line
 
+const detailSelectQuery = `
+  SUM(cyclist_injured_bybike) as cyclist_injured_bybike,
+  SUM(cyclist_killed_bybike) as cyclist_killed_bybike,
+  SUM(motorist_injured_bybike) as motorist_injured_bybike,
+  SUM(motorist_killed_bybike) as motorist_killed_bybike,
+  SUM(pedestrian_injured_bybike) as pedestrian_injured_bybike,
+  SUM(pedestrian_killed_bybike) as pedestrian_killed_bybike,
+  SUM(persons_injured_bybike) as persons_injured_bybike,
+  SUM(persons_killed_bybike) as persons_killed_bybike,
+  SUM(cyclist_injured_byscooter) as cyclist_injured_byscooter,
+  SUM(cyclist_killed_byscooter) as cyclist_killed_byscooter,
+  SUM(motorist_injured_byscooter) as motorist_injured_byscooter,
+  SUM(motorist_killed_byscooter) as motorist_killed_byscooter,
+  SUM(pedestrian_injured_byscooter) as pedestrian_injured_byscooter,
+  SUM(pedestrian_killed_byscooter) as pedestrian_killed_byscooter,
+  SUM(persons_injured_byscooter) as persons_injured_byscooter,
+  SUM(persons_killed_byscooter) as persons_killed_byscooter,
+  SUM(cyclist_injured_bymotorcycle) as cyclist_injured_bymotorcycle,
+  SUM(cyclist_killed_bymotorcycle) as cyclist_killed_bymotorcycle,
+  SUM(motorist_injured_bymotorcycle) as motorist_injured_bymotorcycle,
+  SUM(motorist_killed_bymotorcycle) as motorist_killed_bymotorcycle,
+  SUM(pedestrian_injured_bymotorcycle) as pedestrian_injured_bymotorcycle,
+  SUM(pedestrian_killed_bymotorcycle) as pedestrian_killed_bymotorcycle,
+  SUM(persons_injured_bymotorcycle) as persons_injured_bymotorcycle,
+  SUM(persons_killed_bymotorcycle) as persons_killed_bymotorcycle,
+  SUM(cyclist_injured_bybusvan) as cyclist_injured_bybusvan,
+  SUM(cyclist_killed_bybusvan) as cyclist_killed_bybusvan,
+  SUM(motorist_injured_bybusvan) as motorist_injured_bybusvan,
+  SUM(motorist_killed_bybusvan) as motorist_killed_bybusvan,
+  SUM(pedestrian_injured_bybusvan) as pedestrian_injured_bybusvan,
+  SUM(pedestrian_killed_bybusvan) as pedestrian_killed_bybusvan,
+  SUM(persons_injured_bybusvan) as persons_injured_bybusvan,
+  SUM(persons_killed_bybusvan) as persons_killed_bybusvan,
+  SUM(cyclist_injured_bycar) as cyclist_injured_bycar,
+  SUM(cyclist_killed_bycar) as cyclist_killed_bycar,
+  SUM(motorist_injured_bycar) as motorist_injured_bycar,
+  SUM(motorist_killed_bycar) as motorist_killed_bycar,
+  SUM(pedestrian_injured_bycar) as pedestrian_injured_bycar,
+  SUM(pedestrian_killed_bycar) as pedestrian_killed_bycar,
+  SUM(persons_injured_bycar) as persons_injured_bycar,
+  SUM(persons_killed_bycar) as persons_killed_bycar,
+  SUM(cyclist_injured_bysuv) as cyclist_injured_bysuv,
+  SUM(cyclist_killed_bysuv) as cyclist_killed_bysuv,
+  SUM(motorist_injured_bysuv) as motorist_injured_bysuv,
+  SUM(motorist_killed_bysuv) as motorist_killed_bysuv,
+  SUM(pedestrian_injured_bysuv) as pedestrian_injured_bysuv,
+  SUM(pedestrian_killed_bysuv) as pedestrian_killed_bysuv,
+  SUM(persons_injured_bysuv) as persons_injured_bysuv,
+  SUM(persons_killed_bysuv) as persons_killed_bysuv,
+  SUM(cyclist_injured_bytruck) as cyclist_injured_bytruck,
+  SUM(cyclist_killed_bytruck) as cyclist_killed_bytruck,
+  SUM(motorist_injured_bytruck) as motorist_injured_bytruck,
+  SUM(motorist_killed_bytruck) as motorist_killed_bytruck,
+  SUM(pedestrian_injured_bytruck) as pedestrian_injured_bytruck,
+  SUM(pedestrian_killed_bytruck) as pedestrian_killed_bytruck,
+  SUM(persons_injured_bytruck) as persons_injured_bytruck,
+  SUM(persons_killed_bytruck) as persons_killed_bytruck,
+  SUM(cyclist_injured_byother) as cyclist_injured_byother,
+  SUM(cyclist_killed_byother) as cyclist_killed_byother,
+  SUM(motorist_injured_byother) as motorist_injured_byother,
+  SUM(motorist_killed_byother) as motorist_killed_byother,
+  SUM(pedestrian_injured_byother) as pedestrian_injured_byother,
+  SUM(pedestrian_killed_byother) as pedestrian_killed_byother,
+  SUM(persons_injured_byother) as persons_injured_byother,
+  SUM(persons_killed_byother) as persons_killed_byother
+`;
+
 export const sqlNameField = geo => {
   // more hacks around someone hardcoding the geography type as the would-be name field,
   // so we can prefix with borough name and skip any which lack a borough name; issue 103
@@ -137,7 +204,8 @@ export const sqlCitywide = vehicles => {
       SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
       SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
-      year || '-' || LPAD(month::text, 2, '0') as year_month
+      year || '-' || LPAD(month::text, 2, '0') as year_month,
+      ${detailSelectQuery}
     FROM
       crashes_all_prod c
     WHERE
@@ -167,7 +235,8 @@ export const sqlByGeo = (geo, vehicles) => {
       SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
       SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
-      year || '-' || LPAD(month::text, 2, '0') as year_month
+      year || '-' || LPAD(month::text, 2, '0') as year_month,
+      ${detailSelectQuery}
     FROM crashes_all_prod c
     WHERE
       the_geom IS NOT NULL
@@ -204,7 +273,8 @@ export const sqlIntersection = vehicles => {
       SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
       SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
-      c.year || '-' || LPAD(c.month::text, 2, '0') as year_month
+      c.year || '-' || LPAD(c.month::text, 2, '0') as year_month,
+      ${detailSelectQuery}
     FROM
       crashes_all_prod c,
       (SELECT * FROM nyc_intersections WHERE crashcount IS NOT NULL AND borough != '' ORDER BY crashcount DESC LIMIT ${maxintersections}) intersections
@@ -240,7 +310,8 @@ export const sqlCustomGeography = (latlngs, vehicles) => {
       SUM(c.number_of_pedestrian_killed) as pedestrian_killed,
       SUM(c.number_of_pedestrian_injured + c.number_of_cyclist_injured + c.number_of_motorist_injured) as persons_injured,
       SUM(c.number_of_pedestrian_killed + c.number_of_cyclist_killed + c.number_of_motorist_killed) as persons_killed,
-      year || '-' || LPAD(month::text, 2, '0') as year_month
+      year || '-' || LPAD(month::text, 2, '0') as year_month,
+      ${detailSelectQuery}
     FROM
       crashes_all_prod c
     WHERE

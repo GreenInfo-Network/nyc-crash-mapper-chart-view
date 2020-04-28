@@ -9,8 +9,8 @@ import DotGridTitle from './DotGridTitle';
 import DotGridPeriodsHeader from './DotGridPeriodsHeader';
 
 /**
-  * Class that houses the Dot Grid Wrapper components.
-*/
+ * Class that houses the Dot Grid Wrapper components.
+ */
 class DotGridChartsContainer extends Component {
   static propTypes = {
     dateRanges: pt.dateRange.isRequired,
