@@ -119,7 +119,7 @@ export const sqlExcludeBorough = geo => {
     case 'community_board':
     case 'neighborhood':
     case 'nypd_precinct':
-      excludenoborough = `AND borough IS NOT NULL AND borough != ''`;
+      excludenoborough = `borough IS NOT NULL AND borough != ''`;
       break;
     default:
       excludenoborough = 'TRUE';
