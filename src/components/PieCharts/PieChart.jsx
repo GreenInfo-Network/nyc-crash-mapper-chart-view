@@ -15,9 +15,9 @@ const personTypeColors = {
 };
 const vehicleColors = [
   '#A1CA5D', // bike
+  '#69B883', // e-bike
   '#89CCBC', // Motorcycle
   '#7CC5DB', // bus
-  '#69B883', // e-bike
   '#349093', // car
   '#51787C', // Suv
   '#4A94CA', // Truck
