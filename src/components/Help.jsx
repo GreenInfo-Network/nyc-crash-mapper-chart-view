@@ -117,7 +117,7 @@ const Help = () => (
           <td>
             <h6>Crashmapper Vehicle Filter</h6>
             <p>
-              Do many crashes involve certain type of vehicles ? Is there a category of vehicles more dangerous to vulnerable users as they cause more fatalities and injuries ? Is it specific to an area when enforcement should be increased? 
+              Do many crashes involve certain type of vehicles? Is there a category of vehicles more dangerous to vulnerable users as they cause more fatalities and injuries? Is it specific to an area when enforcement should be increased? 
             </p>
           </td>
         </tr>
