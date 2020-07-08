@@ -63,13 +63,13 @@ const lastThreeYearsFilteredByType = createSelector(
           // total injured + killed
           o.total += curVal;
 
-          // if we have any <person type>_injured fields, add the value to the totalInjured
-          if (key.indexOf('injured') > -1) {
+          // if we have any <person type>_injured fields, add the value to the totalInjured, but exclude the <_byMODE> allocated amounts used in vehicle type views to avoid overcounting
+          if ((key.indexOf('injured') > -1) && !(key.indexOf('_by') > -1)) {
             o.totalInjured += curVal;
           }
 
-          // if we have any <person type>_killed fields, add the value to the totalKilled
-          if (key.indexOf('killed') > -1) {
+          // if we have any <person type>_killed fields, add the value to the totalKilled, but exclude the <_byMODE> allocated amounts used in vehicle type views to avoid overcounting
+          if ((key.indexOf('killed') > -1) && !(key.indexOf('_by') > -1)) {
             o.totalKilled += curVal;
           }
         });
